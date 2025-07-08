@@ -13,6 +13,8 @@ npm run install:all
 ```bash
 npm run dev
 ```
+前端將在 http://localhost:5173/ 運行  
+後端將在 http://localhost:3001/ 運行
 
 ### 構建部署
 ```bash
@@ -48,12 +50,25 @@ shesocial/
 
 ## 🛠️ 技術架構
 
-- **前端**: React + TypeScript + Tailwind CSS + Vite
-- **後端**: Node.js + Express + TypeScript
-- **數據庫**: CRDT (Yjs) + NeDB
-- **支付**: LINE Pay + ECPay
-- **媒體**: Cloudinary
-- **部署**: Render.com
+### 前端架構
+- **框架**: React 19 + TypeScript + Vite
+- **樣式**: Tailwind CSS 4.x + 自定義奢華設計系統
+- **狀態管理**: React Hooks + CRDT (Yjs) 本地同步
+- **離線支持**: NeDB 瀏覽器存儲 + PWA
+- **特色**: 台灣本地化 + 手機優先設計
+
+### 後端架構
+- **運行時**: Node.js + Express + TypeScript
+- **數據庫**: CRDT (Yjs) + NeDB 輕量存儲
+- **支付**: LINE Pay (主要) + ECPay (備用)
+- **媒體**: Cloudinary 圖片/影片處理
+- **存儲**: Cloudflare R2 持久化
+
+### 部署策略
+- **平台**: Render.com 免費層
+- **域名**: 自定義域名 + SSL
+- **監控**: 基本日誌 + 錯誤追蹤
+- **備份**: 自動 R2 同步備份
 
 ## 🎯 核心特色
 
@@ -66,6 +81,25 @@ shesocial/
 ## 📊 開發進度
 
 查看 [CONCISE_IMPLEMENTATION_PLAN.md](./CONCISE_IMPLEMENTATION_PLAN.md) 了解詳細開發計劃。
+
+### 已完成 ✅
+- [x] 項目結構設置 (client/, server/, shared/)
+- [x] React 19 + TypeScript + Tailwind CSS 前端
+- [x] 奢華設計系統 (luxury color palette, components)
+- [x] 台灣本地化界面 (繁體中文)
+- [x] 響應式設計 (mobile-first)
+- [x] 環境配置 (.env.example)
+
+### 進行中 🔄
+- [ ] Node.js + Express + TypeScript 後端
+- [ ] CRDT (Yjs) + NeDB 架構概念驗證
+
+### 待完成 📋
+- [ ] 用戶認證系統
+- [ ] LINE Pay 支付整合
+- [ ] 活動 CRUD 操作
+- [ ] Cloudinary 媒體上傳
+- [ ] Render.com 部署配置
 
 ## 🌟 主要功能
 

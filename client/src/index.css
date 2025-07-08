@@ -1,0 +1,211 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom CSS Variables for SheSocial */
+:root {
+  --font-family-primary: 'Inter', 'Noto Sans TC', system-ui, sans-serif;
+  --font-family-secondary: 'Noto Serif TC', Georgia, serif;
+  --shadow-luxury: 0 10px 25px -3px rgba(212, 175, 55, 0.1), 0 4px 6px -2px rgba(212, 175, 55, 0.05);
+  --gradient-luxury: linear-gradient(135deg, #d4af37 0%, #f18444 100%);
+  --gradient-luxury-muted: linear-gradient(135deg, #f7e7ce 0%, #faf0e6 100%);
+}
+
+/* Base Styles */
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-gradient-to-br from-luxury-pearl to-luxury-champagne text-secondary-900;
+    font-family: var(--font-family-primary);
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-family-secondary);
+    @apply font-semibold tracking-tight;
+  }
+  
+  h1 {
+    @apply text-4xl md:text-5xl lg:text-6xl;
+  }
+  
+  h2 {
+    @apply text-3xl md:text-4xl lg:text-5xl;
+  }
+  
+  h3 {
+    @apply text-2xl md:text-3xl lg:text-4xl;
+  }
+  
+  h4 {
+    @apply text-xl md:text-2xl lg:text-3xl;
+  }
+  
+  h5 {
+    @apply text-lg md:text-xl lg:text-2xl;
+  }
+  
+  h6 {
+    @apply text-base md:text-lg lg:text-xl;
+  }
+}
+
+/* Component Styles */
+@layer components {
+  /* Luxury Button Styles */
+  .btn-luxury {
+    @apply inline-flex items-center justify-center rounded-2xl px-8 py-3 text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+    background: var(--gradient-luxury);
+    color: white;
+    box-shadow: var(--shadow-luxury);
+  }
+  
+  .btn-luxury:hover {
+    @apply shadow-lg scale-105;
+    transform: translateY(-2px);
+  }
+  
+  .btn-luxury:active {
+    @apply scale-95;
+    transform: translateY(0);
+  }
+  
+  .btn-luxury-outline {
+    @apply border-2 border-luxury-gold bg-transparent text-luxury-gold hover:bg-luxury-gold hover:text-white;
+  }
+  
+  .btn-luxury-ghost {
+    @apply bg-transparent text-luxury-gold hover:bg-luxury-gold/10;
+  }
+  
+  /* Card Styles */
+  .card-luxury {
+    @apply rounded-3xl bg-white/70 p-6 shadow-luxury backdrop-blur-sm border border-white/20;
+  }
+  
+  .card-luxury-hover {
+    @apply transition-all duration-300 hover:shadow-xl hover:scale-105 hover:bg-white/80;
+  }
+  
+  /* Input Styles */
+  .input-luxury {
+    @apply flex h-12 w-full rounded-xl border border-secondary-200 bg-white/50 px-4 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-secondary-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luxury-gold focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 backdrop-blur-sm;
+  }
+  
+  /* Badge Styles */
+  .badge-luxury {
+    @apply inline-flex items-center rounded-full px-3 py-1 text-xs font-medium;
+    background: var(--gradient-luxury);
+    color: white;
+  }
+  
+  .badge-luxury-outline {
+    @apply border border-luxury-gold bg-transparent text-luxury-gold;
+  }
+  
+  /* Navigation Styles */
+  .nav-luxury {
+    @apply bg-white/80 backdrop-blur-md border-b border-white/20 shadow-sm;
+  }
+  
+  /* Glass Morphism Effect */
+  .glass {
+    @apply bg-white/20 backdrop-blur-md border border-white/20 shadow-lg;
+  }
+  
+  /* Gradient Text */
+  .text-gradient-luxury {
+    background: var(--gradient-luxury);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  /* Loading Spinner */
+  .spinner-luxury {
+    @apply animate-spin h-6 w-6 border-2 border-luxury-gold border-t-transparent rounded-full;
+  }
+  
+  /* Custom Scrollbar */
+  .scrollbar-luxury::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .scrollbar-luxury::-webkit-scrollbar-track {
+    @apply bg-secondary-100 rounded-full;
+  }
+  
+  .scrollbar-luxury::-webkit-scrollbar-thumb {
+    @apply bg-luxury-gold rounded-full;
+  }
+  
+  .scrollbar-luxury::-webkit-scrollbar-thumb:hover {
+    @apply bg-luxury-gold/80;
+  }
+}
+
+/* Utility Classes */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+  }
+  
+  /* Mobile-first responsive utilities */
+  .container-luxury {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  .section-luxury {
+    @apply py-12 sm:py-16 lg:py-20;
+  }
+  
+  /* Dark mode support */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --shadow-luxury: 0 10px 25px -3px rgba(212, 175, 55, 0.2), 0 4px 6px -2px rgba(212, 175, 55, 0.1);
+    }
+  }
+}
+
+/* Print Styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  body {
+    @apply bg-white text-black;
+  }
+  
+  .card-luxury {
+    @apply border border-gray-300 shadow-none;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Focus styles for keyboard navigation */
+.focus-luxury:focus-visible {
+  @apply outline-none ring-2 ring-luxury-gold ring-offset-2 ring-offset-white;
+}
