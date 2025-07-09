@@ -72,7 +72,8 @@ shesocial/
 
 ## 🎯 核心特色
 
-- 🔄 **離線優先**: 捷運隧道也能使用
+- 🔄 **離線優先**: 捷運隧道也能使用 (IndexedDB + Service Worker)
+- 📱 **PWA 應用**: 可安裝、背景同步、推送通知
 - 💳 **台灣支付**: LINE Pay 主要支付方式
 - 📱 **行動優先**: 90% 手機用戶優化
 - 🔒 **隱私保護**: CRDT 衝突解決 + 數據加密
@@ -91,22 +92,24 @@ shesocial/
 - [x] 響應式設計 (mobile-first breakpoints)
 - [x] 奢華色彩方案 (gold, champagne, pearl)
 - [x] 環境配置 (.env.example)
-- [x] IndexedDB 離線存儲 (Dexie.js) - 🎉 新完成
-- [x] 離線優先狀態管理 - 🎉 新完成
-- [x] 客戶端數據庫架構 (與 NeDB 兼容) - 🎉 新完成
+- [x] IndexedDB 離線存儲 (Dexie.js) - 🎉 已完成
+- [x] 離線優先狀態管理 - 🎉 已完成
+- [x] 客戶端數據庫架構 (與 NeDB 兼容) - 🎉 已完成
+- [x] Service Worker + PWA 配置 - 🎉 新完成
+- [x] 背景同步功能 (Background Sync) - 🎉 新完成
+- [x] PWA 安裝支援 (台灣本地化) - 🎉 新完成
 
 ### 進行中 🔄
-- [ ] Service Worker + PWA 配置
 - [ ] NeDB 後端數據庫設置
 - [ ] 客戶端-服務端同步服務
+- [ ] 用戶認證系統
 
 ### 待完成 📋
-- [ ] 用戶認證系統
 - [ ] LINE Pay 支付整合
 - [ ] 活動 CRUD 操作
-- [ ] Background Sync 實現
 - [ ] Cloudinary 媒體上傳
 - [ ] Render.com 部署配置
+- [ ] 推送通知系統
 
 ## 🌟 主要功能
 

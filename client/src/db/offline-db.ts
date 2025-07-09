@@ -6,9 +6,7 @@ import type {
   UserProfile, 
   EventData, 
   BookingData, 
-  SyncQueueItem,
-  CollectionName,
-  DocumentType
+  SyncQueueItem
 } from '../types/database'
 
 export class SheSocialOfflineDB extends Dexie {
@@ -29,38 +27,41 @@ export class SheSocialOfflineDB extends Dexie {
       syncQueue: '++id, collection, operation, timestamp, priority, retries'
     })
 
+    // Register Service Worker message listener
+    this.registerServiceWorkerListener()
+
     // Hooks for automatic timestamps
-    this.users.hook('creating', (primKey, obj, trans) => {
-      obj.createdAt = new Date()
-      obj.updatedAt = new Date()
-      obj.lastSync = null
+    this.users.hook('creating', (_primKey, obj, _trans) => {
+      (obj as any).createdAt = new Date()
+      ;(obj as any).updatedAt = new Date()
+      ;(obj as any).lastSync = null
     })
 
-    this.users.hook('updating', (modifications, primKey, obj, trans) => {
-      modifications.updatedAt = new Date()
-      modifications.lastSync = null
+    this.users.hook('updating', (modifications, _primKey, _obj, _trans) => {
+      (modifications as any).updatedAt = new Date()
+      ;(modifications as any).lastSync = null
     })
 
-    this.events.hook('creating', (primKey, obj, trans) => {
-      obj.createdAt = new Date()
-      obj.updatedAt = new Date()
-      obj.lastSync = null
+    this.events.hook('creating', (_primKey, obj, _trans) => {
+      (obj as any).createdAt = new Date()
+      ;(obj as any).updatedAt = new Date()
+      ;(obj as any).lastSync = null
     })
 
-    this.events.hook('updating', (modifications, primKey, obj, trans) => {
-      modifications.updatedAt = new Date()
-      modifications.lastSync = null
+    this.events.hook('updating', (modifications, _primKey, _obj, _trans) => {
+      (modifications as any).updatedAt = new Date()
+      ;(modifications as any).lastSync = null
     })
 
-    this.bookings.hook('creating', (primKey, obj, trans) => {
-      obj.createdAt = new Date()
-      obj.updatedAt = new Date()
-      obj.lastSync = null
+    this.bookings.hook('creating', (_primKey, obj, _trans) => {
+      (obj as any).createdAt = new Date()
+      ;(obj as any).updatedAt = new Date()
+      ;(obj as any).lastSync = null
     })
 
-    this.bookings.hook('updating', (modifications, primKey, obj, trans) => {
-      modifications.updatedAt = new Date()
-      modifications.lastSync = null
+    this.bookings.hook('updating', (modifications, _primKey, _obj, _trans) => {
+      (modifications as any).updatedAt = new Date()
+      ;(modifications as any).lastSync = null
     })
   }
 
@@ -126,10 +127,10 @@ export class SheSocialOfflineDB extends Dexie {
   }
 
   // Sync queue management
-  async queueSync<T extends CollectionName>(
-    collection: T, 
+  async queueSync(
+    collection: 'users' | 'events' | 'bookings', 
     operation: 'insert' | 'update' | 'delete', 
-    data: DocumentType<T>,
+    data: any,
     priority: 'high' | 'medium' | 'low' = 'medium'
   ): Promise<void> {
     await this.syncQueue.add({
@@ -147,9 +148,9 @@ export class SheSocialOfflineDB extends Dexie {
 
   // Background sync trigger
   private triggerBackgroundSync(): void {
-    if ('serviceWorker' in navigator && 'sync' in window.ServiceWorkerRegistration.prototype) {
+    if ('serviceWorker' in navigator && 'sync' in (window as any).ServiceWorkerRegistration.prototype) {
       navigator.serviceWorker.ready.then(registration => {
-        return registration.sync.register('sync-shesocial-data')
+        return (registration as any).sync.register('sync-shesocial-data')
       }).catch(err => {
         console.warn('Background sync registration failed:', err)
         // Fallback to immediate sync
@@ -158,6 +159,28 @@ export class SheSocialOfflineDB extends Dexie {
     } else {
       // Fallback for browsers without background sync
       this.syncNow()
+    }
+  }
+
+  // Register Service Worker message listener
+  private registerServiceWorkerListener(): void {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.addEventListener('message', (event) => {
+        if (event.data) {
+          switch (event.data.type) {
+            case 'SYNC_COMPLETE':
+              console.log(`✅ Background sync completed: ${event.data.processed} items`)
+              break
+            case 'APP_INSTALLED':
+              console.log('📱 PWA installed successfully')
+              break
+            case 'INSTALL_PROMPT_READY':
+              // Handle custom install prompt
+              window.dispatchEvent(new CustomEvent('pwa-install-ready'))
+              break
+          }
+        }
+      })
     }
   }
 

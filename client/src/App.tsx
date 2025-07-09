@@ -5,7 +5,7 @@ import { useOfflineDB, useNetworkSync, useDBStats } from './hooks/useOfflineDB'
 
 function App() {
   const [count, setCount] = useState(0)
-  const { isInitialized, syncStatus } = useOfflineDB()
+  const { isInitialized } = useOfflineDB()
   const { isOnline, pendingSyncCount, manualSync } = useNetworkSync()
   const { stats } = useDBStats()
 
