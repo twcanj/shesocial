@@ -1,7 +1,27 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { initializeOfflineDB } from './db/offline-db'
+import { initializeSyncService } from './services/sync-service'
+import { useOfflineDB, useNetworkSync, useDBStats } from './hooks/useOfflineDB'
 
 function App() {
   const [count, setCount] = useState(0)
+  const { isInitialized, syncStatus } = useOfflineDB()
+  const { isOnline, pendingSyncCount, manualSync } = useNetworkSync()
+  const { stats } = useDBStats()
+
+  useEffect(() => {
+    const initializeApp = async () => {
+      try {
+        await initializeOfflineDB()
+        initializeSyncService()
+        console.log('✅ SheSocial app initialized with offline-first architecture')
+      } catch (error) {
+        console.error('❌ App initialization failed:', error)
+      }
+    }
+
+    initializeApp()
+  }, [])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-luxury-pearl to-luxury-champagne">
@@ -15,6 +35,22 @@ function App() {
               </div>
               <div className="text-sm text-secondary-500">
                 奢華社交活動平台
+              </div>
+              {/* Database Status Indicator */}
+              <div className="flex items-center space-x-2 ml-4">
+                <div className={`w-2 h-2 rounded-full ${isInitialized ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                <span className="text-xs text-secondary-600">
+                  {isInitialized ? 'DB Ready' : 'DB Loading'}
+                </span>
+                <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-500' : 'bg-yellow-500'}`}></div>
+                <span className="text-xs text-secondary-600">
+                  {isOnline ? 'Online' : 'Offline'}
+                </span>
+                {pendingSyncCount > 0 && (
+                  <span className="text-xs bg-luxury-gold text-white px-2 py-1 rounded">
+                    {pendingSyncCount} pending
+                  </span>
+                )}
               </div>
             </div>
             <nav className="hidden md:flex space-x-8">
@@ -48,158 +84,110 @@ function App() {
             <h1 className="text-gradient-luxury animate-fade-in">
               1+1=∞
             </h1>
-            <p className="text-xl text-secondary-600 max-w-2xl mx-auto text-balance">
+            <p className="text-xl text-secondary-700 max-w-2xl mx-auto">
               尋找伴侶：一個你，一個我，畫成一個圓
             </p>
-            <p className="text-secondary-500 max-w-xl mx-auto">
-              台灣高端奢華社交活動平台，專注於隱私保護、會員分級和優質體驗
+            <p className="text-lg text-secondary-600 max-w-3xl mx-auto">
+              台灣高端社交活動平台，專注於隱私保護、會員分級和優質體驗
             </p>
           </div>
 
-          {/* Feature Cards */}
-          <div className="grid md:grid-cols-3 gap-8 mt-16">
-            <div className="card-luxury card-luxury-hover">
-              <div className="text-center space-y-4">
-                <div className="w-16 h-16 mx-auto bg-gradient-to-br from-luxury-gold to-primary-500 rounded-full flex items-center justify-center">
-                  <span className="text-white text-2xl">🎭</span>
-                </div>
-                <h3 className="text-xl font-semibold text-secondary-800">
-                  隱私保護
-                </h3>
-                <p className="text-secondary-600">
-                  嚴格的會員驗證和隱私保護，確保您的個人資訊安全
-                </p>
-              </div>
+          {/* Features Grid */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
+            <div className="card-luxury p-6 text-center">
+              <div className="text-3xl mb-4">🔄</div>
+              <h3 className="text-lg font-semibold mb-2">離線優先</h3>
+              <p className="text-secondary-600 text-sm">
+                捷運隧道也能使用，完整離線功能
+              </p>
             </div>
-
-            <div className="card-luxury card-luxury-hover">
-              <div className="text-center space-y-4">
-                <div className="w-16 h-16 mx-auto bg-gradient-to-br from-luxury-gold to-primary-500 rounded-full flex items-center justify-center">
-                  <span className="text-white text-2xl">💎</span>
-                </div>
-                <h3 className="text-xl font-semibold text-secondary-800">
-                  奢華體驗
-                </h3>
-                <p className="text-secondary-600">
-                  精選高端場所和活動，提供獨特的奢華社交體驗
-                </p>
-              </div>
+            
+            <div className="card-luxury p-6 text-center">
+              <div className="text-3xl mb-4">💳</div>
+              <h3 className="text-lg font-semibold mb-2">台灣支付</h3>
+              <p className="text-secondary-600 text-sm">
+                LINE Pay 主要支付方式
+              </p>
             </div>
-
-            <div className="card-luxury card-luxury-hover">
-              <div className="text-center space-y-4">
-                <div className="w-16 h-16 mx-auto bg-gradient-to-br from-luxury-gold to-primary-500 rounded-full flex items-center justify-center">
-                  <span className="text-white text-2xl">🌟</span>
-                </div>
-                <h3 className="text-xl font-semibold text-secondary-800">
-                  會員分級
-                </h3>
-                <p className="text-secondary-600">
-                  VIP 會員享有專屬權限，查看活動參與者資料
-                </p>
-              </div>
+            
+            <div className="card-luxury p-6 text-center">
+              <div className="text-3xl mb-4">📱</div>
+              <h3 className="text-lg font-semibold mb-2">行動優先</h3>
+              <p className="text-secondary-600 text-sm">
+                90% 手機用戶優化設計
+              </p>
+            </div>
+            
+            <div className="card-luxury p-6 text-center">
+              <div className="text-3xl mb-4">💎</div>
+              <h3 className="text-lg font-semibold mb-2">奢華體驗</h3>
+              <p className="text-secondary-600 text-sm">
+                高端用戶專屬功能
+              </p>
             </div>
           </div>
 
           {/* Interactive Demo */}
-          <div className="mt-16 space-y-8">
-            <div className="card-luxury max-w-md mx-auto">
-              <div className="text-center space-y-4">
-                <h3 className="text-xl font-semibold text-secondary-800">
-                  互動示範
-                </h3>
-                <p className="text-secondary-600">
-                  點擊按鈕體驗我們的設計系統
-                </p>
-                <button 
-                  className="btn-luxury w-full"
-                  onClick={() => setCount((count) => count + 1)}
-                >
-                  點擊次數: {count}
-                </button>
-                <div className="flex space-x-2">
-                  <button className="btn-luxury-outline flex-1">
-                    次要按鈕
-                  </button>
-                  <button className="btn-luxury-ghost flex-1">
-                    幽靈按鈕
-                  </button>
+          <div className="card-luxury p-8 max-w-md mx-auto">
+            <h3 className="text-xl font-semibold mb-4">離線功能測試</h3>
+            <div className="space-y-4">
+              <button
+                className="btn-luxury w-full"
+                onClick={() => setCount((count) => count + 1)}
+              >
+                點擊次數: {count}
+              </button>
+              <p className="text-sm text-secondary-600">
+                測試離線功能：關閉網路後仍可正常操作
+              </p>
+            </div>
+          </div>
+
+          {/* Database Stats (Development Only) */}
+          {stats && (
+            <div className="mt-12 p-6 bg-white/50 rounded-lg backdrop-blur-sm">
+              <h3 className="text-lg font-semibold mb-4">資料庫狀態 (開發模式)</h3>
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
+                <div>
+                  <div className="font-medium">用戶</div>
+                  <div className="text-luxury-gold">{stats.users}</div>
+                </div>
+                <div>
+                  <div className="font-medium">活動</div>
+                  <div className="text-luxury-gold">{stats.events}</div>
+                </div>
+                <div>
+                  <div className="font-medium">預訂</div>
+                  <div className="text-luxury-gold">{stats.bookings}</div>
+                </div>
+                <div>
+                  <div className="font-medium">同步隊列</div>
+                  <div className="text-luxury-gold">{stats.syncQueue}</div>
+                </div>
+                <div>
+                  <div className="font-medium">存儲大小</div>
+                  <div className="text-luxury-gold">{stats.totalSize}</div>
                 </div>
               </div>
-            </div>
-          </div>
-
-          {/* Tech Stack Info */}
-          <div className="mt-16 glass rounded-3xl p-8 max-w-4xl mx-auto">
-            <h3 className="text-2xl font-semibold text-secondary-800 mb-6">
-              技術架構
-            </h3>
-            <div className="grid md:grid-cols-2 gap-8 text-left">
-              <div className="space-y-4">
-                <h4 className="text-lg font-medium text-secondary-700">前端技術</h4>
-                <ul className="space-y-2 text-secondary-600">
-                  <li>• React 19 + TypeScript</li>
-                  <li>• Tailwind CSS 奢華設計系統</li>
-                  <li>• Vite 快速開發</li>
-                  <li>• CRDT (Yjs) 離線優先</li>
-                </ul>
-              </div>
-              <div className="space-y-4">
-                <h4 className="text-lg font-medium text-secondary-700">後端技術</h4>
-                <ul className="space-y-2 text-secondary-600">
-                  <li>• Node.js + Express</li>
-                  <li>• NeDB 輕量資料庫</li>
-                  <li>• LINE Pay 支付整合</li>
-                  <li>• Cloudflare R2 儲存</li>
-                </ul>
+              <div className="mt-4">
+                <button 
+                  onClick={manualSync}
+                  className="btn-luxury-outline text-sm"
+                  disabled={!isOnline}
+                >
+                  手動同步 {!isOnline && '(離線)'}
+                </button>
               </div>
             </div>
-          </div>
-
-          {/* Call to Action */}
-          <div className="mt-16 space-y-6">
-            <h2 className="text-3xl font-bold text-secondary-800">
-              準備好開始了嗎？
-            </h2>
-            <p className="text-secondary-600 max-w-xl mx-auto">
-              加入我們的奢華社交圈，尋找您的完美伴侶
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="btn-luxury text-lg px-12 py-4">
-                立即註冊
-              </button>
-              <button className="btn-luxury-outline text-lg px-12 py-4">
-                了解更多
-              </button>
-            </div>
-          </div>
+          )}
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="mt-32 bg-secondary-800 text-white">
-        <div className="container-luxury py-12">
-          <div className="text-center space-y-4">
-            <div className="text-2xl font-bold text-gradient-luxury">
-              SheSocial
-            </div>
-            <p className="text-secondary-300">
-              台灣高端奢華社交活動平台
-            </p>
-            <div className="flex justify-center space-x-6 text-sm">
-              <a href="#" className="hover:text-luxury-gold transition-colors">
-                隱私政策
-              </a>
-              <a href="#" className="hover:text-luxury-gold transition-colors">
-                使用條款
-              </a>
-              <a href="#" className="hover:text-luxury-gold transition-colors">
-                聯絡我們
-              </a>
-            </div>
-            <p className="text-secondary-400 text-sm">
-              © 2024 SheSocial. 版權所有.
-            </p>
+      <footer className="bg-secondary-900 text-white py-12 mt-20">
+        <div className="container-luxury">
+          <div className="text-center">
+            <p>&copy; 2024 SheSocial. 台灣奢華社交活動平台</p>
           </div>
         </div>
       </footer>
