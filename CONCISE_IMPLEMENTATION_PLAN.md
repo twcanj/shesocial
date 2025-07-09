@@ -15,26 +15,25 @@
 
 ### 前端架構
 ```javascript
-// 離線優先 + 即時同步
-React + TypeScript + Tailwind CSS
-+ CRDT (Yjs) 本地衝突解決
-+ NeDB 瀏覽器存儲
-+ PWA 離線功能（捷運可用）
+// 離線優先 + 即時同步 (更新版)
+React 19 + TypeScript + Tailwind CSS 4.x ✅
++ IndexedDB (Dexie.js) 本地文檔存儲 🔄
++ Service Worker + Background Sync PWA 🔄
++ NeDB 結構對應的客戶端數據模型 📋
 ```
 
 ### 後端架構
 ```javascript
-// 輕量化部署
-Node.js + Express + TypeScript
-+ CRDT (Yjs) 服務端同步
-+ NeDB 文件存儲
-+ Cloudflare R2 持久化
-+ Render.com 免費部署
+// 嵌入式文檔數據庫 (更新版)
+Node.js + Express + TypeScript 📋
++ NeDB 嵌入式文檔數據庫 (MongoDB-like API) 📋
++ Cloudflare R2 持久化備份 📋
++ Render.com 無狀態部署 📋
 ```
 
 ### 台灣支付整合
 ```javascript
-// 符合台灣用戶習慣
+// 符合台灣用戶習慣 (未變更)
 payment: {
   primary: "LINE Pay",           // 主要支付方式
   secondary: "Apple/Google Pay", // 行動支付
@@ -50,18 +49,27 @@ payment: {
 ### 🚀 Phase 1: 核心MVP (月1-2)
 **目標**: 基本功能可運作的平台
 
-#### 技術實現
-- [x] **用戶系統**: 註冊/登入（email + LINE Login）
-- [x] **支付整合**: LINE Pay + ECPay 沙盒測試
-- [x] **活動管理**: 建立/編輯/查看活動
-- [x] **報名系統**: 基本報名 + 容量控制
-- [x] **會員分級**: 一般會員 vs VIP 權限
+#### 前端基礎 (80% 完成)
+- [x] **React 19 架構**: TypeScript + Vite 完整設置
+- [x] **奢華設計系統**: Tailwind CSS 4.x + 自定義組件
+- [x] **台灣本地化**: 繁體中文界面 + Noto Sans TC
+- [x] **響應式設計**: Mobile-first + 奢華色彩方案
+- [ ] **離線存儲**: IndexedDB (Dexie.js) 實現
+- [ ] **PWA 功能**: Service Worker + Background Sync
 
-#### 部署設置
-- [x] **Render.com**: 免費hosting設置
-- [x] **R2 Storage**: 資料持久化
-- [x] **Cloudinary**: 圖片/影片免費額度
-- [x] **CRDT同步**: 基本離線支援
+#### 後端開發 (0% 完成)
+- [ ] **NeDB 設置**: 嵌入式文檔數據庫
+- [ ] **用戶系統**: 註冊/登入（email + LINE Login）
+- [ ] **支付整合**: LINE Pay + ECPay 沙盒測試
+- [ ] **活動管理**: 建立/編輯/查看活動
+- [ ] **報名系統**: 基本報名 + 容量控制
+- [ ] **會員分級**: 一般會員 vs VIP 權限
+
+#### 部署設置 (0% 完成)
+- [ ] **Render.com**: 無狀態部署設置
+- [ ] **R2 Storage**: NeDB 文件備份
+- [ ] **Cloudinary**: 圖片/影片免費額度
+- [ ] **同步服務**: IndexedDB ↔ NeDB 雙向同步
 
 ### 📊 Phase 2: 社交功能 (月3-4)
 **目標**: 用戶互動和內容管理
@@ -120,19 +128,31 @@ vs 原方案: $200K+ (節省95%)
 
 ## 🔧 關鍵技術決策
 
-### 為什麼選擇CRDT + NeDB？
+### 為什麼選擇 NeDB + IndexedDB？
 ```javascript
-// 台灣使用情境優化
-✅ 捷運離線使用
-✅ 即時同步更新
-✅ 無數據衝突
-✅ 部署簡單
-✅ 成本極低
+// 台灣使用情境優化 + 開發效率
+✅ 捷運離線使用 (IndexedDB 客戶端)
+✅ 文檔數據庫 (JSON 原生支持)
+✅ 零配置部署 (嵌入式數據庫)
+✅ 開發簡單 (MongoDB-like API)
+✅ 本地生產一致 (相同文件格式)
+✅ 成本極低 (無數據庫託管費)
+```
+
+### 為什麼選擇 IndexedDB 而非 CRDT？
+```javascript
+// 實用主義選擇
+✅ 與 NeDB 結構完美對應
+✅ 瀏覽器原生支持
+✅ 大容量離線存儲
+✅ 簡單的同步邏輯
+✅ 更好的調試體驗
+✅ 團隊學習成本低
 ```
 
 ### 為什麼選擇LINE Pay？
 ```javascript
-// 台灣市場現實
+// 台灣市場現實 (未變更)
 ✅ 70%用戶使用LINE
 ✅ 支付轉換率最高
 ✅ 社群整合自然
@@ -141,7 +161,7 @@ vs 原方案: $200K+ (節省95%)
 
 ### 為什麼選擇Render.com？
 ```javascript
-// 創業階段適合
+// 創業階段適合 (未變更)
 ✅ 免費hosting
 ✅ 自動部署
 ✅ 無需DevOps
@@ -150,47 +170,123 @@ vs 原方案: $200K+ (節省95%)
 
 ---
 
-## 📊 資料架構（CRDT優化）
+## 📊 資料架構（NeDB 文檔數據庫）
 
 ### 用戶資料結構
 ```javascript
 const userProfile = {
-  // 用戶可編輯（CRDT Map）
-  profile: new Y.Map({
+  _id: "user123", // NeDB 自動生成
+  email: "user@example.com",
+  profile: {
     name: "張小美",
+    age: 28,
     bio: "愛好烹飪的攝影師",
     interests: ["烹飪", "攝影", "旅行"],
-    avatar: "cloudinary_url"
-  }),
-  
-  // 管理員控制
-  admin: new Y.Map({
-    membership: "VIP",
-    verified: true,
-    notes: "面試通過"
-  }),
-  
-  // 事件記錄（只增不減）
-  events: new Y.Array([
-    {type: "register", time: "2024-01-01"},
-    {type: "upgrade_vip", time: "2024-01-15"}
-  ])
+    location: "台北",
+    avatar: "cloudinary_url",
+    videos: [
+      { type: "introduction", url: "...", approved: true }
+    ],
+    interviewStatus: {
+      completed: true,
+      duration: 30, // 半小時視訊面試
+      interviewer: "admin123",
+      notes: "通過審核"
+    }
+  },
+  membership: {
+    type: "premium_2500", // regular, vip, premium_1300, premium_2500
+    joinDate: "2024-01-15",
+    payments: [
+      { amount: 2500, date: "2024-01-15", method: "LINE Pay" }
+    ],
+    vouchers: {
+      total_100: 5, // $100送5張
+      total_200: 4, // $200送4張
+      used_100: 1,
+      used_200: 0,
+      expiry: "2024-07-15", // 半年內用完
+      validFor: ["2day_trip"] // 僅可折抵2日遊
+    },
+    permissions: {
+      viewParticipants: true, // $2,500方案可查看參與者
+      priority_booking: true
+    }
+  },
+  createdAt: new Date("2024-01-01"),
+  updatedAt: new Date("2024-01-15"),
+  lastSync: new Date("2024-01-15") // 同步時間戳
 }
 ```
 
 ### 活動資料結構
 ```javascript
 const eventData = {
-  basic: new Y.Map({
-    name: "一日心動~華然相遇",
+  _id: "event456",
+  name: "一日心動~華然相遇",
+  metadata: {
     date: "2024-02-14",
     location: "台北君悅酒店",
-    price: {male: 1200, female: 1000}
-  }),
-  
-  participants: new Y.Array([
-    {userId: "user123", status: "confirmed", paid: true}
-  ])
+    category: "奢華餐飲",
+    type: "2day_trip", // 1day_trip, 4hour_dining, 2day_trip
+    pricing: { 
+      male: 1200, 
+      female: 1000,
+      voucher_discount: {
+        "100": 100, // $100票券折抵
+        "200": 200  // $200票券折抵
+      }
+    },
+    requirements: {
+      ageMin: 25,
+      ageMax: 45,
+      maritalStatus: "single"
+    },
+    schedule: {
+      frequency: "biweekly", // 每兩週一場
+      cycle: "3months", // 3個月週期
+      totalEvents: 6, // 共6場活動
+      twoDayTrips: 2 // 2場2日遊
+    }
+  },
+  participants: [
+    { 
+      userId: "user123", 
+      status: "confirmed", 
+      paid: true,
+      voucherUsed: { type: "200", amount: 200 }
+    }
+  ],
+  participantVisibility: {
+    premium_2500: true, // $2,500方案可查看完整名單
+    vip: false,
+    regular: false
+  },
+  notifications: {
+    sent: true,
+    sentAt: "2024-01-10T10:00:00Z",
+    recipients: ["user123", "user456"]
+  },
+  createdAt: new Date("2024-01-01"),
+  updatedAt: new Date("2024-01-10"),
+  lastSync: new Date("2024-01-10")
+}
+```
+
+### 客戶端 IndexedDB 結構 (對應 NeDB)
+```javascript
+// client/src/db/offline-db.js
+class SheSocialOfflineDB extends Dexie {
+  constructor() {
+    super('SheSocialOfflineDB')
+    this.version(1).stores({
+      // 與 NeDB 結構完全對應
+      users: '_id, email, profile.name, profile.location, lastSync',
+      events: '_id, name, metadata.date, metadata.location, lastSync',
+      bookings: '_id, userId, eventId, status, lastSync',
+      syncQueue: '++id, collection, operation, data, timestamp'
+    })
+  }
 }
 ```
 

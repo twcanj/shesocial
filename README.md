@@ -80,24 +80,30 @@ shesocial/
 
 ## 📊 開發進度
 
-查看 [CONCISE_IMPLEMENTATION_PLAN.md](./CONCISE_IMPLEMENTATION_PLAN.md) 了解詳細開發計劃。
+查看 [CONCISE_IMPLEMENTATION_PLAN.md](./CONCISE_IMPLEMENTATION_PLAN.md) 了解詳細開發計劃。  
+查看 [BUSINESS_RULES.md](./BUSINESS_RULES.md) 了解會員制度與票券系統規則。
 
 ### 已完成 ✅
 - [x] 項目結構設置 (client/, server/, shared/)
-- [x] React 19 + TypeScript + Tailwind CSS 前端
-- [x] 奢華設計系統 (luxury color palette, components)
-- [x] 台灣本地化界面 (繁體中文)
-- [x] 響應式設計 (mobile-first)
+- [x] React 19 + TypeScript + Vite 前端基礎
+- [x] Tailwind CSS 4.x 奢華設計系統
+- [x] 台灣本地化界面 (繁體中文 + Noto Sans TC)
+- [x] 響應式設計 (mobile-first breakpoints)
+- [x] 奢華色彩方案 (gold, champagne, pearl)
 - [x] 環境配置 (.env.example)
 
 ### 進行中 🔄
-- [ ] Node.js + Express + TypeScript 後端
-- [ ] CRDT (Yjs) + NeDB 架構概念驗證
+- [ ] IndexedDB 離線存儲 (Dexie.js)
+- [ ] Service Worker + PWA 配置
+- [ ] NeDB 後端數據庫設置
+- [ ] 客戶端-服務端同步服務
 
 ### 待完成 📋
+- [ ] 離線優先狀態管理
 - [ ] 用戶認證系統
 - [ ] LINE Pay 支付整合
 - [ ] 活動 CRUD 操作
+- [ ] Background Sync 實現
 - [ ] Cloudinary 媒體上傳
 - [ ] Render.com 部署配置
 
