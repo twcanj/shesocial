@@ -12,7 +12,7 @@ export class UserModel {
   // Create new user
   async create(userData: Omit<UserProfile, '_id' | 'createdAt' | 'updatedAt'>): Promise<ApiResponse<UserProfile>> {
     try {
-      const now = new Date()
+      const now = new Date().toISOString()
       const newUser: UserProfile = {
         ...userData,
         createdAt: now,

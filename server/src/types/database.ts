@@ -3,16 +3,16 @@
 
 export interface BaseDocument {
   _id?: string
-  createdAt: Date
-  updatedAt: Date
-  lastSync?: Date | null
+  createdAt: string | Date
+  updatedAt: string | Date
+  lastSync?: string | Date | null
 }
 
 // User Profile Types
 export interface UserProfile extends BaseDocument {
   email: string
   password?: string
-  lastLoginAt?: Date
+  lastLoginAt?: string | Date
   profile: {
     name: string
     age: number
@@ -31,7 +31,7 @@ export interface UserProfile extends BaseDocument {
   }
   membership: {
     type: 'regular' | 'vip' | 'premium_1300' | 'premium_2500'
-    joinDate: Date
+    joinDate: string | Date
     payments: PaymentRecord[]
     vouchers?: VoucherBalance
     permissions: {

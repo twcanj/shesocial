@@ -89,7 +89,7 @@ export class AuthController {
         },
         membership: {
           type: membershipType,
-          joinDate: new Date(),
+          joinDate: new Date().toISOString(),
           payments: [],
           permissions: membershipPermissions
         }
@@ -176,8 +176,8 @@ export class AuthController {
 
       // Update last login time
       await this.userModel.update(user._id!, {
-        lastLoginAt: new Date(),
-        updatedAt: new Date()
+        lastLoginAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       })
 
       // Generate tokens
