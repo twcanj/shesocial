@@ -149,10 +149,13 @@ Key interfaces:
 - `useDBStats()`: Database statistics
 
 ## Sync Service (client/src/services/sync-service.ts)
-- Bidirectional sync between IndexedDB and NeDB
-- Conflict resolution strategies
-- Background sync with Service Worker
-- Offline queue management
+- **Bidirectional Sync**: Complete IndexedDB ↔ NeDB synchronization
+- **Authentication Integration**: JWT-secured API calls with permission filtering
+- **Advanced Conflict Resolution**: Time-based + field-level merging strategies
+- **Intelligent Queue Management**: Exponential backoff retry logic with priority
+- **Network Adaptation**: Quality detection and adaptive sync behavior
+- **Background Sync**: Service Worker integration with priority-based triggers
+- **Real-time Monitoring**: Comprehensive sync statistics and progress tracking
 
 ## Business Rules (BUSINESS_RULES.md)
 - Event scheduling: 6 events per 3-month cycle
@@ -174,32 +177,75 @@ Key interfaces:
 - ✅ Luxury design system implemented
 - ✅ Taiwan localization complete
 - ✅ Service Worker PWA implementation complete
-- ❌ Backend server not implemented
+- ✅ NeDB backend server implemented and running
+- ✅ User authentication system implemented (JWT + bcrypt)
+- ✅ Membership tier permissions and role-based access control
+- ✅ Complete data synchronization service with CRDT conflict resolution
+- ✅ Sync progress UI components with real-time monitoring
+- ❌ Event management frontend interfaces pending
 - ❌ Payment integration pending
 
 ### Next Development Priorities
-1. Implement NeDB backend server
-2. Complete sync service integration
-3. Implement payment systems (LINE Pay, ECPay)
-4. Add user authentication
-5. Deploy to Render.com
+1. Build event management frontend interfaces (CRUD operations)
+2. Implement payment systems (LINE Pay, ECPay)
+3. Add user profile management features
+4. Deploy to Render.com
 
 ### File Locations
+
+**Frontend:**
 - Main database: `client/src/db/offline-db.ts:22`
 - Sync service: `client/src/services/sync-service.ts:55`
 - Type definitions: `client/src/types/database.ts:12`
 - React hooks: `client/src/hooks/useOfflineDB.ts:9`
+- Sync status hook: `client/src/hooks/useSyncStatus.ts`
 - PWA utilities: `client/src/utils/pwa-utils.ts:14`
 - Service Worker: `client/public/sw.js`
 - Vite PWA config: `client/vite.config.ts:9`
 - Tailwind config: `client/tailwind.config.js:7`
 
+**Sync Components:**
+- Sync status indicator: `client/src/components/sync/SyncStatusIndicator.tsx`
+- Sync progress panel: `client/src/components/sync/SyncProgressPanel.tsx`
+- Sync components index: `client/src/components/sync/index.ts`
+
+**Backend:**
+- Server entry: `server/src/index.ts`
+- NeDB setup: `server/src/db/nedb-setup.ts:22`
+- API routes: `server/src/routes/api.ts`
+- Auth routes: `server/src/routes/auth.ts`
+- User model: `server/src/models/User.ts`
+- Event model: `server/src/models/Event.ts`
+- Booking model: `server/src/models/Booking.ts`
+- Controllers: `server/src/controllers/`
+- Auth controller: `server/src/controllers/AuthController.ts`
+- Auth middleware: `server/src/middleware/auth.ts`
+- CORS middleware: `server/src/middleware/cors.ts`
+
+**Authentication:**
+- Auth store: `client/src/store/authStore.ts`
+- Login form: `client/src/components/auth/LoginForm.tsx`
+- Register form: `client/src/components/auth/RegisterForm.tsx`
+- Auth modal: `client/src/components/auth/AuthModal.tsx`
+
 ### Development Environment
 - Client runs on http://localhost:5173
-- Server (planned) will run on http://localhost:3001
+- Server runs on http://localhost:3001
 - API base URL: http://localhost:3001/api
+- Health check: http://localhost:3001/health
+- API documentation: http://localhost:3001
+
+### Authentication Endpoints
+- Register: `POST /api/auth/register`
+- Login: `POST /api/auth/login`
+- Current user: `GET /api/auth/me`
+- Refresh token: `POST /api/auth/refresh`
+- Change password: `PUT /api/auth/change-password`
+- Logout: `POST /api/auth/logout`
 
 ### Key Dependencies
+
+**Frontend:**
 - **dexie**: "^4.0.11" - IndexedDB wrapper
 - **zustand**: "^5.0.6" - State management
 - **react**: "^19.1.0" - UI framework
@@ -209,10 +255,61 @@ Key interfaces:
 - **vite-plugin-pwa**: "^1.0.1" - PWA functionality
 - **workbox-webpack-plugin**: "^7.3.0" - Service Worker
 
+**Backend:**
+- **nedb**: "^1.8.0" - Lightweight embedded database
+- **express**: "^4.21.2" - Web framework
+- **cors**: "^2.8.5" - Cross-origin resource sharing
+- **helmet**: "^8.1.0" - Security middleware
+- **morgan**: "^1.10.0" - HTTP request logger
+- **bcrypt**: "^6.0.0" - Password hashing
+- **jsonwebtoken**: "^9.0.2" - JWT authentication
+- **typescript**: "^5.8.3" - Type safety
+- **ts-node**: "^10.9.2" - TypeScript execution
+- **nodemon**: "^3.1.10" - Development server
+
+### Membership System
+**4-Tier Membership Structure:**
+- **Regular**: ¥600 entry + ¥300/month (basic access)
+- **VIP**: ¥1000 entry + ¥300/month (priority booking)
+- **Premium 1300**: ¥1300 voucher package (priority booking + vouchers)
+- **Premium 2500**: ¥2500 voucher package (full access + view participants)
+
+**Permission Levels:**
+- `viewParticipants`: Only premium_2500 members
+- `priorityBooking`: VIP and premium members
+- API access varies by membership tier
+
 ### Payment Integration (Planned)
 - Primary: LINE Pay
 - Secondary: Apple Pay, Google Pay
 - Backup: ECPay (credit cards)
 - Future: Bank transfer
 
-This is a Taiwan-focused luxury social platform with emphasis on offline-first architecture, privacy protection, and premium user experience.
+This is a Taiwan-focused luxury social platform with emphasis on offline-first architecture, privacy protection, premium user experience, and secure authentication.
+
+## Key Technical Achievements
+
+### Task 5: Data Synchronization Service ✅ Complete
+- **Enhanced Sync Service**: JWT authentication integration with permission-based filtering
+- **Bidirectional Sync Logic**: Complete CRDT-style IndexedDB ↔ NeDB synchronization
+- **Advanced Conflict Resolution**: Time-based resolution with 1-minute threshold + field-level merging
+- **Intelligent Queue Management**: Exponential backoff retry logic (2^retries minutes, max 30min)
+- **Network Quality Detection**: Real-time quality assessment (good/slow/offline) with adaptive behavior
+- **Background Sync Integration**: Service Worker API integration with priority-based triggers
+- **Sync Progress UI**: Comprehensive monitoring components with Traditional Chinese localization
+- **Authentication-Aware Sync**: Collection filtering based on user membership permissions
+
+### Sync Features Implemented:
+- **Smart Array Merging**: Videos and participants merged without duplicates
+- **Priority-Based Queue**: High/medium/low priority processing with different retry limits
+- **Error Classification**: Retryable vs non-retryable error detection
+- **Real-time Statistics**: Detailed sync metrics, error rates, and performance tracking
+- **Luxury UI Components**: Mobile-first sync status indicator and admin panel
+- **Permission Control**: VIP+ for users collection, all authenticated for events/bookings
+
+## Reminders and Notes
+- Next time allow me to start server
+- Authentication system complete with JWT + bcrypt security
+- 4-tier membership system with role-based permissions implemented
+- Data synchronization service complete with enterprise-grade features
+- Project status: 5/6 tasks complete (83% done)

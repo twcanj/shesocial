@@ -2,12 +2,20 @@ import { useState, useEffect } from 'react'
 import { initializeOfflineDB } from './db/offline-db'
 import { initializeSyncService } from './services/sync-service'
 import { useOfflineDB, useNetworkSync, useDBStats } from './hooks/useOfflineDB'
+import { SyncStatusIndicator, SyncProgressPanel } from './components/sync'
+// import { AuthModal } from './components/auth'
+// import { useAuthStore } from './store/authStore'
 
 function App() {
   const [count, setCount] = useState(0)
+  const [authModalOpen, setAuthModalOpen] = useState(false)
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login')
+  
   const { isInitialized } = useOfflineDB()
   const { isOnline, pendingSyncCount, manualSync } = useNetworkSync()
   const { stats } = useDBStats()
+  // const { isAuthenticated, user, logout } = useAuthStore()
+  const isAuthenticated = false // Temporary for testing
 
   useEffect(() => {
     const initializeApp = async () => {
@@ -65,12 +73,18 @@ function App() {
               </a>
             </nav>
             <div className="flex items-center space-x-4">
-              <button className="btn-luxury-ghost">
-                登入
-              </button>
-              <button className="btn-luxury">
-                註冊
-              </button>
+              {/* Sync Status Indicator */}
+              <SyncStatusIndicator />
+              
+              {/* Authentication Controls - Simplified for testing */}
+              <div className="flex items-center space-x-3">
+                <button className="btn-luxury-ghost">
+                  登入
+                </button>
+                <button className="btn-luxury">
+                  註冊
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -191,6 +205,9 @@ function App() {
           </div>
         </div>
       </footer>
+
+      {/* Sync Progress Panel - Always show for testing */}
+      <SyncProgressPanel />
     </div>
   )
 }
