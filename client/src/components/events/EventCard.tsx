@@ -131,7 +131,7 @@ export const EventCard: React.FC<EventCardProps> = ({
             {/* Voucher Discounts */}
             {(event.metadata.pricing.voucherDiscount['100'] > 0 || 
               event.metadata.pricing.voucherDiscount['200'] > 0) && (
-              <div className="mt-2 pt-2 border-t border-luxury-gold/20">
+              <div className="mt-2 pt-2 border-t border-yellow-600/20">
                 <div className="text-xs text-gray-600 mb-1">票券折扣</div>
                 <div className="flex space-x-3 text-xs">
                   {event.metadata.pricing.voucherDiscount['100'] > 0 && (

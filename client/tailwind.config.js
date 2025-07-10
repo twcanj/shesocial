@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -38,7 +38,7 @@ module.exports = {
           champagne: '#f7e7ce',
           pearl: '#faf0e6',
           platinum: '#e5e4e2',
-        }
+        },
       },
       fontFamily: {
         'sans': ['Inter', 'Noto Sans TC', 'system-ui', 'sans-serif'],

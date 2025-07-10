@@ -291,7 +291,7 @@ export const EventDetail: React.FC<EventDetailProps> = ({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {participants.map((participant, index) => (
                     <div key={index} className="flex items-center p-3 bg-gray-50 rounded-lg">
-                      <div className="w-10 h-10 bg-luxury-gold rounded-full flex items-center justify-center text-white font-medium mr-3">
+                      <div className="w-10 h-10 bg-yellow-600 rounded-full flex items-center justify-center text-white font-medium mr-3">
                         {participant.name?.charAt(0) || (index + 1)}
                       </div>
                       <div>

@@ -1,8 +1,12 @@
 // Authentication Store with Zustand
 // Manages user authentication state, tokens, and membership permissions
+console.log('🔍 DEBUG: Loading authStore.ts - BEFORE imports')
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
+console.log('🔍 DEBUG: Zustand imported successfully')
+console.log('🔍 DEBUG: About to import UserProfile from database types')
 import { UserProfile } from '../types/database'
+console.log('🔍 DEBUG: UserProfile imported successfully', UserProfile)
 
 export interface AuthState {
   // User state

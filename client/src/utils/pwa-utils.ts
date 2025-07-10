@@ -21,7 +21,7 @@ class PWAManager {
   }
 
   private async init(): Promise<void> {
-    // Register Service Worker
+    // Register Service Worker with improved caching strategy
     if ('serviceWorker' in navigator) {
       try {
         const registration = await navigator.serviceWorker.register('/sw.js')

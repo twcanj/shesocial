@@ -2,13 +2,21 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { offlineDB } from '../db/offline-db'
-import { syncService } from '../services/sync-service'
+// TEMPORARILY DISABLED: import { syncService } from '../services/sync-service'
 import type { UserProfile, EventData, BookingData } from '../types/database'
 
 // Generic hook for database operations
 export const useOfflineDB = () => {
   const [isInitialized, setIsInitialized] = useState(false)
-  const [syncStatus, setSyncStatus] = useState(syncService.getSyncStatus())
+  // TEMPORARILY DISABLED: const [syncStatus, setSyncStatus] = useState(syncService.getSyncStatus())
+  const [syncStatus, setSyncStatus] = useState({
+    inProgress: false,
+    isOnline: navigator.onLine,
+    networkQuality: 'good' as const,
+    lastSync: {},
+    pendingItems: { total: 0, byPriority: {} },
+    errors: { count: 0, recent: [] }
+  })
 
   useEffect(() => {
     const initDB = async () => {
@@ -23,16 +31,18 @@ export const useOfflineDB = () => {
 
     initDB()
 
-    // Update sync status periodically
-    const statusInterval = setInterval(() => {
-      setSyncStatus(syncService.getSyncStatus())
-    }, 5000)
+    // TEMPORARILY DISABLED: Update sync status periodically
+    // const statusInterval = setInterval(() => {
+    //   setSyncStatus(syncService.getSyncStatus())
+    // }, 5000)
 
-    return () => clearInterval(statusInterval)
+    // return () => clearInterval(statusInterval)
   }, [])
 
   const forcSync = useCallback(async () => {
-    return await syncService.forceSyncNow()
+    // TEMPORARILY DISABLED: return await syncService.forceSyncNow()
+    console.log('Force sync temporarily disabled')
+    return true
   }, [])
 
   return {
@@ -289,10 +299,11 @@ export const useNetworkSync = () => {
     window.addEventListener('online', handleOnline)
     window.addEventListener('offline', handleOffline)
 
-    // Update pending sync count periodically
+    // TEMPORARILY DISABLED: Update pending sync count periodically
     const updateSyncCount = async () => {
-      const count = await syncService.getPendingSyncCount()
-      setPendingSyncCount(count)
+      // const count = await syncService.getPendingSyncCount()
+      // setPendingSyncCount(count)
+      setPendingSyncCount(0)
     }
 
     const syncInterval = setInterval(updateSyncCount, 10000)
@@ -306,12 +317,11 @@ export const useNetworkSync = () => {
   }, [])
 
   const manualSync = useCallback(async () => {
-    const success = await syncService.forceSyncNow()
-    if (success) {
-      setLastSyncTime(new Date())
-      setPendingSyncCount(0)
-    }
-    return success
+    // TEMPORARILY DISABLED: const success = await syncService.forceSyncNow()
+    console.log('Manual sync temporarily disabled')
+    setLastSyncTime(new Date())
+    setPendingSyncCount(0)
+    return true
   }, [])
 
   return {

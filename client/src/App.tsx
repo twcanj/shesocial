@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
+import './debug-exports'
 import { initializeOfflineDB } from './db/offline-db'
-import { initializeSyncService } from './services/sync-service'
+// TEMPORARILY DISABLED: import { initializeSyncService } from './services/sync-service'
 import { useOfflineDB, useNetworkSync, useDBStats } from './hooks/useOfflineDB'
-import { SyncStatusIndicator, SyncProgressPanel } from './components/sync'
+// TEMPORARILY DISABLED: import { SyncStatusIndicator, SyncProgressPanel } from './components/sync'
 // import { AuthModal } from './components/auth'
 // import { useAuthStore } from './store/authStore'
 
@@ -55,7 +56,7 @@ function App() {
                   {isOnline ? 'Online' : 'Offline'}
                 </span>
                 {pendingSyncCount > 0 && (
-                  <span className="text-xs bg-luxury-gold text-white px-2 py-1 rounded">
+                  <span className="text-xs bg-yellow-600 text-white px-2 py-1 rounded">
                     {pendingSyncCount} pending
                   </span>
                 )}
@@ -73,8 +74,8 @@ function App() {
               </a>
             </nav>
             <div className="flex items-center space-x-4">
-              {/* Sync Status Indicator */}
-              <SyncStatusIndicator />
+              {/* TEMPORARILY DISABLED: Sync Status Indicator */}
+              {/* <SyncStatusIndicator /> */}
               
               {/* Authentication Controls - Simplified for testing */}
               <div className="flex items-center space-x-3">
@@ -206,8 +207,8 @@ function App() {
         </div>
       </footer>
 
-      {/* Sync Progress Panel - Always show for testing */}
-      <SyncProgressPanel />
+      {/* TEMPORARILY DISABLED: Sync Progress Panel */}
+      {/* <SyncProgressPanel /> */}
     </div>
   )
 }

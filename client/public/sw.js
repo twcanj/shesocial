@@ -46,8 +46,19 @@ registerRoute(
 
 registerRoute(
   ({ request }) => request.destination === 'script' || request.destination === 'style',
-  new StaleWhileRevalidate({
-    cacheName: 'static-resources'
+  new NetworkFirst({
+    cacheName: 'static-resources',
+    networkTimeoutSeconds: 3,
+    plugins: [
+      {
+        cacheKeyWillBeUsed: async ({ request }) => {
+          // Add timestamp to prevent aggressive caching of modules during development
+          return process.env.NODE_ENV === 'development' 
+            ? `${request.url}?dev=${Date.now()}` 
+            : request.url
+        }
+      }
+    ]
   })
 )
 

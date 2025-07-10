@@ -1,6 +1,8 @@
 // SheSocial Database Types
 // Matches NeDB structure for seamless sync
 
+console.log('🔍 DEBUG: Loading database.ts module')
+
 export interface BaseDocument {
   _id?: string
   createdAt: Date
@@ -9,6 +11,7 @@ export interface BaseDocument {
 }
 
 // User Profile Types
+console.log('🔍 DEBUG: About to export UserProfile interface')
 export interface UserProfile extends BaseDocument {
   email: string
   profile: {

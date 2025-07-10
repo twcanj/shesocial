@@ -73,7 +73,7 @@
     @apply hover:from-luxury-gold/90 hover:to-primary-600;
     @apply focus:outline-none focus:ring-2 focus:ring-luxury-gold focus:ring-offset-2;
     @apply transition-all duration-200 ease-in-out;
-    @apply shadow-luxury hover:shadow-xl;
+    @apply shadow-lg hover:shadow-xl;
   }
   
   .btn-luxury-outline {
