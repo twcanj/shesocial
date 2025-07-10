@@ -11,6 +11,8 @@ export interface BaseDocument {
 // User Profile Types
 export interface UserProfile extends BaseDocument {
   email: string
+  password?: string
+  lastLoginAt?: Date
   profile: {
     name: string
     age: number
