@@ -5,8 +5,8 @@ import { UserModel } from '../models/User'
 import { authenticateToken } from '../middleware/auth'
 import NeDBSetup from '../db/nedb-setup'
 
-// Initialize database and models
-const dbSetup = new NeDBSetup()
+// Initialize database and models (singleton)
+const dbSetup = NeDBSetup.getInstance()
 const databases = dbSetup.getDatabases()
 const userModel = new UserModel(databases.users)
 

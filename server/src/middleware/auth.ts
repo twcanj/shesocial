@@ -1,5 +1,5 @@
 // JWT Authentication Middleware for SheSocial
-import jwt from 'jsonwebtoken'
+import jwt, { SignOptions, JwtPayload } from 'jsonwebtoken'
 import { Request, Response, NextFunction } from 'express'
 import { UserProfile } from '../types/database'
 
@@ -11,7 +11,7 @@ export interface AuthenticatedRequest extends Request {
 
 // JWT Secret from environment or default for development
 const JWT_SECRET = process.env.JWT_SECRET || 'shesocial-taiwan-luxury-social-platform-secret-key-2025'
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d'
+const JWT_EXPIRES_IN: string = process.env.JWT_EXPIRES_IN || '7d'
 
 // Generate JWT token for user
 export const generateToken = (user: UserProfile): string => {
@@ -22,20 +22,21 @@ export const generateToken = (user: UserProfile): string => {
     permissions: user.membership.permissions
   }
   
-  return jwt.sign(payload, JWT_SECRET, { 
-    expiresIn: JWT_EXPIRES_IN,
+  return jwt.sign(payload, JWT_SECRET, {
+    expiresIn: '7d',
     issuer: 'shesocial.tw',
     audience: 'shesocial-users'
   })
 }
 
 // Verify JWT token and extract user info
-export const verifyToken = (token: string): any => {
+export const verifyToken = (token: string): JwtPayload => {
   try {
-    return jwt.verify(token, JWT_SECRET, {
+    const decoded = jwt.verify(token, JWT_SECRET, {
       issuer: 'shesocial.tw',
       audience: 'shesocial-users'
     })
+    return decoded as JwtPayload
   } catch (error) {
     throw new Error('Invalid token')
   }
@@ -64,13 +65,13 @@ export const authenticateToken = async (
     const decoded = verifyToken(token)
     
     // Add user info to request object
-    req.userId = decoded.userId
+    req.userId = (decoded as any).userId
     req.user = {
-      _id: decoded.userId,
-      email: decoded.email,
+      _id: (decoded as any).userId,
+      email: (decoded as any).email,
       membership: {
-        type: decoded.membershipType,
-        permissions: decoded.permissions
+        type: (decoded as any).membershipType,
+        permissions: (decoded as any).permissions
       }
     } as UserProfile
 
@@ -167,13 +168,13 @@ export const optionalAuth = async (
 
     if (token) {
       const decoded = verifyToken(token)
-      req.userId = decoded.userId
+      req.userId = (decoded as any).userId
       req.user = {
-        _id: decoded.userId,
-        email: decoded.email,
+        _id: (decoded as any).userId,
+        email: (decoded as any).email,
         membership: {
-          type: decoded.membershipType,
-          permissions: decoded.permissions
+          type: (decoded as any).membershipType,
+          permissions: (decoded as any).permissions
         }
       } as UserProfile
     }
@@ -187,19 +188,20 @@ export const optionalAuth = async (
 
 // Refresh token functionality
 export const generateRefreshToken = (userId: string): string => {
-  return jwt.sign({ userId }, JWT_SECRET, { 
+  return jwt.sign({ userId }, JWT_SECRET, {
     expiresIn: '30d',
     issuer: 'shesocial.tw',
     audience: 'shesocial-refresh'
   })
 }
 
-export const verifyRefreshToken = (token: string): any => {
+export const verifyRefreshToken = (token: string): JwtPayload => {
   try {
-    return jwt.verify(token, JWT_SECRET, {
+    const decoded = jwt.verify(token, JWT_SECRET, {
       issuer: 'shesocial.tw',
       audience: 'shesocial-refresh'
     })
+    return decoded as JwtPayload
   } catch (error) {
     throw new Error('Invalid refresh token')
   }

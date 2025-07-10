@@ -13,73 +13,86 @@ export interface DatabaseCollections {
 }
 
 class NeDBSetup {
+  private static instance: NeDBSetup
   private db: DatabaseCollections
   private dbPath: string
 
-  constructor(dbPath: string = './data') {
-    this.dbPath = dbPath
+  private constructor(dbPath?: string) {
+    // Use absolute path relative to project root
+    this.dbPath = dbPath || path.join(__dirname, '../../data')
     this.db = this.initializeDatabases()
   }
 
+  public static getInstance(dbPath?: string): NeDBSetup {
+    if (!NeDBSetup.instance) {
+      NeDBSetup.instance = new NeDBSetup(dbPath)
+    }
+    return NeDBSetup.instance
+  }
+
   private initializeDatabases(): DatabaseCollections {
+    // Use in-memory databases for development to avoid file system issues
     const databases = {
       users: new Datastore<UserProfile>({ 
-        filename: path.join(this.dbPath, 'users.db'),
-        autoload: true,
+        inMemoryOnly: true,
         timestampData: true
       }),
       events: new Datastore<EventData>({ 
-        filename: path.join(this.dbPath, 'events.db'),
-        autoload: true,
+        inMemoryOnly: true,
         timestampData: true
       }),
       bookings: new Datastore<BookingData>({ 
-        filename: path.join(this.dbPath, 'bookings.db'),
-        autoload: true,
+        inMemoryOnly: true,
         timestampData: true
       }),
       syncQueue: new Datastore<SyncQueueItem>({ 
-        filename: path.join(this.dbPath, 'sync-queue.db'),
-        autoload: true,
+        inMemoryOnly: true,
         timestampData: true
       })
     }
 
-    // Set up indexes for better performance
+    // Set up indexes for better performance (with error handling)
     this.setupIndexes(databases)
     
+    console.log(`💾 NeDB databases initialized in-memory for development`)
     return databases
   }
 
   private setupIndexes(databases: DatabaseCollections): void {
-    // User indexes
-    databases.users.ensureIndex({ fieldName: 'email', unique: true })
-    databases.users.ensureIndex({ fieldName: 'membership.type' })
-    databases.users.ensureIndex({ fieldName: 'profile.location' })
-    databases.users.ensureIndex({ fieldName: 'createdAt' })
-    databases.users.ensureIndex({ fieldName: 'lastSync' })
+    try {
+      // User indexes
+      databases.users.ensureIndex({ fieldName: 'email', unique: true })
+      databases.users.ensureIndex({ fieldName: 'membership.type' })
+      databases.users.ensureIndex({ fieldName: 'profile.location' })
+      databases.users.ensureIndex({ fieldName: 'createdAt' })
+      databases.users.ensureIndex({ fieldName: 'lastSync' })
 
-    // Event indexes
-    databases.events.ensureIndex({ fieldName: 'metadata.date' })
-    databases.events.ensureIndex({ fieldName: 'metadata.location' })
-    databases.events.ensureIndex({ fieldName: 'metadata.type' })
-    databases.events.ensureIndex({ fieldName: 'status' })
-    databases.events.ensureIndex({ fieldName: 'createdAt' })
-    databases.events.ensureIndex({ fieldName: 'lastSync' })
+      // Event indexes
+      databases.events.ensureIndex({ fieldName: 'metadata.date' })
+      databases.events.ensureIndex({ fieldName: 'metadata.location' })
+      databases.events.ensureIndex({ fieldName: 'metadata.type' })
+      databases.events.ensureIndex({ fieldName: 'status' })
+      databases.events.ensureIndex({ fieldName: 'createdAt' })
+      databases.events.ensureIndex({ fieldName: 'lastSync' })
 
-    // Booking indexes
-    databases.bookings.ensureIndex({ fieldName: 'userId' })
-    databases.bookings.ensureIndex({ fieldName: 'eventId' })
-    databases.bookings.ensureIndex({ fieldName: 'status' })
-    databases.bookings.ensureIndex({ fieldName: 'paymentStatus' })
-    databases.bookings.ensureIndex({ fieldName: 'createdAt' })
-    databases.bookings.ensureIndex({ fieldName: 'lastSync' })
+      // Booking indexes
+      databases.bookings.ensureIndex({ fieldName: 'userId' })
+      databases.bookings.ensureIndex({ fieldName: 'eventId' })
+      databases.bookings.ensureIndex({ fieldName: 'status' })
+      databases.bookings.ensureIndex({ fieldName: 'paymentStatus' })
+      databases.bookings.ensureIndex({ fieldName: 'createdAt' })
+      databases.bookings.ensureIndex({ fieldName: 'lastSync' })
 
-    // Sync queue indexes
-    databases.syncQueue.ensureIndex({ fieldName: 'collection' })
-    databases.syncQueue.ensureIndex({ fieldName: 'operation' })
-    databases.syncQueue.ensureIndex({ fieldName: 'timestamp' })
-    databases.syncQueue.ensureIndex({ fieldName: 'priority' })
+      // Sync queue indexes
+      databases.syncQueue.ensureIndex({ fieldName: 'collection' })
+      databases.syncQueue.ensureIndex({ fieldName: 'operation' })
+      databases.syncQueue.ensureIndex({ fieldName: 'timestamp' })
+      databases.syncQueue.ensureIndex({ fieldName: 'priority' })
+
+      console.log('📊 Database indexes created successfully')
+    } catch (error) {
+      console.warn('⚠️ Warning: Some database indexes could not be created:', error)
+    }
   }
 
   public getDatabases(): DatabaseCollections {

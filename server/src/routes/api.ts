@@ -10,8 +10,8 @@ import { BookingModel } from '../models/Booking'
 import authRoutes from './auth'
 import { authenticateToken, requireMembership, requirePermission } from '../middleware/auth'
 
-// Initialize database and models
-const dbSetup = new NeDBSetup()
+// Initialize database and models (singleton)
+const dbSetup = NeDBSetup.getInstance()
 const databases = dbSetup.getDatabases()
 
 const userModel = new UserModel(databases.users)
