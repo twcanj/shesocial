@@ -1,5 +1,5 @@
 // Event Model - Business Logic for Event Operations
-import Datastore from 'nedb'
+import Datastore from '@seald-io/nedb'
 import { EventData, ApiResponse, EventFilters } from '../types/database'
 
 export class EventModel {

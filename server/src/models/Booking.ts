@@ -1,5 +1,5 @@
 // Booking Model - Business Logic for Booking Operations
-import Datastore from 'nedb'
+import Datastore from '@seald-io/nedb'
 import { BookingData, ApiResponse } from '../types/database'
 
 export class BookingModel {

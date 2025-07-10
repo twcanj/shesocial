@@ -1,5 +1,5 @@
 // User Model - Business Logic for User Operations
-import Datastore from 'nedb'
+import Datastore from '@seald-io/nedb'
 import { UserProfile, ApiResponse, UserSearchFilters } from '../types/database'
 
 export class UserModel {

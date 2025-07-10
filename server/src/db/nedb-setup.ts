@@ -1,7 +1,7 @@
 // NeDB Database Setup for SheSocial Backend
 // Mirrors IndexedDB structure for seamless synchronization
 
-import Datastore from 'nedb'
+import Datastore from '@seald-io/nedb'
 import path from 'path'
 import { UserProfile, EventData, BookingData, SyncQueueItem } from '../types/database'
 
