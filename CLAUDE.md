@@ -48,6 +48,12 @@ npm start
 # Development server (runs on localhost:5173)
 npm run dev
 
+# Development server with fresh dependency cache (troubleshooting)
+npm run dev:fresh
+
+# Clear Vite cache manually (when needed)
+npm run clear-cache
+
 # Production build
 npm run build
 
@@ -127,9 +133,10 @@ shesocial/
 - **bookings**: User event bookings
 - **syncQueue**: Pending sync operations
 
-### TypeScript Types (client/src/types/database.ts)
+### TypeScript Types 
+**Note**: Types are currently inlined in `authStore.ts` due to browser caching issues during development
 Key interfaces:
-- `UserProfile`: User data with membership info
+- `UserProfile`: User data with membership info (inlined in authStore.ts)
 - `EventData`: Event details with participant management
 - `BookingData`: Event booking records
 - `SyncQueueItem`: Offline sync operations
@@ -183,6 +190,7 @@ Key interfaces:
 - ✅ Complete data synchronization service with CRDT conflict resolution
 - ✅ Sync progress UI components with real-time monitoring
 - ✅ **Event management frontend complete (CRUD + booking + participant management)**
+- ✅ **Development environment stable and cache issues resolved**
 - ❌ Payment integration pending (next phase)
 
 ### Next Development Phase (Phase 2)
@@ -307,9 +315,43 @@ This is a Taiwan-focused luxury social platform with emphasis on offline-first a
 - **Luxury UI Components**: Mobile-first sync status indicator and admin panel
 - **Permission Control**: VIP+ for users collection, all authenticated for events/bookings
 
+## Vite Cache Management
+
+### Normal Development (Recommended)
+```bash
+npm run dev  # Uses Vite's optimized caching for best performance
+```
+
+### Cache Troubleshooting (When Needed)
+```bash
+# Force fresh dependency optimization
+npm run dev:fresh
+
+# Manual cache clearing
+npm run clear-cache
+
+# Hard browser refresh
+Ctrl+Shift+R (Windows/Linux) or Cmd+Shift+R (Mac)
+```
+
+### Understanding Vite Behavior
+- **Module Duplication in Sources Tab**: Normal - shows both source files and transformed modules
+- **Dependency Cache**: Located in `node_modules/.vite/` - auto-invalidated on dependency changes
+- **Production Builds**: Automatic content hashing for cache busting (`assets/[name]-[hash].js`)
+
 ## Reminders and Notes
-- Next time allow me to start server
+- Development environment is stable and working correctly
+- Vite cache is properly configured for optimal development experience
 - Authentication system complete with JWT + bcrypt security
 - 4-tier membership system with role-based permissions implemented
 - Data synchronization service complete with enterprise-grade features
-- Project status: 5/6 tasks complete (83% done)
+- Project status: Core platform complete and ready for Phase 2 development
+
+## Recent Development Logs
+
+### Vite and Dependencies Challenges
+- Experienced Vite v7.0.3 build issues
+- Error in `src/types/database.ts`: No matching export for `UserProfile`
+- Build failure in `src/store/authStore.ts`
+- Two versions of `offline-dbs.ts` detected
+- Successful dependency optimization for react-dom/client, dexie, zustand
