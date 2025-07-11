@@ -37,12 +37,20 @@ function App() {
       <header className="nav-luxury">
         <div className="container-luxury">
           <div className="flex h-16 items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <div className="text-2xl font-bold text-gradient-luxury">
-                SheSocial
-              </div>
-              <div className="text-sm text-secondary-500">
-                奢華社交活動平台
+            <div className="flex items-center space-x-3">
+              {/* Logo */}
+              <img 
+                src="/logo.jpeg" 
+                alt="SheSocial Logo" 
+                className="h-12 w-12 object-contain filter brightness-0 invert sepia saturate-[3] hue-rotate-[25deg] brightness-[1.2]"
+              />
+              <div className="flex flex-col">
+                <div className="text-2xl font-bold text-gradient-luxury">
+                  SheSocial
+                </div>
+                <div className="text-sm text-secondary-500 -mt-1">
+                  奢華社交活動平台
+                </div>
               </div>
               {/* Database Status Indicator */}
               <div className="flex items-center space-x-2 ml-4">
