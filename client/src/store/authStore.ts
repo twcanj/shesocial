@@ -48,7 +48,7 @@ export interface AuthState {
   isLoading: boolean
   
   // Actions
-  login: (credentials: LoginCredentials) => Promise<AuthResponse>
+  login: (email: string, password: string) => Promise<AuthResponse>
   register: (userData: RegisterData) => Promise<AuthResponse>
   logout: () => void
   refreshAccessToken: () => Promise<boolean>
@@ -70,16 +70,10 @@ export interface LoginCredentials {
 }
 
 export interface RegisterData {
+  name: string
   email: string
   password: string
-  profile: {
-    name: string
-    age?: number
-    bio?: string
-    interests?: string[]
-    location?: string
-  }
-  membershipType?: UserProfile['membership']['type']
+  membership: UserProfile['membership']['type']
 }
 
 export interface ChangePasswordData {
@@ -115,7 +109,7 @@ export const useAuthStore = create<AuthState>()(
       isLoading: false,
 
       // Login action
-      login: async (credentials: LoginCredentials): Promise<AuthResponse> => {
+      login: async (email: string, password: string): Promise<AuthResponse> => {
         set({ isLoading: true })
         
         try {
@@ -124,7 +118,7 @@ export const useAuthStore = create<AuthState>()(
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify(credentials),
+            body: JSON.stringify({ email, password }),
           })
 
           const result = await response.json()

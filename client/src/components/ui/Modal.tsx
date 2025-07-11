@@ -1,22 +1,29 @@
-// Authentication Modal Component
+// Reusable Modal Component - eliminates modal duplication
 import React from 'react'
-import { LoginForm } from './LoginForm'
-import { RegisterForm } from './RegisterForm'
+import type { ReactNode } from 'react'
 
-interface AuthModalProps {
-  mode: 'login' | 'register'
+interface ModalProps {
+  isOpen: boolean
   onClose: () => void
-  onToggleMode: () => void
+  children: ReactNode
+  size?: 'sm' | 'md' | 'lg' | 'xl'
+  className?: string
 }
 
-export const AuthModal: React.FC<AuthModalProps> = ({ 
-  mode, 
+export const Modal: React.FC<ModalProps> = ({ 
+  isOpen, 
   onClose, 
-  onToggleMode 
+  children, 
+  size = 'md',
+  className = ''
 }) => {
+  if (!isOpen) return null
 
-  const handleSuccess = () => {
-    onClose()
+  const sizeClasses = {
+    sm: 'max-w-md',
+    md: 'max-w-2xl', 
+    lg: 'max-w-4xl',
+    xl: 'max-w-6xl'
   }
 
   const handleBackdropClick = (e: React.MouseEvent) => {
@@ -30,7 +37,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
       onClick={handleBackdropClick}
     >
-      <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto relative">
+      <div className={`bg-white rounded-2xl shadow-2xl ${sizeClasses[size]} w-full max-h-[90vh] overflow-y-auto relative ${className}`}>
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -43,17 +50,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
         {/* Content */}
         <div className="p-8">
-          {mode === 'login' ? (
-            <LoginForm
-              onSuccess={handleSuccess}
-              onSwitchToRegister={onToggleMode}
-            />
-          ) : (
-            <RegisterForm
-              onSuccess={handleSuccess}
-              onSwitchToLogin={onToggleMode}
-            />
-          )}
+          {children}
         </div>
       </div>
     </div>

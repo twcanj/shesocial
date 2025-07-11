@@ -2,7 +2,11 @@ import { useState } from 'react'
 import { initializeOfflineDB } from './db/offline-db'
 import { initializeSyncService } from './services/sync-service'
 import { useOfflineDB, useNetworkSync, useDBStats } from './hooks/useOfflineDB'
+import { AuthProvider } from './contexts/AuthContext'
+import { NavigationHeader } from './components/common/NavigationHeader'
 import { EventsPage } from './pages/EventsPage'
+import { MembersPage } from './pages/MembersPage'
+import { AboutPage } from './pages/AboutPage'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -12,87 +16,57 @@ function App() {
   const { isOnline, pendingSyncCount, manualSync } = useNetworkSync()
   const { stats } = useDBStats()
 
-  // If on events page, render full EventsPage component
+  // Render different pages based on currentPage  
   if (currentPage === 'events') {
-    return <EventsPage />
+    return (
+      <AuthProvider>
+        <div className="min-h-screen bg-gradient-to-br from-luxury-pearl to-luxury-champagne">
+          <NavigationHeader 
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+          />
+          <EventsPage />
+        </div>
+      </AuthProvider>
+    )
+  }
+
+  if (currentPage === 'members') {
+    return (
+      <AuthProvider>
+        <div className="min-h-screen bg-gradient-to-br from-luxury-pearl to-luxury-champagne">
+          <NavigationHeader 
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+          />
+          <MembersPage />
+        </div>
+      </AuthProvider>
+    )
+  }
+
+  if (currentPage === 'about') {
+    return (
+      <AuthProvider>
+        <div className="min-h-screen bg-gradient-to-br from-luxury-pearl to-luxury-champagne">
+          <NavigationHeader 
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+          />
+          <AboutPage />
+        </div>
+      </AuthProvider>
+    )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-luxury-pearl to-luxury-champagne">
-      {/* Header */}
-      <header className="nav-luxury">
-        <div className="container-luxury">
-          <div className="flex h-16 items-center justify-between">
-            <div className="flex items-center space-x-3">
-              {/* Logo - clickable to go home */}
-              <button 
-                onClick={() => setCurrentPage('home')}
-                className="flex items-center space-x-3 hover:opacity-80 transition-opacity"
-              >
-                <img 
-                  src="/logo.jpeg" 
-                  alt="SheSocial Logo" 
-                  className="h-12 w-12 object-contain filter brightness-0 invert sepia saturate-[3] hue-rotate-[25deg] brightness-[1.2]"
-                />
-                <div className="flex flex-col">
-                  <div className="text-2xl font-bold text-gradient-luxury">
-                    SheSocial
-                  </div>
-                  <div className="text-sm text-secondary-500 -mt-1">
-                    奢華社交活動平台
-                  </div>
-                </div>
-              </button>
-              {/* Database Status Indicator */}
-              <div className="flex items-center space-x-2 ml-4">
-                <div className={`w-2 h-2 rounded-full ${isInitialized ? 'bg-green-500' : 'bg-red-500'}`}></div>
-                <span className="text-xs text-secondary-600">
-                  {isInitialized ? 'DB Ready' : 'DB Loading'}
-                </span>
-                <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-500' : 'bg-yellow-500'}`}></div>
-                <span className="text-xs text-secondary-600">
-                  {isOnline ? 'Online' : 'Offline'}
-                </span>
-                {pendingSyncCount > 0 && (
-                  <span className="text-xs bg-yellow-600 text-white px-2 py-1 rounded">
-                    {pendingSyncCount} pending
-                  </span>
-                )}
-              </div>
-            </div>
-            <nav className="hidden md:flex space-x-8">
-              <button 
-                onClick={() => setCurrentPage('events')}
-                className="text-secondary-600 hover:text-luxury-gold transition-colors"
-              >
-                活動
-              </button>
-              <button 
-                onClick={() => setCurrentPage('members')}
-                className="text-secondary-600 hover:text-luxury-gold transition-colors"
-              >
-                會員
-              </button>
-              <button 
-                onClick={() => setCurrentPage('about')}
-                className="text-secondary-600 hover:text-luxury-gold transition-colors"
-              >
-                關於
-              </button>
-            </nav>
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-3">
-                <button className="btn-luxury-ghost">
-                  登入
-                </button>
-                <button className="btn-luxury">
-                  註冊
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
+    <AuthProvider>
+      <div className="min-h-screen bg-gradient-to-br from-luxury-pearl to-luxury-champagne">
+        {/* Header */}
+        <NavigationHeader 
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+        />
 
       {/* Main Content */}
       <main className="container-luxury section-luxury">
@@ -209,7 +183,9 @@ function App() {
           </div>
         </div>
       </footer>
-    </div>
+
+      </div>
+    </AuthProvider>
   )
 }
 

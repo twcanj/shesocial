@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { EventList } from '../components/events/EventList'
 import { EventDetail } from '../components/events/EventDetail'
 import { EventForm } from '../components/events/EventForm'
+import { AuthReminder } from '../components/ui/AuthReminder'
 import { useEvents } from '../hooks/useEvents'
 import { useAuthStore } from '../store/authStore'
 import type { EventData } from '../shared-types'
@@ -151,8 +152,7 @@ export const EventsPage: React.FC = () => {
 
   // Main list view
   return (
-    <div className="min-h-screen bg-gradient-to-br from-luxury-pearl to-luxury-champagne">
-      <div className="container-luxury section-luxury">
+    <div className="container-luxury section-luxury">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
@@ -255,29 +255,7 @@ export const EventsPage: React.FC = () => {
         />
 
         {/* Authentication Reminder */}
-        {!isAuthenticated && (
-          <div className="mt-12 text-center">
-            <div className="card-luxury p-8 max-w-md mx-auto">
-              <svg className="mx-auto h-12 w-12 text-luxury-gold mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                加入SheSocial會員
-              </h3>
-              <p className="text-gray-600 mb-4">
-                登入後即可報名活動、查看詳細資訊，開始您的社交之旅
-              </p>
-              <div className="space-x-3">
-                <button className="btn-luxury-outline">
-                  登入
-                </button>
-                <button className="btn-luxury">
-                  註冊會員
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        {!isAuthenticated && <AuthReminder />}
 
         {/* Membership Upgrade Reminder */}
         {isAuthenticated && !hasPermission('priorityBooking') && (
@@ -299,6 +277,5 @@ export const EventsPage: React.FC = () => {
           </div>
         )}
       </div>
-    </div>
   )
 }
