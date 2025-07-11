@@ -99,14 +99,14 @@ shesocial/
 ### 前端架構
 - **框架**: React 19 + TypeScript + Vite 7.0.3
 - **樣式**: Tailwind CSS 4.x + @tailwindcss/postcss + 自定義奢華設計系統
-- **狀態管理**: React Hooks + CRDT (Yjs) 本地同步
+- **狀態管理**: React Hooks + Zustand
 - **離線支持**: NeDB 瀏覽器存儲 + IndexedDB (Dexie.js)
 - **特色**: 台灣本地化 + 手機優先設計
 - **PWA**: 暫時停用 (等待 Vite 7 兼容性)
 
 ### 後端架構
 - **運行時**: Node.js + Express + TypeScript
-- **數據庫**: CRDT (Yjs) + NeDB 輕量存儲
+- **數據庫**: NeDB + IndexedDB (Dexie.js) 雙向同步
 - **支付**: LINE Pay (主要) + ECPay (備用)
 - **媒體**: Cloudinary 圖片/影片處理
 - **存儲**: Cloudflare R2 持久化
@@ -123,15 +123,13 @@ shesocial/
 - 📱 **PWA 應用**: 可安裝、背景同步、推送通知
 - 💳 **台灣支付**: LINE Pay 主要支付方式
 - 📱 **行動優先**: 90% 手機用戶優化
-- 🔒 **隱私保護**: CRDT 衝突解決 + 數據加密
+- 🔒 **隱私保護**: 時間戳衝突解決 + 數據加密
 - 💎 **奢華體驗**: 高端用戶專屬功能
 
 ## 📊 開發進度
 
-查看 [CONCISE_IMPLEMENTATION_PLAN.md](./CONCISE_IMPLEMENTATION_PLAN.md) 了解詳細開發計劃。  
-查看 [BUSINESS_RULES.md](./BUSINESS_RULES.md) 了解會員制度與票券系統規則。  
-查看 [TODO_ACTION_PLAN.md](./TODO_ACTION_PLAN.md) 了解當前任務優先級。  
-查看 [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) 了解常見問題解決方案。
+📚 **完整文檔**: 查看 [docs/](./docs/) 目錄了解詳細文檔
+- [技術架構](./docs/technical/CONCISE_IMPLEMENTATION_PLAN.md) | [商業規則](./docs/business/BUSINESS_RULES.md) | [開發狀態](./docs/development/) | [故障排除](./docs/technical/TROUBLESHOOTING.md)
 
 ### 🎉 **已完成功能 (100% MVP)** 
 - [x] **全棧架構**: React 19 + Node.js + TypeScript + NeDB 4.x 🎉
