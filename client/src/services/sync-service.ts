@@ -808,8 +808,7 @@ export const initializeSyncService = (): void => {
   }
 
   // Listen for authentication changes to trigger sync
-  const authStore = useAuthStore.getState()
-  authStore.subscribe((state) => {
+  const unsubscribe = useAuthStore.subscribe((state) => {
     if (state.isAuthenticated && navigator.onLine) {
       console.log('🔑 User authenticated - triggering sync')
       syncService.syncToServer()

@@ -1,6 +1,5 @@
 // SheSocial Database Types  
 // Matches NeDB structure for seamless sync
-// Cache bust: 2025-01-11-09:00
 
 export interface BaseDocument {
   _id?: string

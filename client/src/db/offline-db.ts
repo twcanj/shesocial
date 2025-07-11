@@ -1,7 +1,7 @@
 // SheSocial Offline Database
 // IndexedDB implementation with Dexie.js matching NeDB structure
 
-import Dexie from 'dexie'
+import { Dexie } from 'dexie'
 import type { 
   UserProfile, 
   EventData, 

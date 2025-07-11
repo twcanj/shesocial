@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
-import './debug-exports'
 import { initializeOfflineDB } from './db/offline-db'
-// TEMPORARILY DISABLED: import { initializeSyncService } from './services/sync-service'
+import { initializeSyncService } from './services/sync-service'
 import { useOfflineDB, useNetworkSync, useDBStats } from './hooks/useOfflineDB'
 // TEMPORARILY DISABLED: import { SyncStatusIndicator, SyncProgressPanel } from './components/sync'
 // import { AuthModal } from './components/auth'

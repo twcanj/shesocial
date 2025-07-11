@@ -1,6 +1,27 @@
-// SheSocial Service Worker
-// Handles background sync, offline functionality, and PWA features
+// TEMPORARILY DISABLED SERVICE WORKER
+// This service worker is disabled during development to prevent caching issues
 
+console.log('⚠️ Service Worker temporarily disabled for development')
+
+// Skip installation and activation
+self.addEventListener('install', event => {
+  console.log('SW: Skipping installation')
+  self.skipWaiting()
+})
+
+self.addEventListener('activate', event => {
+  console.log('SW: Skipping activation')
+  return self.clients.claim()
+})
+
+// Disable all caching - pass through all requests
+self.addEventListener('fetch', event => {
+  // Just pass through to network, no caching
+  return
+})
+
+/*
+// ORIGINAL SERVICE WORKER CODE - DISABLED
 import { precacheAndRoute, cleanupOutdatedCaches } from 'workbox-precaching'
 import { registerRoute } from 'workbox-routing'
 import { StaleWhileRevalidate, CacheFirst, NetworkFirst } from 'workbox-strategies'

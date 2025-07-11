@@ -1,12 +1,42 @@
 // Authentication Store with Zustand
 // Manages user authentication state, tokens, and membership permissions
-console.log('🔍 DEBUG: Loading authStore.ts - BEFORE imports')
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
-console.log('🔍 DEBUG: Zustand imported successfully')
-console.log('🔍 DEBUG: About to import UserProfile from database types')
-import { UserProfile } from '../types/database'
-console.log('🔍 DEBUG: UserProfile imported successfully', UserProfile)
+
+// Temporary inline type to bypass caching issues
+interface UserProfile {
+  _id?: string
+  createdAt: Date
+  updatedAt: Date
+  lastSync?: Date | null
+  email: string
+  profile: {
+    name: string
+    age: number
+    bio: string
+    interests: string[]
+    location: string
+    avatar?: string
+    videos: any[]
+    interviewStatus: {
+      completed: boolean
+      duration: number
+      interviewer?: string
+      notes?: string
+      scheduledAt?: Date
+    }
+  }
+  membership: {
+    type: 'regular' | 'vip' | 'premium_1300' | 'premium_2500'
+    joinDate: Date
+    payments: any[]
+    vouchers?: any
+    permissions: {
+      viewParticipants: boolean
+      priorityBooking: boolean
+    }
+  }
+}
 
 export interface AuthState {
   // User state

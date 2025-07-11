@@ -21,6 +21,10 @@ class PWAManager {
   }
 
   private async init(): Promise<void> {
+    // TEMPORARILY DISABLE Service Worker during development
+    console.log('⚠️ Service Worker registration disabled for development')
+    return
+    
     // Register Service Worker with improved caching strategy
     if ('serviceWorker' in navigator) {
       try {

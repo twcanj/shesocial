@@ -1,12 +1,26 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-// import { VitePWA } from 'vite-plugin-pwa'
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [
-    react(),
-    // PWA plugin temporarily disabled due to Vite 7 compatibility issue
-    // Will be re-enabled once a compatible version is available
-  ]
+  plugins: [react()],
+  server: {
+    // Re-enable HMR for proper development experience
+    hmr: true,
+    watch: {
+      usePolling: true
+    }
+  },
+  optimizeDeps: {
+    include: ['dexie']
+  },
+  build: {
+    // Ensure proper cache busting in production
+    rollupOptions: {
+      output: {
+        entryFileNames: `assets/[name]-[hash].js`,
+        chunkFileNames: `assets/[name]-[hash].js`,
+        assetFileNames: `assets/[name]-[hash].[ext]`
+      }
+    }
+  }
 })
