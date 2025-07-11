@@ -1,35 +1,21 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { initializeOfflineDB } from './db/offline-db'
 import { initializeSyncService } from './services/sync-service'
 import { useOfflineDB, useNetworkSync, useDBStats } from './hooks/useOfflineDB'
-// TEMPORARILY DISABLED: import { SyncStatusIndicator, SyncProgressPanel } from './components/sync'
-// import { AuthModal } from './components/auth'
-// import { useAuthStore } from './store/authStore'
+import { EventsPage } from './pages/EventsPage'
 
 function App() {
   const [count, setCount] = useState(0)
-  const [authModalOpen, setAuthModalOpen] = useState(false)
-  const [authMode, setAuthMode] = useState<'login' | 'register'>('login')
+  const [currentPage, setCurrentPage] = useState<'home' | 'events' | 'members' | 'about'>('home')
   
   const { isInitialized } = useOfflineDB()
   const { isOnline, pendingSyncCount, manualSync } = useNetworkSync()
   const { stats } = useDBStats()
-  // const { isAuthenticated, user, logout } = useAuthStore()
-  const isAuthenticated = false // Temporary for testing
 
-  useEffect(() => {
-    const initializeApp = async () => {
-      try {
-        await initializeOfflineDB()
-        initializeSyncService()
-        console.log('✅ SheSocial app initialized with offline-first architecture')
-      } catch (error) {
-        console.error('❌ App initialization failed:', error)
-      }
-    }
-
-    initializeApp()
-  }, [])
+  // If on events page, render full EventsPage component
+  if (currentPage === 'events') {
+    return <EventsPage />
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-luxury-pearl to-luxury-champagne">
@@ -38,20 +24,25 @@ function App() {
         <div className="container-luxury">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center space-x-3">
-              {/* Logo */}
-              <img 
-                src="/logo.jpeg" 
-                alt="SheSocial Logo" 
-                className="h-12 w-12 object-contain filter brightness-0 invert sepia saturate-[3] hue-rotate-[25deg] brightness-[1.2]"
-              />
-              <div className="flex flex-col">
-                <div className="text-2xl font-bold text-gradient-luxury">
-                  SheSocial
+              {/* Logo - clickable to go home */}
+              <button 
+                onClick={() => setCurrentPage('home')}
+                className="flex items-center space-x-3 hover:opacity-80 transition-opacity"
+              >
+                <img 
+                  src="/logo.jpeg" 
+                  alt="SheSocial Logo" 
+                  className="h-12 w-12 object-contain filter brightness-0 invert sepia saturate-[3] hue-rotate-[25deg] brightness-[1.2]"
+                />
+                <div className="flex flex-col">
+                  <div className="text-2xl font-bold text-gradient-luxury">
+                    SheSocial
+                  </div>
+                  <div className="text-sm text-secondary-500 -mt-1">
+                    奢華社交活動平台
+                  </div>
                 </div>
-                <div className="text-sm text-secondary-500 -mt-1">
-                  奢華社交活動平台
-                </div>
-              </div>
+              </button>
               {/* Database Status Indicator */}
               <div className="flex items-center space-x-2 ml-4">
                 <div className={`w-2 h-2 rounded-full ${isInitialized ? 'bg-green-500' : 'bg-red-500'}`}></div>
@@ -70,21 +61,26 @@ function App() {
               </div>
             </div>
             <nav className="hidden md:flex space-x-8">
-              <a href="#" className="text-secondary-600 hover:text-luxury-gold transition-colors">
+              <button 
+                onClick={() => setCurrentPage('events')}
+                className="text-secondary-600 hover:text-luxury-gold transition-colors"
+              >
                 活動
-              </a>
-              <a href="#" className="text-secondary-600 hover:text-luxury-gold transition-colors">
+              </button>
+              <button 
+                onClick={() => setCurrentPage('members')}
+                className="text-secondary-600 hover:text-luxury-gold transition-colors"
+              >
                 會員
-              </a>
-              <a href="#" className="text-secondary-600 hover:text-luxury-gold transition-colors">
+              </button>
+              <button 
+                onClick={() => setCurrentPage('about')}
+                className="text-secondary-600 hover:text-luxury-gold transition-colors"
+              >
                 關於
-              </a>
+              </button>
             </nav>
             <div className="flex items-center space-x-4">
-              {/* TEMPORARILY DISABLED: Sync Status Indicator */}
-              {/* <SyncStatusIndicator /> */}
-              
-              {/* Authentication Controls - Simplified for testing */}
               <div className="flex items-center space-x-3">
                 <button className="btn-luxury-ghost">
                   登入
@@ -165,7 +161,7 @@ function App() {
             </div>
           </div>
 
-          {/* Database Stats (Development Only) */}
+          {/* Database Stats */}
           {stats && (
             <div className="mt-12 p-6 bg-white/50 rounded-lg backdrop-blur-sm">
               <h3 className="text-lg font-semibold mb-4">資料庫狀態 (開發模式)</h3>
@@ -213,9 +209,6 @@ function App() {
           </div>
         </div>
       </footer>
-
-      {/* TEMPORARILY DISABLED: Sync Progress Panel */}
-      {/* <SyncProgressPanel /> */}
     </div>
   )
 }

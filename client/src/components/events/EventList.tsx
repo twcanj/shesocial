@@ -1,7 +1,7 @@
 // Event List Component with Search and Filtering
 import React, { useState, useEffect } from 'react'
 import { EventCard } from './EventCard'
-import { EventData, EventFilters } from '../../types/database'
+import type { EventData, EventFilters } from '../../shared-types'
 import { useAuthStore } from '../../store/authStore'
 
 interface EventListProps {

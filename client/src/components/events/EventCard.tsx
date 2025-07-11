@@ -1,6 +1,6 @@
 // Event Card Component - Luxury design for Taiwan social events
 import React from 'react'
-import { EventData } from '../../types/database'
+import type { EventData } from '../../shared-types'
 import { useAuthStore } from '../../store/authStore'
 
 interface EventCardProps {

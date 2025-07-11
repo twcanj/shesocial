@@ -1,6 +1,6 @@
 // Events Hook for State Management and API Integration
 import { useState, useEffect, useCallback } from 'react'
-import { EventData, BookingData } from '../types/database'
+import type { EventData, BookingData } from '../shared-types'
 import { useOfflineDB } from './useOfflineDB'
 import { useAuthStore } from '../store/authStore'
 

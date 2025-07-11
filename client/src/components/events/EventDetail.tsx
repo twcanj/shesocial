@@ -1,6 +1,6 @@
 // Event Detail Page with Booking Flow
 import React, { useState, useEffect } from 'react'
-import { EventData, BookingData } from '../../types/database'
+import type { EventData, BookingData } from '../../shared-types'
 import { useAuthStore } from '../../store/authStore'
 import { useEvents } from '../../hooks/useEvents'
 

@@ -1,6 +1,6 @@
 // Event Form Component for Create/Edit Operations (VIP+ only)
 import React, { useState, useEffect } from 'react'
-import { EventData } from '../../types/database'
+import type { EventData } from '../../shared-types'
 import { useAuthStore } from '../../store/authStore'
 import { useEvents } from '../../hooks/useEvents'
 

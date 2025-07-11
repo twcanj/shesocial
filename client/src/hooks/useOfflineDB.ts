@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { offlineDB } from '../db/offline-db'
 // TEMPORARILY DISABLED: import { syncService } from '../services/sync-service'
-import type { UserProfile, EventData, BookingData } from '../types/database'
+import type { UserProfile, EventData, BookingData } from '../shared-types'
 
 // Generic hook for database operations
 export const useOfflineDB = () => {
@@ -49,7 +49,24 @@ export const useOfflineDB = () => {
     isInitialized,
     syncStatus,
     forcSync,
-    db: offlineDB
+    db: offlineDB,
+    // Add missing event operations for compatibility
+    events: {
+      getAll: async () => await offlineDB.events.toArray(),
+      get: async (id: string) => await offlineDB.events.get(id),
+      add: async (event: any) => await offlineDB.events.add(event),
+      update: async (id: string, changes: any) => await offlineDB.events.update(id, changes),
+      delete: async (id: string) => await offlineDB.events.delete(id)
+    },
+    addEvent: async (event: any) => {
+      return await offlineDB.events.add(event)
+    },
+    updateEvent: async (id: string, changes: any) => {
+      return await offlineDB.events.update(id, changes)
+    },
+    deleteEvent: async (id: string) => {
+      return await offlineDB.events.delete(id)
+    }
   }
 }
 

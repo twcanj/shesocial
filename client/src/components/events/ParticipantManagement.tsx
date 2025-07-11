@@ -1,6 +1,6 @@
 // Participant Management Component (Premium 2500 only)
 import React, { useState, useEffect } from 'react'
-import { EventData } from '../../types/database'
+import type { EventData } from '../../shared-types'
 import { useAuthStore } from '../../store/authStore'
 import { useEvents } from '../../hooks/useEvents'
 

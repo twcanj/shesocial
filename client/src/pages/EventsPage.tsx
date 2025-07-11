@@ -5,7 +5,7 @@ import { EventDetail } from '../components/events/EventDetail'
 import { EventForm } from '../components/events/EventForm'
 import { useEvents } from '../hooks/useEvents'
 import { useAuthStore } from '../store/authStore'
-import { EventData } from '../types/database'
+import type { EventData } from '../shared-types'
 
 type ViewMode = 'list' | 'detail' | 'create' | 'edit'
 

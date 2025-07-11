@@ -43,6 +43,7 @@ export interface AuthState {
   user: UserProfile | null
   accessToken: string | null
   refreshToken: string | null
+  token: string | null // Alias for accessToken for compatibility
   isAuthenticated: boolean
   isLoading: boolean
   
@@ -107,6 +108,9 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       accessToken: null,
       refreshToken: null,
+      get token() {
+        return get().accessToken
+      },
       isAuthenticated: false,
       isLoading: false,
 

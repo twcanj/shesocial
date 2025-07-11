@@ -7,7 +7,7 @@ import type {
   EventData, 
   BookingData, 
   SyncQueueItem
-} from '../types/database'
+} from '../shared-types'
 
 export class SheSocialOfflineDB extends Dexie {
   // Tables matching NeDB collections
