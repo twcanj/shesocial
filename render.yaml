@@ -4,7 +4,7 @@ services:
     name: shesocial-server
     runtime: node
     plan: free
-    buildCommand: npm install && npm run build:server
+    buildCommand: npm install && cd server && npm install && npm run build
     startCommand: npm start
     envVars:
       - key: NODE_ENV
@@ -25,7 +25,7 @@ services:
   - type: web
     name: shesocial-client
     runtime: static
-    buildCommand: npm install && npm run build:client
+    buildCommand: npm install && cd client && npm install && npm run build
     staticPublishPath: ./client/dist
     envVars:
       - key: VITE_API_URL
