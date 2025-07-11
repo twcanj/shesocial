@@ -2,9 +2,8 @@ services:
   # Backend Server
   - type: web
     name: shesocial-server
-    env: node
-    region: singapore
-    plan: starter
+    runtime: node
+    plan: free
     buildCommand: npm run build:server
     startCommand: npm start
     envVars:
@@ -17,23 +16,23 @@ services:
       - key: JWT_EXPIRES_IN
         value: 7d
       - key: CORS_ORIGIN
-        value: https://shesocial.onrender.com
+        value: https://shesocial-client.onrender.com
       - key: CLIENT_URL
-        value: https://shesocial.onrender.com
+        value: https://shesocial-client.onrender.com
+    healthCheckPath: /health
 
   # Frontend Static Site
-  - type: static
+  - type: web
     name: shesocial-client
-    env: static
-    region: singapore
+    runtime: static
     buildCommand: npm run build:client
     staticPublishPath: ./client/dist
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
     envVars:
       - key: VITE_API_URL
         value: https://shesocial-server.onrender.com/api
       - key: VITE_APP_ENV
         value: production
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
