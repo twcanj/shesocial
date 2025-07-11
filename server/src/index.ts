@@ -14,7 +14,7 @@ import { developmentFormat, productionFormat, errorFormat } from './middleware/l
 import apiRoutes from './routes/api'
 
 const app = express()
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT || 10000
 const NODE_ENV = process.env.NODE_ENV || 'development'
 
 // Ensure data directory exists

@@ -3,6 +3,10 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
+  define: {
+    'process.env.VITE_API_URL': JSON.stringify(process.env.VITE_API_URL || 'http://localhost:3001/api'),
+    'process.env.VITE_APP_ENV': JSON.stringify(process.env.VITE_APP_ENV || 'development')
+  },
   server: {
     // Re-enable HMR for proper development experience
     hmr: true,

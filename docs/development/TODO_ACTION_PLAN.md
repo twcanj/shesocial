@@ -253,10 +253,10 @@ npm install nedb express@^4.19.2 cors helmet morgan typescript @types/node @type
 ## 🔧 INFRASTRUCTURE - 第5-6週
 
 ### **Deployment & DevOps**
-- [ ] Render.com 部署配置
-- [ ] 環境變數管理
+- [x] Render.com 部署配置 ✅ **已完成 2025-07-11**
+- [x] 環境變數管理 ✅ **已完成 2025-07-11**
 - [ ] Cloudflare R2 備份
-- [ ] SSL 和域名設置
+- [ ] SSL 和域名設置 (🔄 進行中)
 
 ### **Media & Notifications**
 - [ ] Cloudinary 媒體上傳
