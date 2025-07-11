@@ -1,5 +1,5 @@
 // Reusable Modal Component - eliminates modal duplication
-import React from 'react'
+import React, { useEffect } from 'react'
 import type { ReactNode } from 'react'
 
 interface ModalProps {
@@ -17,6 +17,26 @@ export const Modal: React.FC<ModalProps> = ({
   size = 'md',
   className = ''
 }) => {
+  // ESC key support
+  useEffect(() => {
+    const handleEscKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose()
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscKey)
+      // Prevent body scroll when modal is open
+      document.body.style.overflow = 'hidden'
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscKey)
+      document.body.style.overflow = 'unset'
+    }
+  }, [isOpen, onClose])
+
   if (!isOpen) return null
 
   const sizeClasses = {

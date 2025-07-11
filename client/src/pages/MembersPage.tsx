@@ -1,11 +1,12 @@
 // Members Page - Membership information and management
 import React from 'react'
 import { useAuth } from '../contexts/AuthContext'
-import { CTASection } from '../components/ui/CTASection'
-import { ModalTrigger } from '../components/ui/ModalTrigger'
-import { MembershipDetailsModalContent } from '../components/modals/MembershipDetailsModal'
 
-export const MembersPage: React.FC = () => {
+interface MembersPageProps {
+  onPageChange?: (page: 'home' | 'events' | 'members' | 'about' | 'pricing') => void
+}
+
+export const MembersPage: React.FC<MembersPageProps> = ({ onPageChange }) => {
   const { openRegister } = useAuth()
   return (
     <>
@@ -226,19 +227,12 @@ export const MembersPage: React.FC = () => {
               >
                 立即註冊
               </button>
-              <ModalTrigger
-                trigger={(onClick) => (
-                  <button 
-                    onClick={onClick}
-                    className="btn-luxury-outline"
-                  >
-                    了解更多
-                  </button>
-                )}
-                size="lg"
+              <button 
+                onClick={() => onPageChange?.('pricing')}
+                className="btn-luxury-outline"
               >
-                <MembershipDetailsModalContent />
-              </ModalTrigger>
+                了解更多
+              </button>
             </div>
           </div>
         </div>

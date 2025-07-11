@@ -6,7 +6,7 @@ import { useAuth } from '../../contexts/AuthContext'
 
 interface NavigationHeaderProps {
   currentPage: string
-  onPageChange: (page: 'home' | 'events' | 'members' | 'about') => void
+  onPageChange: (page: 'home' | 'events' | 'members' | 'about' | 'pricing') => void
 }
 
 export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
@@ -86,6 +86,16 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
               }`}
             >
               會員
+            </button>
+            <button 
+              onClick={() => onPageChange('pricing')}
+              className={`transition-colors ${
+                currentPage === 'pricing' 
+                  ? 'text-luxury-gold font-semibold' 
+                  : 'text-secondary-600 hover:text-luxury-gold'
+              }`}
+            >
+              方案
             </button>
             <button 
               onClick={() => onPageChange('about')}
