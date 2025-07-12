@@ -7,6 +7,8 @@ import { UserProfile } from '../types/database'
 export interface AuthenticatedRequest extends Request {
   user?: UserProfile
   userId?: string
+  body: any
+  headers: any
 }
 
 // JWT Secret from environment or default for development
