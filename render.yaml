@@ -16,14 +16,14 @@ services:
       - key: JWT_EXPIRES_IN
         value: 7d
       - key: CORS_ORIGIN
-        value: https://shesocial-client.onrender.com
+        value: https://shesocial.onrender.com
       - key: CLIENT_URL
-        value: https://shesocial-client.onrender.com
+        value: https://shesocial.onrender.com
     healthCheckPath: /health
 
   # Frontend Static Site
   - type: web
-    name: shesocial-client
+    name: shesocial
     runtime: static
     buildCommand: npm install && cd client && npm install && npm run build
     staticPublishPath: ./client/dist
