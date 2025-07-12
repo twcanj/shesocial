@@ -18,13 +18,16 @@ cd server && npm install
 
 ### Development
 ```bash
+# IMPORTANT: Always test build before starting server
+npm run build
+
 # Start both client and server in development mode
 npm run dev
 
 # Start only client (frontend)
 npm run dev:client
 
-# Start only server (backend) - when implemented
+# Start only server (backend)
 npm run dev:server
 ```
 
@@ -93,10 +96,11 @@ shesocial/
 - **Database**: IndexedDB (Dexie.js) for offline-first storage
 - **PWA**: Service Worker + PWA capabilities with background sync
 
-**Backend (Planned)**
+**Backend (Complete)**
 - **Runtime**: Node.js + Express + TypeScript
-- **Database**: NeDB (lightweight embedded database)
+- **Database**: NeDB @seald-io/nedb v4.1.2 (lightweight embedded database)
 - **Sync**: Bidirectional sync with IndexedDB
+- **Authentication**: JWT + bcrypt password hashing
 - **Deployment**: Render.com
 
 ### Key Features Implemented
@@ -206,7 +210,7 @@ Key interfaces:
 - ❌ LINE integration & payment suite pending (comprehensive Taiwan market solution)
 
 ### Next Development Phase (Phase 2)
-1. **Production Deployment**: Render.com + domain + SSL configuration
+1. **Domain Selection & Production Deployment**: New dedicated domain + Render.com configuration
 2. **Media Features**: Cloudinary video upload + profile management (essential for user engagement)
 3. **LINE Integration & Payment Suite** (Taiwan market optimization):
    - **LINE Pay Integration**: Primary payment method for Taiwan users
@@ -355,6 +359,11 @@ Key interfaces:
 - Auth middleware: `server/src/middleware/auth.ts`
 - CORS middleware: `server/src/middleware/cors.ts`
 
+**Deployment:**
+- Domain strategy: `docs/deployment/DOMAIN_STRATEGY.md` (new domain selection)
+- Domain management: `docs/deployment/DOMAIN_MANAGEMENT.md` (ahexagram.com backup)
+- Production config: Planning new dedicated domain
+
 **Authentication:**
 - Auth store: `client/src/store/authStore.ts`
 - Login form: `client/src/components/auth/LoginForm.tsx` - Complete functional form with validation
@@ -367,6 +376,14 @@ Key interfaces:
 - API base URL: http://localhost:3001/api
 - Health check: http://localhost:3001/health
 - API documentation: http://localhost:3001
+
+### Production Environment
+- **Domain Strategy**: New dedicated domain (planning) | Backup: shesocial.ahexagram.com
+- **API Structure**: api.[domain] | Backup: api-shesocial.ahexagram.com
+- **Admin Panel**: admin.[domain] (future)
+- **CDN**: Cloudflare (DNS management)
+- **SSL**: Automatic via Cloudflare
+- **Deployment**: Render.com
 
 ### Authentication Endpoints
 - Register: `POST /api/auth/register`
