@@ -166,11 +166,15 @@ class NeDBSetup {
       },
       membership: {
         type: 'regular',
+        status: 'active',
         joinDate: new Date(),
+        paymentStatus: 'completed',
         payments: [],
         permissions: {
           viewParticipants: false,
-          priorityBooking: false
+          priorityBooking: false,
+          uploadMedia: true,
+          bookInterview: true
         }
       },
       createdAt: new Date(),

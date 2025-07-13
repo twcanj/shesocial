@@ -89,7 +89,9 @@ export class AuthController {
         },
         membership: {
           type: membershipType,
+          status: 'pending_payment',
           joinDate: new Date().toISOString(),
+          paymentStatus: 'pending',
           payments: [],
           permissions: membershipPermissions
         }
@@ -409,23 +411,31 @@ export class AuthController {
       case 'premium_2500':
         return {
           viewParticipants: true,
-          priorityBooking: true
+          priorityBooking: true,
+          uploadMedia: false, // Requires interview completion
+          bookInterview: false // Requires payment completion
         }
       case 'premium_1300':
         return {
           viewParticipants: false,
-          priorityBooking: true
+          priorityBooking: true,
+          uploadMedia: false,
+          bookInterview: false
         }
       case 'vip':
         return {
           viewParticipants: false,
-          priorityBooking: true
+          priorityBooking: true,
+          uploadMedia: false,
+          bookInterview: false
         }
       case 'regular':
       default:
         return {
           viewParticipants: false,
-          priorityBooking: false
+          priorityBooking: false,
+          uploadMedia: false,
+          bookInterview: false
         }
     }
   }

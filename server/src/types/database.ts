@@ -31,12 +31,16 @@ export interface UserProfile extends BaseDocument {
   }
   membership: {
     type: 'regular' | 'vip' | 'premium_1300' | 'premium_2500'
+    status: 'pending_payment' | 'paid' | 'profile_incomplete' | 'interview_scheduled' | 'interview_completed' | 'active' | 'suspended'
     joinDate: string | Date
+    paymentStatus: 'pending' | 'completed' | 'failed' | 'refunded'
     payments: PaymentRecord[]
     vouchers?: VoucherBalance
     permissions: {
       viewParticipants: boolean
       priorityBooking: boolean
+      uploadMedia: boolean
+      bookInterview: boolean
     }
   }
 }
