@@ -8,7 +8,8 @@ import { UserModel } from '../models/User'
 import { EventModel } from '../models/Event'
 import { BookingModel } from '../models/Booking'
 import authRoutes from './auth'
-import { authenticateToken, requireMembership, requirePermission } from '../middleware/auth'
+import { authenticateToken, requireMembership, requirePermission, AuthenticatedRequest } from '../middleware/auth'
+import { UserProfile, SalesLead } from '../types/database'
 
 // Initialize database and models (singleton)
 const dbSetup = NeDBSetup.getInstance()
@@ -55,6 +56,175 @@ router.get('/stats', async (req, res) => {
     })
   }
 })
+
+// Complete user registration with profile data (sales-optimized flow)
+router.post('/users/complete-registration', authenticateToken, async (req: AuthenticatedRequest, res) => {
+  try {
+    const { profile, salesLead } = req.body
+    const userId = req.userId!
+
+    // Update user profile
+    const profileUpdate = {
+      profile: {
+        ...profile,
+        phone: profile.phone || '',
+        occupation: profile.occupation || ''
+      },
+      'membership.leadSource': salesLead?.leadSource || 'website',
+      'membership.salesNotes': `Registration completed - Interest: ${salesLead?.membershipInterest || 'unknown'} - Expectations: ${salesLead?.expectations || 'none'}`,
+      'membership.status': 'profile_completed',
+      updatedAt: new Date()
+    }
+
+    const result = await userModel.update(userId, profileUpdate)
+    
+    if (result.success) {
+      // Create sales lead record for tracking
+      const leadData: Partial<SalesLead> = {
+        userId,
+        userEmail: (await userModel.findById(userId)).data?.email || '',
+        userName: profile.name,
+        leadSource: salesLead?.leadSource || 'website',
+        leadStatus: 'new',
+        membershipInterest: salesLead?.membershipInterest || 'regular',
+        profileCompleteness: salesLead?.profileCompleteness || 85,
+        lastActivity: new Date(),
+        salesNotes: [
+          `Profile completed on ${new Date().toLocaleDateString('zh-TW')}`,
+          `Membership interest: ${salesLead?.membershipInterest || 'unknown'}`,
+          `Expectations: ${salesLead?.expectations || 'none'}`,
+          `Lead source: ${salesLead?.leadSource || 'website'}`
+        ],
+        estimatedValue: salesLead?.membershipInterest === 'premium_2500' ? 2500 : 
+                       salesLead?.membershipInterest === 'premium_1300' ? 1300 :
+                       salesLead?.membershipInterest === 'vip' ? 1000 : 600,
+        conversionProbability: 75, // High since they completed profile
+        contactHistory: [],
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+
+      // Save sales lead (in production, this would go to a sales CRM)
+      console.log('Sales Lead Created:', leadData)
+
+      res.json({
+        success: true,
+        message: '個人資料完成，準備進入付費流程',
+        data: result.data,
+        timestamp: Date.now()
+      })
+    } else {
+      res.status(400).json(result)
+    }
+  } catch (error) {
+    console.error('Complete registration error:', error)
+    res.status(500).json({
+      success: false,
+      error: '完成註冊失敗',
+      timestamp: Date.now()
+    })
+  }
+})
+
+// Get personalized membership recommendation
+router.get('/users/recommendation', authenticateToken, async (req: AuthenticatedRequest, res) => {
+  try {
+    const userId = req.userId!
+    const userResult = await userModel.findById(userId)
+    
+    if (!userResult.success || !userResult.data) {
+      res.status(404).json({
+        success: false,
+        error: '用戶不存在',
+        timestamp: Date.now()
+      })
+      return
+    }
+
+    const user = userResult.data
+    
+    // Generate recommendation based on user data
+    const recommendation = generatePersonalizedRecommendation(user)
+    
+    res.json({
+      success: true,
+      data: recommendation,
+      timestamp: Date.now()
+    })
+  } catch (error) {
+    console.error('Recommendation error:', error)
+    res.status(500).json({
+      success: false,
+      error: '生成推薦失敗',
+      timestamp: Date.now()
+    })
+  }
+})
+
+// Helper function to generate personalized recommendation
+function generatePersonalizedRecommendation(user: UserProfile) {
+  let score = {
+    regular: 0,
+    vip: 0,
+    premium_1300: 0,
+    premium_2500: 0
+  }
+  
+  const reasons: string[] = []
+  const alternatives: { plan: string; reason: string }[] = []
+
+  // Age-based recommendations
+  const age = user.profile?.age || 25
+  if (age >= 25 && age <= 35) {
+    score.premium_1300 += 30
+    score.premium_2500 += 20
+    reasons.push('您的年齡層通常偏好靈活的券包方案')
+  } else if (age > 35) {
+    score.premium_2500 += 40
+    score.vip += 30
+    reasons.push('成熟族群重視查看參與者和優質服務')
+  } else {
+    score.regular += 30
+    score.vip += 20
+    reasons.push('年輕族群可從基本方案開始體驗')
+  }
+
+  // Location-based recommendations
+  const location = user.profile?.location || ''
+  if (['台北市', '新北市'].includes(location)) {
+    score.premium_2500 += 25
+    score.premium_1300 += 20
+    reasons.push('都會區會員重視查看參與者功能')
+  }
+
+  // Find the highest scoring plan
+  const topPlan = Object.entries(score).reduce((a, b) => 
+    score[a[0] as keyof typeof score] > score[b[0] as keyof typeof score] ? a : b
+  )[0] as keyof typeof score
+
+  // Calculate confidence
+  const maxScore = Math.max(...Object.values(score))
+  const confidence = Math.min(95, Math.max(60, (maxScore / 100) * 100))
+
+  // Generate discount if applicable
+  let discount
+  const leadSource = user.membership?.leadSource
+  if (leadSource === 'referral' || new Date().getDay() === 0) { // Sunday special
+    discount = {
+      amount: 10,
+      expiry: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+      reason: leadSource === 'referral' ? '朋友推薦優惠' : '週日限時優惠'
+    }
+  }
+
+  return {
+    recommendedPlan: topPlan,
+    confidence,
+    reasons: reasons.slice(0, 3),
+    alternatives: alternatives.slice(0, 2),
+    discount
+  }
+}
 
 // User routes (protected)
 router.get('/users', authenticateToken, requireMembership('vip', 'premium_1300', 'premium_2500'), userController.getUsers.bind(userController))

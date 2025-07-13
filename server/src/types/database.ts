@@ -31,11 +31,13 @@ export interface UserProfile extends BaseDocument {
   }
   membership: {
     type: 'regular' | 'vip' | 'premium_1300' | 'premium_2500'
-    status: 'pending_payment' | 'paid' | 'profile_incomplete' | 'interview_scheduled' | 'interview_completed' | 'active' | 'suspended'
+    status: 'profile_incomplete' | 'profile_completed' | 'pending_payment' | 'paid' | 'interview_scheduled' | 'interview_completed' | 'active' | 'suspended'
     joinDate: string | Date
     paymentStatus: 'pending' | 'completed' | 'failed' | 'refunded'
     payments: PaymentRecord[]
     vouchers?: VoucherBalance
+    leadSource?: string // 客戶來源追蹤
+    salesNotes?: string // 銷售備註
     permissions: {
       viewParticipants: boolean
       priorityBooking: boolean
@@ -103,6 +105,29 @@ export interface InterviewSession extends BaseDocument {
     motivation: string
     expectations: string
   }
+}
+
+// Sales Lead Tracking Types
+export interface SalesLead extends BaseDocument {
+  userId: string
+  userEmail: string
+  userName?: string
+  leadSource: 'website' | 'social_media' | 'referral' | 'advertisement' | 'other'
+  leadStatus: 'new' | 'contacted' | 'interested' | 'qualified' | 'converted' | 'lost'
+  membershipInterest: UserProfile['membership']['type']
+  profileCompleteness: number // 0-100%
+  lastActivity: Date
+  salesNotes: string[]
+  assignedSalesRep?: string
+  estimatedValue: number
+  conversionProbability: number // 0-100%
+  followUpDate?: Date
+  contactHistory: {
+    date: Date
+    method: 'email' | 'phone' | 'message' | 'meeting'
+    notes: string
+    outcome: 'answered' | 'no_answer' | 'interested' | 'not_interested' | 'callback_requested'
+  }[]
 }
 
 // Admin and Staff Management Types
@@ -280,6 +305,7 @@ export interface DatabaseCollections {
   interviews: InterviewSession
   admins: AdminUser
   moderationQueue: ModerationQueue
+  salesLeads: SalesLead
 }
 
 // Utility Types

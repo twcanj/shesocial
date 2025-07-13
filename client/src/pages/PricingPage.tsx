@@ -1,9 +1,10 @@
 // Pricing Page - Dedicated page for membership plans with shareable URL
 import React from 'react'
 import { useAuth } from '../contexts/AuthContext'
+import { PersonalizedRecommendation } from '../components/sales/PersonalizedRecommendation'
 
 export const PricingPage: React.FC = () => {
-  const { openRegister } = useAuth()
+  const { openRegister, isAuthenticated, user } = useAuth()
 
   return (
     <div className="container-luxury section-luxury">
@@ -19,6 +20,13 @@ export const PricingPage: React.FC = () => {
           4種會員等級，滿足不同需求的奢華體驗
         </p>
       </div>
+
+      {/* Personalized Recommendation for authenticated users with completed profiles */}
+      {isAuthenticated && user?.membership?.status === 'profile_completed' && (
+        <div className="mb-16">
+          <PersonalizedRecommendation />
+        </div>
+      )}
 
       {/* Membership Tiers */}
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
@@ -58,7 +66,7 @@ export const PricingPage: React.FC = () => {
             onClick={openRegister}
             className="btn-luxury-outline w-full"
           >
-            選擇方案
+            {isAuthenticated && user?.membership?.status === 'profile_completed' ? '選擇此方案' : '選擇方案'}
           </button>
         </div>
 
@@ -103,7 +111,7 @@ export const PricingPage: React.FC = () => {
             onClick={openRegister}
             className="btn-luxury w-full"
           >
-            選擇方案
+            {isAuthenticated && user?.membership?.status === 'profile_completed' ? '選擇此方案' : '選擇方案'}
           </button>
         </div>
 
@@ -143,7 +151,7 @@ export const PricingPage: React.FC = () => {
             onClick={openRegister}
             className="btn-luxury-outline w-full"
           >
-            選擇方案
+            {isAuthenticated && user?.membership?.status === 'profile_completed' ? '選擇此方案' : '選擇方案'}
           </button>
         </div>
 
@@ -188,7 +196,7 @@ export const PricingPage: React.FC = () => {
             onClick={openRegister}
             className="btn-luxury w-full"
           >
-            選擇方案
+            {isAuthenticated && user?.membership?.status === 'profile_completed' ? '選擇此方案' : '選擇方案'}
           </button>
         </div>
       </div>
@@ -432,16 +440,24 @@ export const PricingPage: React.FC = () => {
       {/* Call to Action */}
       <div className="text-center">
         <div className="card-luxury p-8 max-w-2xl mx-auto bg-gradient-to-r from-luxury-champagne to-luxury-pearl">
-          <h2 className="text-2xl font-bold mb-4">立即開始您的社交之旅</h2>
+          <h2 className="text-2xl font-bold mb-4">
+            {isAuthenticated && user?.membership?.status === 'profile_completed' 
+              ? '立即選擇您的方案' 
+              : '立即開始您的社交之旅'}
+          </h2>
           <p className="text-gray-600 mb-6">
-            選擇適合的會員方案，加入台灣頂級社交圈
+            {isAuthenticated && user?.membership?.status === 'profile_completed'
+              ? '根據您的個人資料，我們已為您推薦最適合的方案'
+              : '選擇適合的會員方案，加入台灣頂級社交圈'}
           </p>
           <div className="space-y-4">
             <button 
               onClick={openRegister}
               className="btn-luxury px-8 py-3 text-lg"
             >
-              立即註冊會員
+              {isAuthenticated && user?.membership?.status === 'profile_completed'
+                ? '前往付款頁面'
+                : '立即註冊會員'}
             </button>
             <div className="text-sm text-gray-500">
               有任何問題？歡迎聯絡客服：0800-123-456

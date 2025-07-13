@@ -1,10 +1,11 @@
 // Authentication Modal Component
-import React from 'react'
+import React, { useState } from 'react'
 import { LoginForm } from './LoginForm'
 import { RegisterForm } from './RegisterForm'
+import { EnhancedRegistration } from '../onboarding/EnhancedRegistration'
 
 interface AuthModalProps {
-  mode: 'login' | 'register'
+  mode: 'login' | 'register' | 'enhanced_register'
   onClose: () => void
   onToggleMode: () => void
 }
@@ -14,9 +15,22 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   onClose, 
   onToggleMode 
 }) => {
+  const [currentMode, setCurrentMode] = useState<'login' | 'register' | 'enhanced_register'>(mode)
+  const [showEnhancedRegistration, setShowEnhancedRegistration] = useState(false)
 
   const handleSuccess = () => {
     onClose()
+  }
+  
+  const handleRegistrationComplete = (userId: string) => {
+    console.log('Registration completed for user:', userId)
+    // Redirect to pricing page with personalized recommendations
+    window.location.href = '/pricing'
+  }
+  
+  const handleUseEnhancedRegistration = () => {
+    setShowEnhancedRegistration(true)
+    setCurrentMode('enhanced_register')
   }
 
   const handleBackdropClick = (e: React.MouseEvent) => {
@@ -43,16 +57,38 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
         {/* Content */}
         <div className="p-8">
-          {mode === 'login' ? (
+          {currentMode === 'login' ? (
             <LoginForm
               onSuccess={handleSuccess}
-              onSwitchToRegister={onToggleMode}
+              onSwitchToRegister={() => setCurrentMode('register')}
+            />
+          ) : currentMode === 'enhanced_register' ? (
+            <EnhancedRegistration
+              onRegistrationComplete={handleRegistrationComplete}
             />
           ) : (
-            <RegisterForm
-              onSuccess={handleSuccess}
-              onSwitchToLogin={onToggleMode}
-            />
+            <div>
+              <RegisterForm
+                onSuccess={handleSuccess}
+                onSwitchToLogin={() => setCurrentMode('login')}
+              />
+              
+              {/* Option to use enhanced registration */}
+              <div className="mt-6 p-4 bg-luxury-gold/10 border border-luxury-gold/20 rounded-lg">
+                <h4 className="font-semibold text-luxury-gold mb-2">
+                  獲得個性化推薦
+                </h4>
+                <p className="text-sm text-gray-600 mb-3">
+                  填寫詳細資料，我們將為您推薦最適合的會員方案並提供專屬優惠
+                </p>
+                <button
+                  onClick={handleUseEnhancedRegistration}
+                  className="btn-luxury-outline text-sm"
+                >
+                  使用進階註冊
+                </button>
+              </div>
+            </div>
           )}
         </div>
       </div>

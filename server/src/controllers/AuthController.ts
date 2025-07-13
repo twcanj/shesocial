@@ -89,11 +89,18 @@ export class AuthController {
         },
         membership: {
           type: membershipType,
-          status: 'pending_payment',
+          status: 'profile_incomplete', // New flow: start with profile incomplete
           joinDate: new Date().toISOString(),
           paymentStatus: 'pending',
           payments: [],
-          permissions: membershipPermissions
+          leadSource: 'website', // Track lead source
+          salesNotes: `Initial registration - Selected: ${membershipType}`,
+          permissions: {
+            viewParticipants: false,
+            priorityBooking: false,
+            uploadMedia: false,
+            bookInterview: false // Requires payment completion
+          }
         }
       }
 
@@ -101,12 +108,24 @@ export class AuthController {
       const result = await this.userModel.create(userData)
 
       if (result.success && result.data) {
+        // Update permissions based on current status
+        const updatedUser = { ...result.data }
+        updatedUser.membership.permissions = AuthController.updatePermissions(updatedUser)
+        
+        // Update user with correct permissions
+        await this.userModel.update(updatedUser._id!, {
+          membership: {
+            ...updatedUser.membership,
+            permissions: updatedUser.membership.permissions
+          }
+        })
+
         // Generate tokens
-        const accessToken = generateToken(result.data)
-        const refreshToken = generateRefreshToken(result.data._id!)
+        const accessToken = generateToken(updatedUser)
+        const refreshToken = generateRefreshToken(updatedUser._id!)
 
         // Remove password from response
-        const userResponse = { ...result.data }
+        const userResponse = { ...updatedUser }
         delete userResponse.password
 
         res.status(201).json({
@@ -405,38 +424,64 @@ export class AuthController {
     }
   }
 
-  // Helper method to get membership permissions
+  // Helper method to get membership permissions (now only used for reference)
   private getMembershipPermissions(membershipType: UserProfile['membership']['type']): UserProfile['membership']['permissions'] {
-    switch (membershipType) {
-      case 'premium_2500':
-        return {
-          viewParticipants: true,
-          priorityBooking: true,
-          uploadMedia: false, // Requires interview completion
-          bookInterview: false // Requires payment completion
-        }
-      case 'premium_1300':
-        return {
-          viewParticipants: false,
-          priorityBooking: true,
-          uploadMedia: false,
-          bookInterview: false
-        }
-      case 'vip':
-        return {
-          viewParticipants: false,
-          priorityBooking: true,
-          uploadMedia: false,
-          bookInterview: false
-        }
-      case 'regular':
-      default:
-        return {
-          viewParticipants: false,
-          priorityBooking: false,
-          uploadMedia: false,
-          bookInterview: false
-        }
+    // All new users start with minimal permissions until they complete the full flow
+    // Permissions are updated based on membership status progression:
+    // profile_incomplete -> profile_completed -> pending_payment -> paid -> interview_scheduled -> interview_completed -> active
+    return {
+      viewParticipants: false, // Only premium_2500 when active
+      priorityBooking: false,  // VIP+ when paid
+      uploadMedia: false,      // All members when interview completed
+      bookInterview: false     // All members when payment completed
     }
+  }
+  
+  // Method to update permissions based on membership status
+  public static updatePermissions(user: UserProfile): UserProfile['membership']['permissions'] {
+    const { type, status } = user.membership
+    
+    // Base permissions (all false initially)
+    let permissions: UserProfile['membership']['permissions'] = {
+      viewParticipants: false,
+      priorityBooking: false,
+      uploadMedia: false,
+      bookInterview: false
+    }
+    
+    // Enable permissions based on status progression
+    switch (status) {
+      case 'active':
+        // Full permissions based on membership type
+        permissions.uploadMedia = true
+        permissions.viewParticipants = type === 'premium_2500'
+        permissions.priorityBooking = ['vip', 'premium_1300', 'premium_2500'].includes(type)
+        permissions.bookInterview = true
+        break
+        
+      case 'interview_completed':
+        permissions.uploadMedia = true
+        permissions.bookInterview = true
+        break
+        
+      case 'paid':
+      case 'interview_scheduled':
+        permissions.bookInterview = true
+        permissions.priorityBooking = ['vip', 'premium_1300', 'premium_2500'].includes(type)
+        break
+        
+      case 'profile_completed':
+      case 'pending_payment':
+        // Minimal permissions, can book interview after payment
+        break
+        
+      case 'profile_incomplete':
+      case 'suspended':
+      default:
+        // No permissions
+        break
+    }
+    
+    return permissions
   }
 }

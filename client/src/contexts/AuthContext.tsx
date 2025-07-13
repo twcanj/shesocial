@@ -2,13 +2,21 @@
 import React, { createContext, useContext, useState } from 'react'
 import type { ReactNode } from 'react'
 import { AuthModal } from '../components/auth/AuthModal'
+import { useAuthStore } from '../store/authStore'
 
 interface AuthContextType {
   openLogin: () => void
   openRegister: () => void
+  openEnhancedRegister: () => void
   closeAuth: () => void
   isAuthModalOpen: boolean
-  authMode: 'login' | 'register'
+  authMode: 'login' | 'register' | 'enhanced_register'
+  // Auth store data
+  isAuthenticated: boolean
+  user: any
+  login: (email: string, password: string) => Promise<boolean>
+  register: (email: string, password: string, name: string, membershipType: string) => Promise<string | null>
+  logout: () => void
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -19,7 +27,10 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
-  const [authMode, setAuthMode] = useState<'login' | 'register'>('login')
+  const [authMode, setAuthMode] = useState<'login' | 'register' | 'enhanced_register'>('login')
+  
+  // Get auth store functions and state
+  const { isAuthenticated, user, login, register, logout } = useAuthStore()
 
   const openLogin = () => {
     setAuthMode('login')
@@ -30,22 +41,39 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setAuthMode('register')
     setIsAuthModalOpen(true)
   }
+  
+  const openEnhancedRegister = () => {
+    setAuthMode('enhanced_register')
+    setIsAuthModalOpen(true)
+  }
 
   const closeAuth = () => {
     setIsAuthModalOpen(false)
   }
 
   const toggleMode = () => {
-    setAuthMode(authMode === 'login' ? 'register' : 'login')
+    if (authMode === 'login') {
+      setAuthMode('register')
+    } else if (authMode === 'register') {
+      setAuthMode('login')
+    } else {
+      setAuthMode('register')
+    }
   }
 
   return (
     <AuthContext.Provider value={{
       openLogin,
       openRegister,
+      openEnhancedRegister,
       closeAuth,
       isAuthModalOpen,
-      authMode
+      authMode,
+      isAuthenticated,
+      user,
+      login,
+      register,
+      logout
     }}>
       {children}
       
