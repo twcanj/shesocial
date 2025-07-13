@@ -1,9 +1,11 @@
 // Member Profile Management Page
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import MediaUpload from '../components/media/MediaUpload'
 import MediaGallery from '../components/media/MediaGallery'
 import InterviewBooking from '../components/interview/InterviewBooking'
+import ProfileCompletion from '../components/onboarding/ProfileCompletion'
+import OnboardingProgress from '../components/onboarding/OnboardingProgress'
 
 type TabType = 'profile' | 'media' | 'interview' | 'settings'
 
@@ -11,6 +13,34 @@ export const ProfilePage: React.FC = () => {
   const { user } = useAuth()
   const [activeTab, setActiveTab] = useState<TabType>('profile')
   const [uploadingCategory, setUploadingCategory] = useState<string | null>(null)
+
+  // Auto-set tab based on user status and URL parameters
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search)
+    const tabParam = urlParams.get('tab')
+    
+    if (tabParam && ['profile', 'media', 'interview', 'settings'].includes(tabParam)) {
+      setActiveTab(tabParam as TabType)
+    } else if (user) {
+      // Auto-redirect based on membership status
+      const status = user.membership?.status
+      const paymentStatus = user.membership?.paymentStatus
+      
+      if (paymentStatus !== 'completed') {
+        // Redirect to payment
+        window.location.href = '/pricing'
+        return
+      }
+      
+      if (status === 'paid' || status === 'profile_incomplete') {
+        setActiveTab('profile') // Show profile completion
+      } else if (status === 'interview_scheduled') {
+        setActiveTab('interview')
+      } else if (status === 'interview_completed') {
+        setActiveTab('media')
+      }
+    }
+  }, [user])
 
   if (!user) {
     return (
@@ -76,8 +106,26 @@ export const ProfilePage: React.FC = () => {
   const renderTabContent = () => {
     switch (activeTab) {
       case 'profile':
+        // Show onboarding progress and profile completion for incomplete profiles
+        if (user.membership?.status === 'paid' || user.membership?.status === 'profile_incomplete') {
+          return (
+            <div className="space-y-6">
+              <OnboardingProgress />
+              <ProfileCompletion 
+                onProfileComplete={() => {
+                  alert('個人資料完善成功！現在可以預約面試了。')
+                  setActiveTab('interview')
+                }}
+              />
+            </div>
+          )
+        }
+        
         return (
           <div className="space-y-6">
+            {/* Onboarding Progress */}
+            <OnboardingProgress />
+            
             {/* User Info Card */}
             <div className="card-luxury p-6">
               <div className="flex items-center space-x-6 mb-6">

@@ -187,10 +187,16 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchT
           </p>
         </div>
 
-        <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-          <p className="text-xs text-gray-600 text-center">
-            註冊即表示您同意我們的服務條款和隱私政策。<br/>
-            所有新會員需通過30分鐘視訊面試驗證。
+        <div className="mt-6 p-4 bg-luxury-gold/10 rounded-lg">
+          <h4 className="font-semibold text-luxury-gold mb-2">入會流程說明</h4>
+          <div className="text-xs text-secondary-700 space-y-1">
+            <p>1. 🎯 <strong>選擇會員方案</strong> → 完成付費</p>
+            <p>2. 📝 <strong>完善個人資料</strong> → 填寫基本資訊</p>
+            <p>3. 🎥 <strong>視訊面試驗證</strong> → 30分鐘身份確認</p>
+            <p>4. 📸 <strong>上傳個人媒體</strong> → 照片和介紹影片</p>
+          </div>
+          <p className="text-xs text-gray-600 text-center mt-3">
+            註冊即表示您同意我們的服務條款和隱私政策
           </p>
         </div>
       </form>

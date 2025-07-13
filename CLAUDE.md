@@ -193,13 +193,15 @@ Key interfaces:
 ## Member Verification & Content Management Workflow
 
 ### New Member Onboarding Process
-1. **Registration**: User creates account with basic information
-2. **Interview Booking**: User schedules 30-minute video interview
-3. **Interview Completion**: Admin conducts identity verification and suitability assessment
-4. **Account Activation**: Successful interview unlocks full member features
-5. **Media Upload**: Members can upload profile photos and introduction videos
-6. **Content Moderation**: All media reviewed by admin before public display
-7. **Profile Completion**: Approved content appears in member directory
+1. **Registration**: User creates account with email and basic login credentials
+2. **Payment**: User selects membership tier and completes payment (LINE Pay/Apple Pay/Google Pay)
+3. **Profile Completion**: User fills detailed personal information and preferences
+4. **Interview Booking**: User schedules 30-minute video interview for identity verification
+5. **Interview Completion**: Admin conducts identity verification and suitability assessment
+6. **Account Activation**: Successful interview unlocks media upload permissions
+7. **Media Upload**: Members can upload profile photos and introduction videos
+8. **Content Moderation**: All media reviewed by admin before public display
+9. **Full Member Access**: Approved content appears in member directory and event participation enabled
 
 ### Content Moderation Workflow
 - **Automatic Queue**: All uploaded media enters moderation queue
@@ -209,12 +211,15 @@ Key interfaces:
 - **Privacy Controls**: Members can set visibility levels for approved content
 
 ## Business Rules (BUSINESS_RULES.md)
+- **Payment First Policy**: All new members must complete payment before accessing any features
+- **Sequential Onboarding**: Payment → Profile completion → Interview → Media upload (strictly enforced)
 - Event scheduling: 6 events per 3-month cycle
 - Voucher system: $100 and $200 vouchers for 2-day trips only
 - Participant viewing: Only premium_2500 members can view full participant lists
-- Video interviews: Required for all new members (30 minutes)
+- Video interviews: Required for all new members (30 minutes) - must complete payment and profile first
 - Content moderation: All member media requires admin approval before public display
 - Profile completion: Minimum one approved photo required for event participation
+- **Membership Status Progression**: pending_payment → paid → profile_incomplete → interview_scheduled → interview_completed → active
 
 ## Design System (client/tailwind.config.js)
 - **Colors**: Luxury palette with gold, champagne, pearl themes
