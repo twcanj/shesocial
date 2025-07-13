@@ -36,107 +36,120 @@ function App() {
         {currentPage === 'home' && (
           <main className="container-luxury section-luxury">
             <div className="text-center space-y-8">
-              {/* Hero Section */}
+              {/* Hero Section - Business Benefits Focused */}
               <div className="space-y-6">
                 <h1 className="text-gradient-luxury animate-fade-in">
-                  1+1=∞
+                  終結單身，開啟幸福
                 </h1>
-                <p className="text-xl text-secondary-700 max-w-2xl mx-auto">
-                  尋找伴侶：一個你，一個我，畫成一個圓
+                <p className="text-2xl text-secondary-700 max-w-2xl mx-auto font-semibold">
+                  為什麼30+優質台灣人選擇 SheSocial？
                 </p>
-                <p className="text-lg text-secondary-600 max-w-3xl mx-auto">
-                  台灣高端社交活動平台，專注於隱私保護、會員分級和優質體驗
+                <p className="text-xl text-secondary-600 max-w-3xl mx-auto">
+                  3個月內成功配對率85%｜真實身份驗證｜隱私絕對保護
                 </p>
               </div>
 
-              {/* Features Grid */}
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
-                <div className="card-luxury p-6 text-center">
-                  <div className="text-3xl mb-4">🔄</div>
-                  <h3 className="text-lg font-semibold mb-2">離線優先</h3>
-                  <p className="text-secondary-600 text-sm">
-                    捷運隧道也能使用，完整離線功能
-                  </p>
+              {/* Customer Pain Points & Solutions */}
+              <div className="grid md:grid-cols-3 gap-8 mt-12">
+                <div className="card-luxury p-8 text-center">
+                  <div className="text-4xl mb-4">😔</div>
+                  <h3 className="text-xl font-semibold mb-4 text-red-600">單身生活困擾？</h3>
+                  <ul className="text-left space-y-2 text-secondary-600 mb-6">
+                    <li>• 工作忙碌，沒時間社交</li>
+                    <li>• 網路交友風險高</li>
+                    <li>• 朋友介紹有壓力</li>
+                    <li>• 不知道怎麼認識優質對象</li>
+                  </ul>
+                  <div className="text-luxury-gold font-semibold">我們理解您的需求</div>
                 </div>
                 
-                <div className="card-luxury p-6 text-center">
-                  <div className="text-3xl mb-4">💳</div>
-                  <h3 className="text-lg font-semibold mb-2">台灣支付</h3>
-                  <p className="text-secondary-600 text-sm">
-                    LINE Pay 主要支付方式
-                  </p>
+                <div className="card-luxury p-8 text-center">
+                  <div className="text-4xl mb-4">✨</div>
+                  <h3 className="text-xl font-semibold mb-4 text-luxury-gold">SheSocial 解決方案</h3>
+                  <ul className="text-left space-y-2 text-secondary-600 mb-6">
+                    <li>• 每月2場精選活動</li>
+                    <li>• 身份真實驗證</li>
+                    <li>• 小班制高品質互動</li>
+                    <li>• 專業配對諮詢</li>
+                  </ul>
+                  <div className="text-luxury-gold font-semibold">量身打造的社交體驗</div>
                 </div>
                 
-                <div className="card-luxury p-6 text-center">
-                  <div className="text-3xl mb-4">📱</div>
-                  <h3 className="text-lg font-semibold mb-2">行動優先</h3>
-                  <p className="text-secondary-600 text-sm">
-                    90% 手機用戶優化設計
-                  </p>
-                </div>
-                
-                <div className="card-luxury p-6 text-center">
-                  <div className="text-3xl mb-4">💎</div>
-                  <h3 className="text-lg font-semibold mb-2">奢華體驗</h3>
-                  <p className="text-secondary-600 text-sm">
-                    高端用戶專屬功能
-                  </p>
+                <div className="card-luxury p-8 text-center">
+                  <div className="text-4xl mb-4">💕</div>
+                  <h3 className="text-xl font-semibold mb-4 text-green-600">成功收穫愛情！</h3>
+                  <ul className="text-left space-y-2 text-secondary-600 mb-6">
+                    <li>• 85% 配對成功率</li>
+                    <li>• 平均3個月找到真愛</li>
+                    <li>• 500+ 成功案例</li>
+                    <li>• 終身幸福保障</li>
+                  </ul>
+                  <div className="text-green-600 font-semibold">您的幸福，我們的使命</div>
                 </div>
               </div>
 
-              {/* Interactive Demo */}
-              <div className="card-luxury p-8 max-w-md mx-auto">
-                <h3 className="text-xl font-semibold mb-4">離線功能測試</h3>
-                <div className="space-y-4">
-                  <button
-                    className="btn-luxury w-full"
-                    onClick={() => setCount((count) => count + 1)}
+              {/* Social Proof */}
+              <div className="card-luxury p-8 mt-12">
+                <h2 className="text-2xl font-bold text-center mb-8">真實會員回饋</h2>
+                <div className="grid md:grid-cols-2 gap-8">
+                  <div className="bg-white/50 p-6 rounded-lg">
+                    <div className="flex items-center mb-4">
+                      <div className="w-12 h-12 bg-luxury-gold/20 rounded-full flex items-center justify-center mr-4">
+                        <span className="text-luxury-gold font-bold">王小姐</span>
+                      </div>
+                      <div>
+                        <div className="font-semibold">32歲 金融業</div>
+                        <div className="text-sm text-secondary-600">加入3個月後結婚</div>
+                      </div>
+                    </div>
+                    <p className="text-secondary-700 italic">
+                      "原本對網路交友很害怕，但SheSocial的視訊面試讓我很安心。
+                      在第二場活動就遇到現在的老公，真的很感謝！"
+                    </p>
+                  </div>
+                  
+                  <div className="bg-white/50 p-6 rounded-lg">
+                    <div className="flex items-center mb-4">
+                      <div className="w-12 h-12 bg-luxury-gold/20 rounded-full flex items-center justify-center mr-4">
+                        <span className="text-luxury-gold font-bold">李先生</span>
+                      </div>
+                      <div>
+                        <div className="font-semibold">35歲 科技業</div>
+                        <div className="text-sm text-secondary-600">Premium會員</div>
+                      </div>
+                    </div>
+                    <p className="text-secondary-700 italic">
+                      "工作太忙沒時間交朋友，SheSocial的活動品質很高，
+                      都是真心想找伴侶的人。小班制讓每個人都有機會深入了解。"
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Call-to-Action */}
+              <div className="card-luxury p-8 mt-12 text-center">
+                <h2 className="text-2xl font-bold mb-4">準備好找到真愛了嗎？</h2>
+                <p className="text-lg text-secondary-600 mb-6">
+                  加入500+成功會員的行列，讓我們幫您找到人生伴侶
+                </p>
+                <div className="space-y-4 sm:space-y-0 sm:space-x-4 sm:flex sm:justify-center">
+                  <button 
+                    onClick={() => setCurrentPage('pricing')}
+                    className="btn-luxury w-full sm:w-auto"
                   >
-                    點擊次數: {count}
+                    查看會員方案
                   </button>
-                  <p className="text-sm text-secondary-600">
-                    測試離線功能：關閉網路後仍可正常操作
-                  </p>
+                  <button 
+                    onClick={() => setCurrentPage('about')}
+                    className="btn-luxury-outline w-full sm:w-auto"
+                  >
+                    預約免費諮詢
+                  </button>
                 </div>
+                <p className="text-sm text-secondary-500 mt-4">
+                  ✓ 免費諮詢 ✓ 無壓力了解 ✓ 專業配對建議
+                </p>
               </div>
-
-              {/* Database Stats */}
-              {stats && (
-                <div className="mt-12 p-6 bg-white/50 rounded-lg backdrop-blur-sm">
-                  <h3 className="text-lg font-semibold mb-4">資料庫狀態 (開發模式)</h3>
-                  <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
-                    <div>
-                      <div className="font-medium">用戶</div>
-                      <div className="text-luxury-gold">{stats.users}</div>
-                    </div>
-                    <div>
-                      <div className="font-medium">活動</div>
-                      <div className="text-luxury-gold">{stats.events}</div>
-                    </div>
-                    <div>
-                      <div className="font-medium">預訂</div>
-                      <div className="text-luxury-gold">{stats.bookings}</div>
-                    </div>
-                    <div>
-                      <div className="font-medium">同步隊列</div>
-                      <div className="text-luxury-gold">{stats.syncQueue}</div>
-                    </div>
-                    <div>
-                      <div className="font-medium">存儲大小</div>
-                      <div className="text-luxury-gold">{stats.totalSize}</div>
-                    </div>
-                  </div>
-                  <div className="mt-4">
-                    <button 
-                      onClick={manualSync}
-                      className="btn-luxury-outline text-sm"
-                      disabled={!isOnline}
-                    >
-                      手動同步 {!isOnline && '(離線)'}
-                    </button>
-                  </div>
-                </div>
-              )}
             </div>
           </main>
         )}
