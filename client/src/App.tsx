@@ -8,10 +8,11 @@ import { EventsPage } from './pages/EventsPage'
 import { MembersPage } from './pages/MembersPage'
 import { AboutPage } from './pages/AboutPage'
 import { PricingPage } from './pages/PricingPage'
+import { ProfilePage } from './pages/ProfilePage'
 
 function App() {
   const [count, setCount] = useState(0)
-  const [currentPage, setCurrentPage] = useState<'home' | 'events' | 'members' | 'about' | 'pricing'>('home')
+  const [currentPage, setCurrentPage] = useState<'home' | 'events' | 'members' | 'about' | 'pricing' | 'profile'>('home')
   
   const { isInitialized } = useOfflineDB()
   const { isOnline, pendingSyncCount, manualSync } = useNetworkSync()
@@ -31,6 +32,7 @@ function App() {
         {currentPage === 'members' && <MembersPage onPageChange={setCurrentPage} />}
         {currentPage === 'about' && <AboutPage />}
         {currentPage === 'pricing' && <PricingPage />}
+        {currentPage === 'profile' && <ProfilePage />}
         
         {/* Home page */}
         {currentPage === 'home' && (

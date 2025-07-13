@@ -6,7 +6,7 @@ import { useAuth } from '../../contexts/AuthContext'
 
 interface NavigationHeaderProps {
   currentPage: string
-  onPageChange: (page: 'home' | 'events' | 'members' | 'about' | 'pricing') => void
+  onPageChange: (page: 'home' | 'events' | 'members' | 'about' | 'pricing' | 'profile') => void
 }
 
 export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
@@ -23,7 +23,7 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
     logout()
   }
 
-  const handlePageChange = (page: 'home' | 'events' | 'members' | 'about' | 'pricing') => {
+  const handlePageChange = (page: 'home' | 'events' | 'members' | 'about' | 'pricing' | 'profile') => {
     onPageChange(page)
     setIsMobileMenuOpen(false) // Close mobile menu after navigation
   }
@@ -154,6 +154,14 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
                     </div>
                   </div>
                 </div>
+                <button 
+                  onClick={() => handlePageChange('profile')}
+                  className={`btn-luxury-ghost text-sm ${
+                    currentPage === 'profile' ? 'bg-luxury-gold/20 text-luxury-gold' : ''
+                  }`}
+                >
+                  個人檔案
+                </button>
                 <button 
                   onClick={handleLogout}
                   className="btn-luxury-ghost text-sm"
