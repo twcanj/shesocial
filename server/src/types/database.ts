@@ -41,12 +41,105 @@ export interface UserProfile extends BaseDocument {
   }
 }
 
+// Media Management Types
+export interface MediaItem extends BaseDocument {
+  userId: string
+  cloudinaryId: string
+  url: string
+  secureUrl: string
+  type: 'image' | 'video'
+  category: 'profile_photo' | 'introduction_video' | 'interview_video' | 'lifestyle_photo' | 'activity_photo'
+  metadata: {
+    filename: string
+    size: number
+    duration?: number // for videos
+    format: string
+    width?: number
+    height?: number
+  }
+  status: 'pending' | 'approved' | 'rejected' | 'requires_revision'
+  reviewInfo?: {
+    reviewedBy: string
+    reviewedAt: Date
+    rejectionReason?: string
+    notes?: string
+  }
+  visibility: {
+    public: boolean
+    members_only: boolean
+    premium_only: boolean
+  }
+}
+
 export interface VideoProfile {
   type: 'introduction' | 'interests' | 'profession' | 'lifestyle' | 'closing'
+  mediaId: string // Reference to MediaItem
   url: string
   duration: number
   approved: boolean
   uploadedAt: Date
+}
+
+// Interview Management Types
+export interface InterviewSession extends BaseDocument {
+  applicantId: string
+  interviewerId: string
+  status: 'scheduled' | 'in_progress' | 'completed' | 'cancelled' | 'no_show'
+  scheduledAt: Date
+  duration: number // in minutes
+  type: 'video_call' | 'phone_call' | 'in_person'
+  meetingUrl?: string
+  notes?: string
+  outcome: 'pending' | 'approved' | 'rejected' | 'requires_follow_up'
+  recordingUrl?: string // Cloudinary video URL
+  followUpRequired: boolean
+  applicationData: {
+    membershipType: UserProfile['membership']['type']
+    referralSource?: string
+    motivation: string
+    expectations: string
+  }
+}
+
+// Admin and Staff Management Types
+export interface AdminUser extends BaseDocument {
+  email: string
+  password: string
+  profile: {
+    name: string
+    role: 'super_admin' | 'content_moderator' | 'interviewer' | 'customer_service'
+    department: string
+    avatar?: string
+  }
+  permissions: {
+    manage_users: boolean
+    moderate_content: boolean
+    conduct_interviews: boolean
+    handle_payments: boolean
+    view_analytics: boolean
+    manage_events: boolean
+  }
+  lastLoginAt?: Date
+  isActive: boolean
+}
+
+// Content Moderation Queue
+export interface ModerationQueue extends BaseDocument {
+  mediaId: string
+  userId: string
+  moderatorId?: string
+  priority: 'high' | 'medium' | 'low'
+  category: MediaItem['category']
+  status: 'pending' | 'in_review' | 'completed'
+  flags?: {
+    inappropriate_content: boolean
+    poor_quality: boolean
+    privacy_violation: boolean
+    fake_profile: boolean
+    other: string
+  }
+  moderationNotes?: string
+  estimatedReviewTime?: number // in minutes
 }
 
 export interface PaymentRecord {
@@ -179,6 +272,10 @@ export interface DatabaseCollections {
   events: EventData
   bookings: BookingData
   syncQueue: SyncQueueItem
+  media: MediaItem
+  interviews: InterviewSession
+  admins: AdminUser
+  moderationQueue: ModerationQueue
 }
 
 // Utility Types
