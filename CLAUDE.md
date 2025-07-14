@@ -450,6 +450,7 @@ Key interfaces:
 - Type definitions: `client/src/types/database.ts:12`
 - React hooks: `client/src/hooks/useOfflineDB.ts:9`
 - Sync status hook: `client/src/hooks/useSyncStatus.ts`
+- Activity limits hook: `client/src/hooks/useActivityLimits.ts` - Membership viewing limits management
 - PWA utilities: `client/src/utils/pwa-utils.ts:14`
 - Service Worker: `client/public/sw.js`
 - Brand logo: `client/public/logo.jpeg`
@@ -470,6 +471,7 @@ Key interfaces:
 - Modal Trigger: `client/src/components/ui/ModalTrigger.tsx` - Reusable modal state management
 - CTA Section: `client/src/components/ui/CTASection.tsx` - Consistent CTA patterns
 - Auth Reminder: `client/src/components/ui/AuthReminder.tsx` - Authentication prompts
+- Activity Limit Prompt: `client/src/components/ui/ActivityLimitPrompt.tsx` - Membership upgrade prompts
 - Consultation Modal: `client/src/components/modals/ConsultationModal.tsx`
 - Membership Details: `client/src/components/modals/MembershipDetailsModal.tsx` - Replaced by pricing page
 
@@ -492,11 +494,14 @@ Key interfaces:
 - NeDB setup: `server/src/db/nedb-setup.ts:22`
 - API routes: `server/src/routes/api.ts`
 - Auth routes: `server/src/routes/auth.ts`
+- Admin routes: `server/src/routes/admin.ts` - Atomic permission management API
 - User model: `server/src/models/User.ts`
 - Event model: `server/src/models/Event.ts`
 - Booking model: `server/src/models/Booking.ts`
+- Admin Permission model: `server/src/models/AdminPermission.ts` - Atomic permissions and roles
 - Controllers: `server/src/controllers/`
 - Auth controller: `server/src/controllers/AuthController.ts`
+- Admin Permission service: `server/src/services/AdminPermissionService.ts` - Permission validation and management
 - Auth middleware: `server/src/middleware/auth.ts`
 - CORS middleware: `server/src/middleware/cors.ts`
 
@@ -536,6 +541,27 @@ Key interfaces:
 - Refresh token: `POST /api/auth/refresh`
 - Change password: `PUT /api/auth/change-password`
 - Logout: `POST /api/auth/logout`
+
+### Admin Authentication Endpoints (Separate System)
+- Admin login: `POST /api/admin/auth/login`
+- Admin logout: `POST /api/admin/auth/logout`
+- Admin profile: `GET /api/admin/auth/profile`
+- Admin token refresh: `POST /api/admin/auth/refresh`
+
+### Admin Permission Management Endpoints
+- List permission atoms: `GET /api/admin/permissions/atoms`
+- Create permission atom: `POST /api/admin/permissions/atoms`
+- Grouped permissions: `GET /api/admin/permissions/atoms/grouped`
+- Validate permissions: `POST /api/admin/permissions/validate`
+- Check user permission: `GET /api/admin/permissions/check/:permission`
+- List roles: `GET /api/admin/roles`
+- Create role: `POST /api/admin/roles`
+- Update role: `PUT /api/admin/roles/:roleId`
+- Role capabilities: `GET /api/admin/roles/:roleId/capabilities`
+- Create admin user: `POST /api/admin/users`
+- Update admin user: `PUT /api/admin/users/:adminId`
+- Audit logs: `GET /api/admin/audit/logs`
+- Admin health check: `GET /api/admin/health`
 
 ### Key Dependencies
 
@@ -582,6 +608,39 @@ Key interfaces:
 This is a Taiwan-focused luxury social platform with emphasis on offline-first architecture, privacy protection, premium user experience, and secure authentication.
 
 ## Key Technical Achievements
+
+### Task 12: Activity Viewing Limits & Atomic Permission System ✅ Complete
+**完成時間**: 2025-07-14  
+**優先級**: HIGH - 核心業務邏輯實現
+
+#### 活動瀏覽限制功能 (Activity Viewing Limits)
+- **訪客限制**: 最多只能瀏覽 3 個活動
+- **註冊會員限制**: 最多只能瀏覽 12 個活動  
+- **VIP/VVIP 會員**: 無限制瀏覽所有活動
+- **升級提示系統**: 精美漸變提示組件，包含進度條和一鍵升級功能
+- **智能結果顯示**: 結果摘要中顯示限制指示器 "（受會員等級限制）"
+- **業務規則執行**: 完全符合 BUSINESS_RULES.md 中定義的會員權限架構
+
+#### 原子化權限系統 (Atomic Permission System)
+- **權限原子**: 25+ 細粒度權限，按群組組織 (users, content, events, interviews, system, payments, vvip, admin)
+- **角色配置**: 4 個預設管理員角色 (super_admin, system_admin, operation_admin, premium_admin)
+- **衝突解決**: 內建權限衝突檢測和依賴驗證機制
+- **管理員認證**: 獨立的 JWT 系統，8小時 token 有效期
+- **審計日誌**: 完整的權限變更追蹤和審計軌跡
+- **API 端點**: 完整的 REST API 位於 `/api/admin/*`
+
+#### 技術實現亮點
+- **前端組件**: `ActivityLimitPrompt` - 響應式升級提示組件
+- **Hook 工具**: `useActivityLimits` - 會員限制管理 Hook
+- **後端服務**: `AdminPermissionService` - 原子化權限管理服務
+- **資料模型**: `AdminPermission.ts` - 完整的權限和角色資料結構
+- **路由系統**: `/api/admin/*` - 獨立的管理員 API 端點
+
+#### 業務價值
+- **會員轉換**: 限制功能促進訪客註冊和會員升級
+- **安全管理**: 原子化權限確保管理員系統安全性
+- **可擴展性**: 彈性權限設計支援未來功能擴展
+- **合規性**: 完整審計日誌滿足企業合規要求
 
 ### Task 11: Four-Department Admin System Architecture ✅ Complete  
 - **Complete Separation Design**: Admin system completely separated from user system with independent authentication

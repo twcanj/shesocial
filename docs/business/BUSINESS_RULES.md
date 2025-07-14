@@ -90,9 +90,9 @@ const membershipTiers = {
 
 ---
 
-## 👁️ 活動瀏覽限制規則 (重要業務規則)
+## 👁️ 活動瀏覽限制規則 (重要業務規則) ✅ **已實現**
 
-### 會員等級活動瀏覽限制
+### 會員等級活動瀏覽限制 ✅ **前端實現完成**
 ```javascript
 const activityViewingLimits = {
   enforcement: {

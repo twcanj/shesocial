@@ -1,6 +1,7 @@
 // Event List Component with Search and Filtering
 import React, { useState, useEffect } from 'react'
 import { EventCard } from './EventCard'
+import { ActivityLimitPrompt } from '../ui/ActivityLimitPrompt'
 import type { EventData, EventFilters } from '../../shared-types'
 import { useAuthStore } from '../../store/authStore'
 
@@ -23,6 +24,7 @@ export const EventList: React.FC<EventListProps> = ({
 }) => {
   const { user, hasPermission } = useAuthStore()
   const [filteredEvents, setFilteredEvents] = useState<EventData[]>(events)
+  const [allFilteredEvents, setAllFilteredEvents] = useState<EventData[]>(events) // Before membership limits
   const [searchTerm, setSearchTerm] = useState('')
   const [filters, setFilters] = useState<Partial<EventFilters>>({})
   const [sortBy, setSortBy] = useState<'date' | 'name' | 'participants' | 'price'>('date')
@@ -126,6 +128,9 @@ export const EventList: React.FC<EventListProps> = ({
 
       return sortOrder === 'desc' ? -comparison : comparison
     })
+
+    // Store all filtered events before applying membership limits
+    setAllFilteredEvents(filtered)
 
     // Apply membership-based activity viewing limits
     const membershipType = user?.membership?.type || 'visitor'
@@ -402,9 +407,16 @@ export const EventList: React.FC<EventListProps> = ({
       {/* Results Summary */}
       <div className="flex items-center justify-between text-sm text-gray-600">
         <span>顯示 {filteredEvents.length} 個活動</span>
-        {filteredEvents.length !== events.length && (
-          <span>（共 {events.length} 個活動）</span>
-        )}
+        <div className="flex items-center space-x-2">
+          {filteredEvents.length !== events.length && (
+            <span>（共 {events.length} 個活動）</span>
+          )}
+          {filteredEvents.length < allFilteredEvents.length && (
+            <span className="text-orange-600 font-medium">
+              （受會員等級限制）
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Event Cards Grid */}
@@ -442,6 +454,13 @@ export const EventList: React.FC<EventListProps> = ({
           )}
         </div>
       )}
+
+      {/* Activity Limit Prompt - Show when user has hit their viewing limit */}
+      <ActivityLimitPrompt
+        totalActivities={allFilteredEvents.length}
+        viewableActivities={filteredEvents.length}
+        membershipType={user?.membership?.type || 'visitor'}
+      />
     </div>
   )
 }

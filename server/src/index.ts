@@ -12,6 +12,7 @@ import { developmentFormat, productionFormat, errorFormat } from './middleware/l
 
 // Routes
 import apiRoutes from './routes/api'
+import adminRoutes from './routes/admin'
 
 const app = express()
 const PORT = process.env.PORT || 10000
@@ -60,6 +61,9 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }))
 // API routes
 app.use('/api', apiRoutes)
 
+// Admin routes (completely separate from user API)
+app.use('/api/admin', adminRoutes)
+
 // Health check endpoint (outside API prefix for load balancers)
 app.get('/health', (req, res) => {
   res.json({
@@ -86,6 +90,7 @@ app.get('/', (req, res) => {
         users: '/api/users',
         events: '/api/events',
         bookings: '/api/bookings',
+        admin: '/api/admin',
         stats: '/api/stats',
         sync: '/api/sync'
       }

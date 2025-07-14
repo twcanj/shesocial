@@ -9,20 +9,27 @@
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["infinitymatch", "dating", "api", "taiwan"],
+  "keywords": [
+    "infinitymatch",
+    "dating",
+    "api",
+    "taiwan"
+  ],
   "author": "InfinityMatch Team",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
     "@seald-io/nedb": "^4.1.2",
     "@types/node": "^24.0.12",
+    "@types/uuid": "^10.0.0",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
