@@ -9,10 +9,11 @@ import { MembersPage } from './pages/MembersPage'
 import { AboutPage } from './pages/AboutPage'
 import { PricingPage } from './pages/PricingPage'
 import { ProfilePage } from './pages/ProfilePage'
+import { AdminDashboard } from './pages/AdminDashboard'
 
 function App() {
   const [count, setCount] = useState(0)
-  const [currentPage, setCurrentPage] = useState<'home' | 'events' | 'members' | 'about' | 'pricing' | 'profile'>('home')
+  const [currentPage, setCurrentPage] = useState<'home' | 'events' | 'members' | 'about' | 'pricing' | 'profile' | 'admin'>('home')
   
   const { isInitialized } = useOfflineDB()
   const { isOnline, pendingSyncCount, manualSync } = useNetworkSync()
@@ -22,10 +23,13 @@ function App() {
   return (
     <AuthProvider>
       <div className="min-h-screen bg-gradient-to-br from-luxury-pearl to-luxury-champagne">
-        <NavigationHeader 
-          currentPage={currentPage}
-          onPageChange={setCurrentPage}
-        />
+        {/* Hide navigation for admin dashboard */}
+        {currentPage !== 'admin' && (
+          <NavigationHeader 
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+          />
+        )}
         
         {/* Render different pages based on currentPage */}
         {currentPage === 'events' && <EventsPage />}
@@ -33,6 +37,7 @@ function App() {
         {currentPage === 'about' && <AboutPage />}
         {currentPage === 'pricing' && <PricingPage />}
         {currentPage === 'profile' && <ProfilePage />}
+        {currentPage === 'admin' && <AdminDashboard />}
         
         {/* Home page */}
         {currentPage === 'home' && (

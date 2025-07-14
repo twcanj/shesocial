@@ -93,6 +93,13 @@ router.post('/auth/login', async (req, res) => {
         createdBy: 'system',
         lastModifiedBy: 'system'
       }
+
+      // Register the test admin user in the permission service if not already registered
+      const existingPermissions = await adminPermissionService.getUserPermissions(adminUser.adminId)
+      if (existingPermissions.length === 0) {
+        await adminPermissionService.createAdminUser(adminUser)
+        console.log('Test admin user registered in permission service')
+      }
     } catch (error) {
       return res.status(404).json({ error: 'Admin user not found' })
     }
