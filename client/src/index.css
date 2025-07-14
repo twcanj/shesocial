@@ -2,13 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom CSS Variables for SheSocial */
+/* Zodiac-Inspired Mystical Variables for SheSocial */
 :root {
   --font-family-primary: 'Inter', 'Noto Sans TC', system-ui, sans-serif;
   --font-family-secondary: 'Noto Serif TC', Georgia, serif;
-  --shadow-luxury: 0 10px 25px -3px rgba(212, 175, 55, 0.1), 0 4px 6px -2px rgba(212, 175, 55, 0.05);
-  --gradient-luxury: linear-gradient(135deg, #d4af37 0%, #f18444 100%);
-  --gradient-luxury-muted: linear-gradient(135deg, #f7e7ce 0%, #faf0e6 100%);
+  
+  /* Mystical Shadows */
+  --shadow-luxury: 0 10px 25px -3px rgba(102, 51, 153, 0.15), 0 4px 6px -2px rgba(255, 215, 0, 0.1);
+  --shadow-mystical: 0 0 20px rgba(102, 51, 153, 0.3), 0 0 40px rgba(255, 215, 0, 0.2);
+  --shadow-mystical-glow: 0 0 8px rgba(255, 215, 0, 0.6);
+  
+  /* Zodiac Gradients */
+  --gradient-luxury: linear-gradient(135deg, #663399 0%, #b8860b 100%);
+  --gradient-luxury-muted: linear-gradient(135deg, #faf8ff 0%, #fffef7 100%);
+  --gradient-mystical: linear-gradient(135deg, #663399 0%, #8b5bff 50%, #b8860b 100%);
+  
+  /* Membership Tier Gradients (Zodiac Inspired) */
+  --gradient-regular: linear-gradient(135deg, #b5c334 0%, #e0ffb3 100%);    /* Taurus */
+  --gradient-vip: linear-gradient(135deg, #ff9800 0%, #ffe0b2 100%);        /* Leo */
+  --gradient-premium: linear-gradient(135deg, #e91e63 0%, #ffb2d9 100%);    /* Libra */
+  --gradient-platinum: linear-gradient(135deg, #673ab7 0%, #d1b2ff 100%);   /* Scorpio */
+  
+  /* Interactive Gradients */
+  --gradient-button: linear-gradient(135deg, #663399 0%, #b8860b 100%);
+  --gradient-button-hover: linear-gradient(135deg, #5c2d85 0%, #9d6f00 100%);
+  --gradient-card: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(250, 248, 255, 0.8) 100%);
 }
 
 /* Base Styles */
@@ -18,16 +36,20 @@
   }
   
   body {
-    @apply bg-gradient-to-br from-luxury-pearl to-luxury-champagne text-secondary-900;
+    @apply bg-gradient-to-br from-luxury-ivory via-primary-50 to-secondary-50;
+    color: #1a1a1a; /* Dark charcoal for excellent readability */
     font-family: var(--font-family-primary);
     font-feature-settings: 'rlig' 1, 'calt' 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    /* Mystical body background */
+    background: linear-gradient(135deg, #fffef7 0%, #faf8ff 50%, #fffef7 100%);
   }
   
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-family-secondary);
     @apply font-semibold tracking-tight;
+    color: #1a1a1a; /* Ensure headings have excellent contrast */
   }
   
   h1 {
@@ -66,41 +88,109 @@
     @apply py-12 md:py-16 lg:py-20;
   }
   
-  /* Buttons */
+  /* Zodiac-Inspired Buttons */
   .btn-luxury {
     @apply inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg;
-    @apply bg-gradient-to-r from-luxury-gold to-primary-500 text-white;
-    @apply hover:from-luxury-gold/90 hover:to-primary-600;
-    @apply focus:outline-none focus:ring-2 focus:ring-luxury-gold focus:ring-offset-2;
-    @apply transition-all duration-200 ease-in-out;
-    @apply shadow-lg hover:shadow-xl;
+    background: var(--gradient-button);
+    @apply text-white;
+    @apply hover:shadow-mystical-glow;
+    @apply focus:outline-none focus:ring-2 focus:ring-luxury-imperial focus:ring-offset-2;
+    @apply transition-all duration-300 ease-in-out;
+    @apply shadow-luxury hover:shadow-mystical;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .btn-luxury::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: var(--gradient-button-hover);
+    transition: left 0.3s ease-in-out;
+    z-index: -1;
+  }
+  
+  .btn-luxury:hover::before {
+    left: 0;
   }
   
   .btn-luxury-outline {
     @apply inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg;
-    @apply border-2 border-luxury-gold text-luxury-gold bg-transparent;
-    @apply hover:bg-luxury-gold hover:text-white;
-    @apply focus:outline-none focus:ring-2 focus:ring-luxury-gold focus:ring-offset-2;
-    @apply transition-all duration-200 ease-in-out;
+    @apply border-2 bg-transparent;
+    border-color: #4a2470; /* Darker purple for better contrast */
+    color: #4a2470; /* Darker purple text */
+    @apply hover:bg-luxury-imperial hover:text-white hover:shadow-mystical-glow;
+    @apply focus:outline-none focus:ring-2 focus:ring-luxury-imperial focus:ring-offset-2;
+    @apply transition-all duration-300 ease-in-out;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .btn-luxury-outline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: var(--gradient-mystical);
+    transition: left 0.3s ease-in-out;
+    z-index: -1;
+  }
+  
+  .btn-luxury-outline:hover::before {
+    left: 0;
   }
   
   .btn-luxury-ghost {
     @apply inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg;
-    @apply text-secondary-700 bg-transparent;
-    @apply hover:bg-secondary-100 hover:text-secondary-900;
+    @apply bg-transparent;
+    color: #4a4a4a; /* Medium gray for good contrast */
+    @apply hover:bg-secondary-100;
+    @apply hover:text-primary;
     @apply focus:outline-none focus:ring-2 focus:ring-secondary-300 focus:ring-offset-2;
     @apply transition-all duration-200 ease-in-out;
   }
   
-  /* Cards */
+  /* Zodiac-Inspired Cards */
   .card-luxury {
-    @apply bg-white/80 backdrop-blur-sm rounded-2xl border border-white/20;
-    @apply shadow-luxury hover:shadow-xl;
-    @apply transition-all duration-300 ease-in-out;
+    background: var(--gradient-card);
+    @apply backdrop-blur-md rounded-2xl border border-white/30;
+    @apply shadow-card-depth hover:shadow-mystical;
+    @apply transition-all duration-500 ease-in-out;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .card-luxury::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(102, 51, 153, 0.05) 0%, rgba(255, 215, 0, 0.05) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    pointer-events: none;
+  }
+  
+  .card-luxury:hover::before {
+    opacity: 1;
   }
   
   .card-luxury-hover {
-    @apply card-luxury hover:scale-105 hover:bg-white/90;
+    @apply card-luxury;
+    transform-style: preserve-3d;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .card-luxury-hover:hover {
+    transform: scale(1.02) rotateX(2deg) rotateY(2deg);
+    @apply shadow-mystical;
   }
   
   /* Navigation */
@@ -109,40 +199,132 @@
     @apply sticky top-0 z-50;
   }
   
-  /* Glass Effect */
+  /* Mystical Glass Effect */
   .glass {
-    @apply bg-white/10 backdrop-blur-md border border-white/20;
+    @apply backdrop-blur-md border border-white/30;
+    background: linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.15) 0%, 
+      rgba(102, 51, 153, 0.1) 50%, 
+      rgba(255, 215, 0, 0.1) 100%
+    );
+    box-shadow: 
+      0 8px 32px rgba(102, 51, 153, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.1);
   }
   
   /* Input Fields */
   .input-luxury {
     @apply w-full px-4 py-3 text-base rounded-lg;
     @apply bg-white/80 border border-secondary-200;
-    @apply focus:outline-none focus:ring-2 focus:ring-luxury-gold focus:border-transparent;
-    @apply placeholder-secondary-400;
+    @apply focus:outline-none focus:ring-2 focus:border-transparent;
+    color: #1a1a1a; /* Dark text for readability */
+    focus-ring-color: #4a2470; /* Darker purple for focus */
     @apply transition-all duration-200 ease-in-out;
   }
   
-  /* Badges */
+  .input-luxury::placeholder {
+    color: #6b7280; /* Medium gray for placeholder text */
+  }
+  
+  /* Zodiac-Inspired Badges & Membership Tiers */
   .badge-luxury {
     @apply inline-flex items-center px-3 py-1 text-sm font-medium rounded-full;
-    @apply bg-gradient-to-r from-luxury-gold to-primary-500 text-white;
+    background: var(--gradient-luxury);
+    @apply text-white shadow-mystical-glow;
   }
   
   .badge-luxury-outline {
     @apply inline-flex items-center px-3 py-1 text-sm font-medium rounded-full;
-    @apply border border-luxury-gold text-luxury-gold bg-transparent;
+    @apply border bg-transparent;
+    border-color: #4a2470; /* Darker purple for better contrast */
+    color: #4a2470; /* Darker purple text */
+    @apply hover:shadow-mystical-glow transition-all duration-300;
+  }
+  
+  /* Membership Tier Styling */
+  .tier-regular {
+    background: var(--gradient-regular);
+    @apply text-white shadow-lg;
+  }
+  
+  .tier-vip {
+    background: var(--gradient-vip);
+    @apply text-white shadow-lg;
+  }
+  
+  .tier-premium {
+    background: var(--gradient-premium);
+    @apply text-white shadow-lg;
+  }
+  
+  .tier-platinum {
+    background: var(--gradient-platinum);
+    @apply text-white shadow-mystical;
+  }
+  
+  /* Tier-specific card styling */
+  .card-tier-regular {
+    @apply card-luxury;
+    border: 2px solid #b5c334;
+  }
+  
+  .card-tier-vip {
+    @apply card-luxury;
+    border: 2px solid #ff9800;
+    @apply shadow-lg;
+  }
+  
+  .card-tier-premium {
+    @apply card-luxury;
+    border: 2px solid #e91e63;
+    @apply shadow-mystical;
+  }
+  
+  .card-tier-platinum {
+    @apply card-luxury;
+    border: 2px solid #673ab7;
+    @apply shadow-mystical animate-mystical-glow;
   }
 }
 
 /* Utility Styles */
 @layer utilities {
-  /* Text Gradients */
+  /* Improved Text Gradients with Better Contrast */
   .text-gradient-luxury {
-    @apply bg-gradient-to-r from-luxury-gold to-primary-500 bg-clip-text text-transparent;
+    /* Use darker gradient for better readability */
+    background: linear-gradient(135deg, #4a2470 0%, #b8860b 100%);
+    @apply bg-clip-text text-transparent;
+    background-size: 200% 200%;
+    animation: gradientShift 3s ease-in-out infinite;
   }
   
-  /* Animations */
+  .text-gradient-mystical {
+    /* Darker mystical gradient for readability */
+    background: linear-gradient(135deg, #4a2470 0%, #663399 50%, #b8860b 100%);
+    @apply bg-clip-text text-transparent;
+    background-size: 200% 200%;
+    animation: gradientShift 4s ease-in-out infinite;
+  }
+  
+  /* High contrast text utilities */
+  .text-primary {
+    color: #1a1a1a !important;
+  }
+  
+  .text-secondary {
+    color: #4a4a4a !important;
+  }
+  
+  .text-muted {
+    color: #6b7280 !important;
+  }
+  
+  .text-accent {
+    color: #4a2470 !important; /* Darker purple for better contrast */
+  }
+  
+  /* Zodiac-Inspired Animations */
   .animate-fade-in {
     animation: fadeIn 0.5s ease-in-out;
   }
@@ -153,6 +335,18 @@
   
   .animate-pulse-luxury {
     animation: pulseLuxury 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  .animate-mystical-glow {
+    animation: mysticalGlow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  .animate-card-flip {
+    animation: cardFlip 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .animate-gradient-shift {
+    animation: gradientShift 4s ease-in-out infinite;
   }
 }
 
@@ -179,9 +373,118 @@
 
 @keyframes pulseLuxury {
   0%, 100% {
-    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4);
+    box-shadow: 0 0 0 0 rgba(102, 51, 153, 0.4);
   }
   50% {
-    box-shadow: 0 0 0 10px rgba(212, 175, 55, 0);
+    box-shadow: 0 0 0 10px rgba(102, 51, 153, 0);
   }
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes mysticalGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 16px rgba(255, 215, 0, 0.8));
+    transform: scale(1.02);
+  }
+}
+
+@keyframes cardFlip {
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(180deg);
+  }
+}
+
+/* Additional High-Contrast Utilities for Better Readability */
+.nav-link {
+  color: #4a4a4a !important;
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #4a2470 !important;
+}
+
+.nav-link.active {
+  color: #4a2470 !important;
+  font-weight: 600;
+}
+
+.form-label {
+  color: #1a1a1a !important;
+  font-weight: 500;
+}
+
+.text-error {
+  color: #b91c1c !important;
+}
+
+.text-success {
+  color: #047857 !important;
+}
+
+/* Ensure all paragraph text has good contrast */
+p {
+  color: #1a1a1a;
+}
+
+/* Ensure link text has good contrast */
+a {
+  color: #4a2470;
+}
+
+a:hover {
+  color: #663399;
+}
+
+/* Override any bright gold/yellow text with readable alternatives */
+.text-luxury-gold {
+  color: #b8860b !important; /* Dark gold instead of bright gold */
+}
+
+.text-secondary-600 {
+  color: #b8860b !important; /* Dark gold instead of bright yellow */
+}
+
+.text-yellow-500,
+.text-yellow-600 {
+  color: #b8860b !important; /* Dark gold instead of bright yellow */
+}
+
+/* Ensure any remaining golden elements are readable */
+.border-luxury-gold {
+  border-color: #b8860b !important;
+}
+
+.bg-luxury-gold {
+  background-color: #b8860b !important;
+}
+
+/* Override any other yellow/gold text classes */
+.text-amber-500,
+.text-amber-600,
+.text-yellow-400 {
+  color: #b8860b !important;
+}
+
+/* Fix any remaining bright gradients in text */
+.text-gradient-gold {
+  background: linear-gradient(135deg, #4a2470 0%, #b8860b 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
 }

@@ -14,8 +14,8 @@ interface AuthContextType {
   // Auth store data
   isAuthenticated: boolean
   user: any
-  login: (email: string, password: string) => Promise<boolean>
-  register: (email: string, password: string, name: string, membershipType: string) => Promise<string | null>
+  login: (email: string, password: string) => Promise<any>
+  register: (userData: any) => Promise<any>
   logout: () => void
 }
 

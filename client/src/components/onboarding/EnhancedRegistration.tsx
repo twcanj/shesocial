@@ -115,7 +115,13 @@ export const EnhancedRegistration: React.FC<EnhancedRegistrationProps> = ({
     setLoading(true)
     try {
       // Create account with basic info
-      const userId = await register(formData.email, formData.password, formData.name, formData.membershipInterest)
+      const userData = {
+        email: formData.email,
+        password: formData.password,
+        name: formData.name,
+        membership: formData.membershipInterest as any
+      }
+      const result = await register(userData)
       
       // Save additional profile data and sales lead info
       const profileData = {
@@ -149,7 +155,7 @@ export const EnhancedRegistration: React.FC<EnhancedRegistrationProps> = ({
 
       if (response.ok) {
         alert('註冊成功！現在請選擇適合的會員方案。')
-        onRegistrationComplete?.(userId)
+        onRegistrationComplete?.(result.data?.user?._id || 'new-user')
       } else {
         alert('註冊失敗，請稍後再試')
       }

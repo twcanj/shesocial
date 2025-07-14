@@ -350,3 +350,4 @@ self.addEventListener('activate', (event) => {
 })
 
 console.log('🚀 SheSocial Service Worker activated')
+*/
