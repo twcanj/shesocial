@@ -124,37 +124,69 @@ const presentationLayer = {
 
 ## 🔐 權限控制架構
 
-### 權限層級設計
+### 用戶權限層級設計
 ```javascript
-const permissionLevels = {
+const userPermissionLevels = {
   visitor: {
     access: ["EventShowcase展示"],
-    description: "未註冊用戶，僅可瀏覽精彩活動集"
+    description: "未註冊用戶，僅可瀏覽精彩活動集",
+    activityLimit: 3
   },
   
-  basic_user: {
+  registered: {
     access: ["EventShowcase展示", "Event瀏覽(不可報名)"],
-    description: "免費註冊用戶，可瀏覽活動但不能參與"
+    description: "免費註冊用戶，可瀏覽活動但不能參與",
+    activityLimit: 12
   },
   
-  paid_member_waiting: {
+  vip_waiting: {
     access: ["EventShowcase展示", "Event瀏覽(不可報名)", "VVIPIntro服務購買"],
-    description: "付費會員2個月等待期內"
+    description: "VIP會員2個月等待期內",
+    activityLimit: "unlimited"
   },
   
-  paid_member_active: {
+  vip_active: {
     access: ["EventShowcase展示", "Event完整功能", "VVIPIntro服務購買"],
-    description: "付費會員2個月等待期後"
+    description: "VIP會員2個月等待期後",
+    activityLimit: "unlimited"
   },
   
   vvip_member: {
-    access: ["所有功能", "VVIPIntro查看權限"],
-    description: "premium_2500會員，可查看其他會員介紹"
+    access: ["所有功能", "VVIPIntro查看權限", "參與者名單查看"],
+    description: "VVIP會員，最高級用戶權限",
+    activityLimit: "unlimited"
+  }
+}
+```
+
+### 管理員權限架構（完全分離）
+```javascript
+const adminPermissionLevels = {
+  super_admin: {
+    department: "執行部",
+    access: ["ALL_PERMISSIONS"],
+    description: "總管理者，最高決策層"
   },
   
-  admin: {
-    access: ["所有管理功能"],
-    description: "管理員，完整後台控制權限"
+  system_admin: {
+    department: "技術部", 
+    access: ["系統監控", "資料庫管理", "技術維護"],
+    description: "系統管理者，技術專家",
+    boundaries: "不可操作用戶業務數據"
+  },
+  
+  operation_admin: {
+    department: "營運部",
+    access: ["內容審核", "活動管理", "一般用戶服務"],
+    description: "營運管理者，內容和營運專家", 
+    boundaries: "不可操作系統配置和VIP財務"
+  },
+  
+  premium_admin: {
+    department: "會員部",
+    access: ["VIP服務", "面試管理", "付費問題處理"],
+    description: "付費用戶管理者，高端服務專家",
+    boundaries: "不可操作系統維護和一般內容"
   }
 }
 ```
