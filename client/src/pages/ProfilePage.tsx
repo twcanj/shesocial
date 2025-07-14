@@ -147,10 +147,10 @@ export const ProfilePage: React.FC = () => {
                   <p className="text-secondary-600">{user.email}</p>
                   <div className="flex items-center space-x-2 mt-2">
                     <span className="px-3 py-1 bg-luxury-gold text-white text-sm rounded-full">
-                      {user.membership?.type === 'regular' && 'Regular會員'}
+                      {user.membership?.type === 'visitor' && '訪客'}
+                      {user.membership?.type === 'registered' && '註冊會員'}
                       {user.membership?.type === 'vip' && 'VIP會員'}
-                      {user.membership?.type === 'premium_1300' && 'Premium 1300'}
-                      {user.membership?.type === 'premium_2500' && 'Premium 2500'}
+                      {user.membership?.type === 'vvip' && 'VVIP會員'}
                     </span>
                   </div>
                 </div>

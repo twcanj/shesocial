@@ -46,6 +46,49 @@ export class UserModel {
     }
   }
 
+  // Update interview status
+  async updateInterviewStatus(userId: string, interviewStatus: any): Promise<ApiResponse<UserProfile>> {
+    try {
+      const updateData = {
+        'profile.interviewStatus': interviewStatus,
+        updatedAt: new Date().toISOString(),
+        lastSync: new Date().toISOString()
+      }
+
+      return new Promise((resolve) => {
+        this.db.update(
+          { _id: userId },
+          { $set: updateData },
+          {},
+          (err, numReplaced) => {
+            if (err) {
+              resolve({
+                success: false,
+                error: err.message,
+                timestamp: Date.now()
+              })
+            } else if (numReplaced === 0) {
+              resolve({
+                success: false,
+                error: 'User not found',
+                timestamp: Date.now()
+              })
+            } else {
+              // Return updated user
+              this.findById(userId).then(resolve)
+            }
+          }
+        )
+      })
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        timestamp: Date.now()
+      }
+    }
+  }
+
   // Find user by ID
   async findById(id: string): Promise<ApiResponse<UserProfile>> {
     return new Promise((resolve) => {

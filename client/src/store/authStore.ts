@@ -27,7 +27,7 @@ interface UserProfile {
     }
   }
   membership: {
-    type: 'regular' | 'vip' | 'premium_1300' | 'premium_2500'
+    type: 'visitor' | 'registered' | 'vip' | 'vvip'
     joinDate: Date
     payments: any[]
     vouchers?: any
@@ -325,7 +325,7 @@ export const useAuthStore = create<AuthState>()(
 
       isPremiumMember: (): boolean => {
         const membershipType = get().getMembershipLevel()
-        return membershipType === 'premium_1300' || membershipType === 'premium_2500'
+        return membershipType === 'vip' || membershipType === 'vvip'
       },
     }),
     {

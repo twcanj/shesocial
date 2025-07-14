@@ -1,4 +1,4 @@
-# SheSocial 業務規則文件
+# InfinityMatch 天造地設人成對 業務規則文件
 ## 三大內容模塊、會員制度與服務管理規範
 
 > **重要更新**: 2025年實施三大內容模塊架構 - VVIPIntro、EventManagement、EventShowcase，建立分層權限與內容管理系統
@@ -10,11 +10,31 @@
 ### 會員方案與權限系統
 ```javascript
 const membershipTiers = {
-  basic: {
-    name: "基本用戶",
+  visitor: {
+    name: "訪客",
     cost: 0,
     currency: "NT$",
-    benefits: ["免費註冊", "瀏覽活動資訊", "查看精彩活動集"],
+    benefits: ["瀏覽活動資訊", "查看精彩活動集"],
+    activityLimit: 3, // 最多只能看3個活動
+    activityLimitEnforcement: "強制限制，超過3個活動後無法查看更多",
+    upgradePrompt: "瀏覽更多活動需要註冊會員",
+    permissions: {
+      joinEvents: false, // 不能參加活動
+      viewParticipants: false,
+      viewVVIPIntros: false,
+      purchaseVVIPIntro: false,
+      viewEventShowcase: true // 可瀏覽精彩活動集
+    }
+  },
+  
+  registered: {
+    name: "註冊會員",
+    cost: 0,
+    currency: "NT$", 
+    benefits: ["免費註冊", "瀏覽活動資訊", "查看精彩活動集", "個人資料管理"],
+    activityLimit: 12, // 最多只能看12個活動
+    activityLimitEnforcement: "強制限制，超過12個活動後無法查看更多",
+    upgradePrompt: "查看無限活動和參加活動需要升級為付費會員",
     permissions: {
       joinEvents: false, // 不能參加活動
       viewParticipants: false,
@@ -28,7 +48,8 @@ const membershipTiers = {
     name: "VIP會員", 
     cost: 1300,
     currency: "NT$",
-    benefits: ["優先報名", "票券折抵", "專業客服"],
+    benefits: ["無限活動瀏覽", "優先報名", "票券折抵", "專業客服"],
+    activityLimit: "unlimited", // 無限制活動瀏覽
     waitingPeriod: "付費後2個月才能參加活動",
     permissions: {
       joinEvents: "2個月等待期後",
@@ -44,11 +65,12 @@ const membershipTiers = {
     }
   },
   
-  premium: {
-    name: "Premium會員 (VVIP)",
+  vvip: {
+    name: "VVIP會員",
     cost: 2500,
     currency: "NT$", 
-    benefits: ["最高優先權", "查看參與者名單", "專屬服務", "最多票券"],
+    benefits: ["無限活動瀏覽", "最高優先權", "查看參與者名單", "專屬服務", "最多票券"],
+    activityLimit: "unlimited", // 無限制活動瀏覽
     waitingPeriod: "付費後2個月才能參加活動",
     permissions: {
       joinEvents: "2個月等待期後",
@@ -62,6 +84,87 @@ const membershipTiers = {
       "200_dollar": 4, // NT$200票券 x 4張  
       total_value: 1300
     }
+  }
+}
+```
+
+---
+
+## 👁️ 活動瀏覽限制規則 (重要業務規則)
+
+### 會員等級活動瀏覽限制
+```javascript
+const activityViewingLimits = {
+  enforcement: {
+    visitor: {
+      limit: 3,
+      description: "訪客最多只能瀏覽3個活動",
+      implementation: "frontend強制限制，超過3個後隱藏其他活動",
+      upgradeMessage: "想要瀏覽更多活動？請註冊成為會員！",
+      technicalImplementation: "EventList.tsx中使用array.slice(0, 3)限制顯示"
+    },
+    
+    registered: {
+      limit: 12,
+      description: "註冊會員最多只能瀏覽12個活動", 
+      implementation: "frontend強制限制，超過12個後隱藏其他活動",
+      upgradeMessage: "想要無限瀏覽活動並參加活動？請升級為付費會員！",
+      technicalImplementation: "EventList.tsx中使用array.slice(0, 12)限制顯示"
+    },
+    
+    vip: {
+      limit: "unlimited",
+      description: "VIP會員可以瀏覽所有活動",
+      implementation: "無限制瀏覽",
+      benefits: "無限活動瀏覽 + 可參加活動(2個月等待期後)"
+    },
+    
+    vvip: {
+      limit: "unlimited", 
+      description: "VVIP會員可以瀏覽所有活動",
+      implementation: "無限制瀏覽",
+      benefits: "無限活動瀏覽 + 可參加活動(2個月等待期後) + 查看參與者名單"
+    }
+  },
+  
+  businessLogic: {
+    purpose: "限制免費用戶過度瀏覽，促進付費轉換",
+    conversionStrategy: "階段式限制，逐步引導用戶升級",
+    userExperience: "在達到限制時顯示升級提示，而非完全阻擋",
+    retentionStrategy: "註冊會員仍有12個活動瀏覽額度，維持一定使用價值"
+  },
+  
+  technicalImplementation: {
+    location: "client/src/components/events/EventList.tsx:121-138",
+    method: "switch語句根據membership.type進行array.slice()限制",
+    fallback: "未登入或無效membership預設為visitor限制(3個活動)",
+    userFeedback: "當接近或達到限制時，顯示相應的升級提示訊息"
+  }
+}
+```
+
+### 活動瀏覽升級流程
+```javascript
+const viewingUpgradeFlow = {
+  visitor_to_registered: {
+    trigger: "達到3個活動瀏覽限制",
+    action: "顯示註冊提示",
+    benefit: "註冊後可瀏覽12個活動",
+    conversion_rate_target: "60%"
+  },
+  
+  registered_to_paid: {
+    trigger: "達到12個活動瀏覽限制",
+    action: "顯示付費會員升級提示",
+    benefit: "無限瀏覽 + 參加活動權限",
+    conversion_rate_target: "25%"
+  },
+  
+  upgrade_messaging: {
+    visitor_limit_reached: "您已瀏覽3個活動的限制。註冊會員可瀏覽12個活動！",
+    registered_limit_reached: "您已瀏覽12個活動的限制。升級付費會員享受無限瀏覽和參加活動！",
+    upgrade_cta: "立即升級",
+    benefits_highlight: "強調無限瀏覽和活動參與價值"
   }
 }
 ```
@@ -654,82 +757,242 @@ const voucherAllocation = {
 }
 ```
 
-## 🏗️ VVIP介紹服務規則
+## 🏗️ **統一內容管理系統 (CMS) 架構**
 
-### 服務定價與流程
+### **CMS 核心設計理念**
 ```javascript
-const vvipIntroService = {
-  name: "VVIP會員介紹製作服務",
-  price: 1500, // NT$1,500
-  currency: "NT$",
-  duration: "3-5個工作天",
-  
-  eligibility: {
-    purchaser: "所有付費會員均可購買(等待期內也可購買)",
-    viewer: "僅Premium會員可查看其他人的介紹"
-  },
-  
-  included: [
-    "專業介紹文案撰寫",
-    "照片優化與排版", 
-    "個性化內容設計",
-    "一次免費修改機會"
+const unifiedCMSArchitecture = {
+  concept: "單一CMS支撐三大業務系統",
+  systems: [
+    "面試預約系統 (Interview Management)",
+    "VVIP介紹系統 (VVIP Intro Service)", 
+    "活動管理系統 (Event Management)",
+    "精彩活動集 (Event Showcase)"
   ],
-  
-  workflow: {
-    step1: "付費確認",
-    step2: "資料收集問卷",
-    step3: "初稿製作",
-    step4: "客戶確認修改",
-    step5: "最終發布供VVIP查看"
-  },
-  
-  businessModel: {
-    revenueType: "直接服務收費",
-    targetRevenue: "每月20-30筆訂單",
-    marginEstimate: "80% (主要為人工成本)"
-  }
+  benefits: [
+    "統一內容審核流程",
+    "共享媒體資源庫",
+    "一致的用戶體驗",
+    "降低開發維護成本"
+  ]
 }
 ```
 
-### 精彩活動集管理
+### **CMS 統一功能模組**
 ```javascript
-const eventShowcaseRules = {
-  contentSource: "已結束的優質活動",
-  selectionCriteria: [
-    "活動成功執行",
-    "參與者滿意度高",
-    "具備宣傳價值",
-    "照片影片品質佳"
-  ],
-  
-  curationProcess: {
-    step1: "活動結束後管理員評估",
-    step2: "篩選優質活動內容",
-    step3: "製作宣傳素材",
-    step4: "SEO優化處理",
-    step5: "公開發布展示"
+const cmsUnifiedModules = {
+  // 核心內容管理
+  contentManagement: {
+    mediaLibrary: "統一媒體資源庫 (照片、影片、文檔)",
+    contentEditor: "富文本編輯器 (支援所有內容類型)",
+    templateSystem: "內容模板系統 (面試、VVIP、活動)",
+    versionControl: "內容版本控制和歷史記錄"
   },
   
-  accessPermissions: {
-    viewing: "完全開放，包含訪客",
-    sharing: "支援社群分享",
-    seoOptimized: "搜尋引擎友好"
+  // 審核工作流程
+  moderationWorkflow: {
+    universalQueue: "統一審核佇列 (所有內容類型)",
+    approvalProcess: "多級審核流程 (初審、複審、終審)",
+    statusTracking: "內容狀態追蹤 (待審、已批准、已拒絕)",
+    feedbackSystem: "審核意見反饋系統"
   },
   
-  businessValue: {
-    marketingPurpose: "吸引新用戶註冊",
-    brandBuilding: "展示平台活動品質", 
-    trustBuilding: "建立社群信任度",
-    seoRanking: "提升搜尋排名"
+  // 權限管理
+  permissionSystem: {
+    roleBasedAccess: "角色基礎訪問控制",
+    contentPermissions: "內容級別權限設定",
+    workflowPermissions: "工作流程權限管理",
+    auditTrail: "操作審計追蹤"
   }
 }
 ```
 
 ---
 
-*最後更新: 2025-07-13*  
-*版本: 3.0*  
-*狀態: 三大模塊架構完成 ✅*
+*最後更新: 2025-07-14*  
+*版本: 3.1*  
+*狀態: 會員活動瀏覽限制規則完成 ✅*
+
+**重要更新**: 品牌重塑為 InfinityMatch 天造地設人成對 (1+1=∞)，新增詳細的活動瀏覽限制業務規則，完成4-tier會員制度重構 (visitor, registered, vip, vvip)。實施階段式瀏覽限制策略：訪客3個活動、註冊會員12個活動、付費會員無限制，用於促進會員轉換和付費升級。天造地設，人成對 - 當二個彼此有情人相遇，愛就開始無限。
 
 **重要里程碑**: 完成三大內容模塊架構設計 - VVIPIntro(VVIP專屬)、EventManagement(會員限定)、EventShowcase(完全開放)，建立分層權限控制與獨立收費模式。系統準備進入模塊化開發階段。
+### **三大業務系統 CMS 整合**
+
+#### **1. 面試預約系統 CMS 整合**
+```javascript
+const interviewCMSIntegration = {
+  contentTypes: [
+    "面試官個人檔案和介紹",
+    "面試準備指南和FAQ", 
+    "面試流程說明文件",
+    "面試結果通知模板"
+  ],
+  
+  workflowIntegration: {
+    scheduling: "CMS管理面試時段和可用性",
+    documentation: "面試記錄和評估表單",
+    communication: "自動化郵件和通知模板",
+    reporting: "面試統計和分析報告"
+  },
+  
+  mediaManagement: {
+    interviewerPhotos: "面試官專業照片管理",
+    instructionalVideos: "面試準備指導影片",
+    documentTemplates: "面試相關文件模板",
+    brandingAssets: "面試流程品牌素材"
+  }
+}
+```
+
+#### **2. VVIP介紹系統 CMS 整合**
+```javascript
+const vvipIntroCMSIntegration = {
+  contentTypes: [
+    "VVIP會員個人介紹頁面",
+    "專業介紹文案模板",
+    "照片編輯和排版樣式",
+    "介紹頁面設計模板"
+  ],
+  
+  productionWorkflow: {
+    orderManagement: "VVIP介紹訂單管理",
+    contentCreation: "專業文案和設計製作",
+    clientReview: "客戶確認和修改流程", 
+    publishing: "最終發布和展示管理"
+  },
+  
+  qualityControl: {
+    templateStandards: "介紹頁面品質標準",
+    contentGuidelines: "文案撰寫指導原則",
+    visualStandards: "照片和設計規範",
+    approvalProcess: "多層級品質審核"
+  }
+}
+```
+
+#### **3. 活動管理系統 CMS 整合**
+```javascript
+const eventManagementCMSIntegration = {
+  contentTypes: [
+    "活動詳情頁面和描述",
+    "活動照片和宣傳素材",
+    "參與者管理和通訊",
+    "活動後記錄和回顧"
+  ],
+  
+  lifecycleManagement: {
+    planning: "活動策劃和內容準備",
+    promotion: "活動宣傳素材管理",
+    execution: "活動進行中內容更新",
+    followup: "活動後內容整理和歸檔"
+  },
+  
+  showcaseIntegration: {
+    contentCuration: "優質活動內容篩選",
+    showcaseCreation: "精彩活動集製作",
+    seoOptimization: "搜尋引擎優化處理",
+    socialSharing: "社群媒體分享功能"
+  }
+}
+```
+
+#### **4. 精彩活動集 CMS 整合**
+```javascript
+const eventShowcaseCMSIntegration = {
+  contentTypes: [
+    "活動回顧文章和故事",
+    "精選活動照片集",
+    "參與者感想和見證",
+    "活動亮點影片剪輯"
+  ],
+  
+  curationWorkflow: {
+    contentSelection: "從活動管理系統篩選內容",
+    storyCreation: "製作引人入勝的活動故事",
+    mediaOptimization: "照片影片編輯和優化",
+    publicationScheduling: "內容發布時程安排"
+  },
+  
+  marketingIntegration: {
+    seoOptimization: "搜尋引擎優化配置",
+    socialMediaReady: "社群媒體分享格式",
+    leadGeneration: "潛在客戶轉換追蹤",
+    brandStorytelling: "品牌故事建構"
+  }
+}
+```
+
+### **CMS 技術架構規劃**
+```javascript
+const cmsTechnicalArchitecture = {
+  // 統一資料模型
+  dataModel: {
+    contentItems: {
+      id: "唯一識別碼",
+      type: "content_type (interview|vvip|event|showcase)",
+      title: "內容標題",
+      content: "富文本內容",
+      media: ["關聯媒體檔案陣列"],
+      metadata: "系統特定元數據",
+      status: "workflow_status",
+      permissions: "訪問權限設定"
+    }
+  },
+  
+  // 共享組件庫
+  sharedComponents: {
+    mediaUploader: "統一媒體上傳組件",
+    richTextEditor: "富文本編輯器",
+    workflowManager: "工作流程管理器",
+    permissionController: "權限控制組件"
+  },
+  
+  // API 端點設計
+  apiEndpoints: {
+    "POST /api/cms/content": "創建內容",
+    "GET /api/cms/content/:type": "獲取特定類型內容",
+    "PUT /api/cms/content/:id": "更新內容",
+    "POST /api/cms/workflow/:id/advance": "推進工作流程",
+    "GET /api/cms/media": "媒體庫管理",
+    "POST /api/cms/media/upload": "媒體上傳"
+  }
+}
+```
+
+### **CMS 實施優先級**
+```javascript
+const cmsImplementationPriority = {
+  phase1_foundation: {
+    priority: "CRITICAL",
+    timeline: "2週",
+    deliverables: [
+      "統一媒體存儲系統 (S3/R2)",
+      "基礎內容管理 API",
+      "簡單審核工作流程",
+      "管理員基礎界面"
+    ]
+  },
+  
+  phase2_integration: {
+    priority: "HIGH", 
+    timeline: "3週",
+    deliverables: [
+      "面試預約系統整合",
+      "活動管理系統整合",
+      "富文本編輯器實現",
+      "權限管理系統"
+    ]
+  },
+  
+  phase3_advanced: {
+    priority: "MEDIUM",
+    timeline: "4週", 
+    deliverables: [
+      "VVIP介紹系統整合",
+      "精彩活動集自動化",
+      "高級工作流程功能",
+      "分析和報告功能"
+    ]
+  }
+}
+```

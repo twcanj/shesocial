@@ -38,13 +38,21 @@ function App() {
         {currentPage === 'home' && (
           <main className="container-luxury section-luxury">
             <div className="text-center space-y-8">
-              {/* Hero Section - Business Benefits Focused */}
+              {/* Hero Section - Mathematical Love Concept */}
               <div className="space-y-6">
+                <div className="text-center mb-8">
+                  <div className="text-6xl md:text-8xl font-bold text-gradient-luxury mb-4 animate-fade-in">
+                    1 + 1 = ∞
+                  </div>
+                  <div className="text-lg text-secondary-600 mb-2">
+                    當二個彼此有情人相遇，愛就開始無限
+                  </div>
+                </div>
                 <h1 className="text-gradient-luxury animate-fade-in">
                   終結單身，開啟幸福
                 </h1>
                 <p className="text-2xl text-secondary-700 max-w-2xl mx-auto font-semibold">
-                  為什麼30+優質台灣人選擇 SheSocial？
+                  為什麼30+優質台灣人選擇天造地設人成對？
                 </p>
                 <p className="text-xl text-secondary-600 max-w-3xl mx-auto">
                   3個月內成功配對率85%｜真實身份驗證｜隱私絕對保護
@@ -53,46 +61,46 @@ function App() {
 
               {/* Customer Pain Points & Solutions */}
               <div className="grid md:grid-cols-3 gap-8 mt-12">
-                <div className="card-luxury p-8 text-center">
+                <div className="card-passion p-8 text-center">
                   <div className="text-4xl mb-4">😔</div>
-                  <h3 className="text-xl font-semibold mb-4 text-red-600">單身生活困擾？</h3>
+                  <h3 className="text-xl font-semibold mb-4 text-white">單身生活困擾？</h3>
                   <ul className="text-left space-y-2 text-secondary-600 mb-6">
-                    <li>• 工作忙碌，沒時間社交</li>
-                    <li>• 網路交友風險高</li>
-                    <li>• 朋友介紹有壓力</li>
-                    <li>• 不知道怎麼認識優質對象</li>
+                    <li className="text-white/80">• 工作忙碌，沒時間社交</li>
+                    <li className="text-white/80">• 網路交友風險高</li>
+                    <li className="text-white/80">• 朋友介紹有壓力</li>
+                    <li className="text-white/80">• 不知道怎麼認識優質對象</li>
                   </ul>
-                  <div className="text-luxury-gold font-semibold">我們理解您的需求</div>
+                  <div className="text-white font-semibold">我們理解您的需求</div>
                 </div>
                 
                 <div className="card-luxury p-8 text-center">
                   <div className="text-4xl mb-4">✨</div>
-                  <h3 className="text-xl font-semibold mb-4 text-luxury-gold">SheSocial 解決方案</h3>
+                  <h3 className="text-xl font-semibold mb-4 text-white">天造地設人成對 解決方案</h3>
                   <ul className="text-left space-y-2 text-secondary-600 mb-6">
-                    <li>• 每月2場精選活動</li>
-                    <li>• 身份真實驗證</li>
-                    <li>• 小班制高品質互動</li>
-                    <li>• 專業配對諮詢</li>
+                    <li className="text-white/80">• 每月2場精選活動</li>
+                    <li className="text-white/80">• 身份真實驗證</li>
+                    <li className="text-white/80">• 小班制高品質互動</li>
+                    <li className="text-white/80">• 專業配對諮詢</li>
                   </ul>
-                  <div className="text-luxury-gold font-semibold">量身打造的社交體驗</div>
+                  <div className="text-white font-semibold">量身打造的社交體驗</div>
                 </div>
                 
-                <div className="card-luxury p-8 text-center">
+                <div className="card-growth p-8 text-center">
                   <div className="text-4xl mb-4">💕</div>
-                  <h3 className="text-xl font-semibold mb-4 text-green-600">成功收穫愛情！</h3>
+                  <h3 className="text-xl font-semibold mb-4 text-white">成功收穫愛情！</h3>
                   <ul className="text-left space-y-2 text-secondary-600 mb-6">
-                    <li>• 85% 配對成功率</li>
-                    <li>• 平均3個月找到真愛</li>
-                    <li>• 500+ 成功案例</li>
-                    <li>• 終身幸福保障</li>
+                    <li className="text-white/80">• 85% 配對成功率</li>
+                    <li className="text-white/80">• 平均3個月找到真愛</li>
+                    <li className="text-white/80">• 500+ 成功案例</li>
+                    <li className="text-white/80">• 終身幸福保障</li>
                   </ul>
-                  <div className="text-green-600 font-semibold">您的幸福，我們的使命</div>
+                  <div className="text-white font-semibold">您的幸福，我們的使命</div>
                 </div>
               </div>
 
               {/* Social Proof */}
-              <div className="card-luxury p-8 mt-12">
-                <h2 className="text-2xl font-bold text-center mb-8">真實會員回饋</h2>
+              <div className="card-connection p-8 mt-12">
+                <h2 className="text-2xl font-bold text-center mb-8 text-white">真實會員回饋</h2>
                 <div className="grid md:grid-cols-2 gap-8">
                   <div className="bg-white/50 p-6 rounded-lg">
                     <div className="flex items-center mb-4">
@@ -105,8 +113,8 @@ function App() {
                       </div>
                     </div>
                     <p className="text-secondary-700 italic">
-                      "原本對網路交友很害怕，但SheSocial的視訊面試讓我很安心。
-                      在第二場活動就遇到現在的老公，真的很感謝！"
+                      "原本對網路交友很害怕，但天造地設人成對的視訊面試讓我很安心。
+                      在第二場活動就遇到現在的老公，1+1真的等於無限！"
                     </p>
                   </div>
                   
@@ -121,7 +129,7 @@ function App() {
                       </div>
                     </div>
                     <p className="text-secondary-700 italic">
-                      "工作太忙沒時間交朋友，SheSocial的活動品質很高，
+                      "工作太忙沒時間交朋友，天造地設人成對的活動品質很高，
                       都是真心想找伴侶的人。小班制讓每個人都有機會深入了解。"
                     </p>
                   </div>
@@ -129,9 +137,9 @@ function App() {
               </div>
 
               {/* Call-to-Action */}
-              <div className="card-luxury p-8 mt-12 text-center">
-                <h2 className="text-2xl font-bold mb-4">準備好找到真愛了嗎？</h2>
-                <p className="text-lg text-secondary-600 mb-6">
+              <div className="card-connection p-8 mt-12 text-center">
+                <h2 className="text-2xl font-bold mb-4 text-white">準備好找到真愛了嗎？</h2>
+                <p className="text-lg text-white/80 mb-6">
                   加入500+成功會員的行列，讓我們幫您找到人生伴侶
                 </p>
                 <div className="space-y-4 sm:space-y-0 sm:space-x-4 sm:flex sm:justify-center">
@@ -160,7 +168,7 @@ function App() {
         <footer className="bg-secondary-900 text-white py-12 mt-20">
           <div className="container-luxury">
             <div className="text-center">
-              <p>&copy; 2024 SheSocial. 台灣奢華社交活動平台</p>
+              <p>&copy; 2024 天造地設人成對 InfinityMatch. 1+1=∞ 台灣頂級配對平台</p>
             </div>
           </div>
         </footer>

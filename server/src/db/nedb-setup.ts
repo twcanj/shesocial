@@ -10,6 +10,12 @@ export interface DatabaseCollections {
   events: Datastore<EventData>
   bookings: Datastore<BookingData>
   syncQueue: Datastore<SyncQueueItem>
+  // New appointment system collections
+  appointments_slots: Datastore<any>
+  appointment_bookings: Datastore<any>
+  interviewers: Datastore<any>
+  availability_overrides: Datastore<any>
+  appointment_notifications: Datastore<any>
 }
 
 class NeDBSetup {
@@ -46,6 +52,27 @@ class NeDBSetup {
         timestampData: true
       }),
       syncQueue: new Datastore<SyncQueueItem>({ 
+        inMemoryOnly: true,
+        timestampData: true
+      }),
+      // New appointment system collections
+      appointments_slots: new Datastore<any>({ 
+        inMemoryOnly: true,
+        timestampData: true
+      }),
+      appointment_bookings: new Datastore<any>({ 
+        inMemoryOnly: true,
+        timestampData: true
+      }),
+      interviewers: new Datastore<any>({ 
+        inMemoryOnly: true,
+        timestampData: true
+      }),
+      availability_overrides: new Datastore<any>({ 
+        inMemoryOnly: true,
+        timestampData: true
+      }),
+      appointment_notifications: new Datastore<any>({ 
         inMemoryOnly: true,
         timestampData: true
       })
@@ -89,7 +116,40 @@ class NeDBSetup {
       databases.syncQueue.ensureIndex({ fieldName: 'timestamp' })
       databases.syncQueue.ensureIndex({ fieldName: 'priority' })
 
-      console.log('📊 Database indexes created successfully')
+      // Appointment slots indexes
+      databases.appointments_slots.ensureIndex({ fieldName: 'interviewerId' })
+      databases.appointments_slots.ensureIndex({ fieldName: 'date' })
+      databases.appointments_slots.ensureIndex({ fieldName: 'type' })
+      databases.appointments_slots.ensureIndex({ fieldName: 'isAvailable' })
+      databases.appointments_slots.ensureIndex({ fieldName: 'createdAt' })
+
+      // Appointment bookings indexes
+      databases.appointment_bookings.ensureIndex({ fieldName: 'userId' })
+      databases.appointment_bookings.ensureIndex({ fieldName: 'slotId' })
+      databases.appointment_bookings.ensureIndex({ fieldName: 'type' })
+      databases.appointment_bookings.ensureIndex({ fieldName: 'status' })
+      databases.appointment_bookings.ensureIndex({ fieldName: 'scheduledDate' })
+      databases.appointment_bookings.ensureIndex({ fieldName: 'guestInfo.email' })
+
+      // Interviewers indexes
+      databases.interviewers.ensureIndex({ fieldName: 'userId' })
+      databases.interviewers.ensureIndex({ fieldName: 'email', unique: true })
+      databases.interviewers.ensureIndex({ fieldName: 'isActive' })
+      databases.interviewers.ensureIndex({ fieldName: 'appointmentTypes' })
+
+      // Availability overrides indexes
+      databases.availability_overrides.ensureIndex({ fieldName: 'interviewerId' })
+      databases.availability_overrides.ensureIndex({ fieldName: 'date' })
+      databases.availability_overrides.ensureIndex({ fieldName: 'type' })
+
+      // Appointment notifications indexes
+      databases.appointment_notifications.ensureIndex({ fieldName: 'bookingId' })
+      databases.appointment_notifications.ensureIndex({ fieldName: 'userId' })
+      databases.appointment_notifications.ensureIndex({ fieldName: 'type' })
+      databases.appointment_notifications.ensureIndex({ fieldName: 'status' })
+      databases.appointment_notifications.ensureIndex({ fieldName: 'scheduledFor' })
+
+      console.log('📊 Database indexes created successfully (including appointment system)')
     } catch (error) {
       console.warn('⚠️ Warning: Some database indexes could not be created:', error)
     }

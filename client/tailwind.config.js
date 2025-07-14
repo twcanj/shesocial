@@ -64,6 +64,21 @@ export default {
           'premium': '#e91e63',     // Libra pink
           'platinum': '#673ab7',    // Scorpio purple
         },
+        // Zodiac-inspired colorful card gradients
+        zodiac: {
+          'aries': { start: '#ff6f61', end: '#ffb199' },        // Coral to peach
+          'taurus': { start: '#b5c334', end: '#e0ffb3' },       // Olive to light green
+          'gemini': { start: '#ffa726', end: '#fff7b2' },       // Orange to cream (readable)
+          'cancer': { start: '#00bcd4', end: '#b2f7ff' },       // Cyan to light blue
+          'leo': { start: '#ff9800', end: '#ffe0b2' },          // Orange to light orange
+          'virgo': { start: '#8bc34a', end: '#e6ffb2' },        // Green to light green
+          'libra': { start: '#e91e63', end: '#ffb2d9' },        // Pink to light pink
+          'scorpio': { start: '#673ab7', end: '#d1b2ff' },      // Purple to light purple
+          'sagittarius': { start: '#2196f3', end: '#b2d7ff' },  // Blue to light blue
+          'capricorn': { start: '#795548', end: '#d7c0b2' },    // Brown to light brown
+          'aquarius': { start: '#00bfae', end: '#b2fff7' },     // Teal to light teal
+          'pisces': { start: '#3f51b5', end: '#b2c7ff' },       // Indigo to light blue
+        },
       },
       fontFamily: {
         'sans': ['Inter', 'Noto Sans TC', 'system-ui', 'sans-serif'],

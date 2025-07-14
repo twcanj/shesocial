@@ -1,6 +1,8 @@
-# SheSocial Documentation
+# InfinityMatch 天造地設人成對 Documentation
 
-這裡是 SheSocial 奢華社交活動平台的完整文檔目錄。
+> **天造地設，人成對 | 1+1=∞ 當二個彼此有情人相遇，愛就開始無限**
+
+這裡是 InfinityMatch 天造地設人成對 台灣頂級配對平台的完整文檔目錄。
 
 ## 📂 文檔結構
 
@@ -39,4 +41,4 @@
 
 ---
 
-*最後更新: 2025年1月11日*
+*最後更新: 2025年7月14日 - 品牌重塑為 InfinityMatch 天造地設人成對 (1+1=∞)*

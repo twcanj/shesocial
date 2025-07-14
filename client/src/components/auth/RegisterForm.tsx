@@ -13,7 +13,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchT
     email: '',
     password: '',
     confirmPassword: '',
-    membership: 'regular' as const
+    membership: 'registered' as const
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')

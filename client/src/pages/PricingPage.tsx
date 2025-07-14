@@ -30,36 +30,37 @@ export const PricingPage: React.FC = () => {
 
       {/* Membership Tiers */}
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-        {/* Regular */}
-        <div className="card-luxury p-6 hover:shadow-2xl transition-shadow duration-300">
+        {/* Visitor */}
+        <div className="card-passion p-6 hover:shadow-2xl transition-shadow duration-300">
           <div className="text-center mb-4">
-            <div className="w-16 h-16 mx-auto bg-gray-100 rounded-full flex items-center justify-center mb-3">
-              <svg className="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            <div className="w-16 h-16 mx-auto bg-white/20 rounded-full flex items-center justify-center mb-3">
+              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
               </svg>
             </div>
-            <h3 className="text-lg font-semibold mb-2">一般會員</h3>
-            <div className="text-3xl font-bold text-luxury-gold mb-1">¥600</div>
-            <div className="text-sm text-gray-600">入會費 + ¥300/月</div>
+            <h3 className="text-lg font-semibold mb-2 text-white">訪客</h3>
+            <div className="text-3xl font-bold text-white mb-1">免費</div>
+            <div className="text-sm text-white/80">只能瀏覽</div>
           </div>
-          <ul className="space-y-3 text-sm text-gray-600 mb-6">
+          <ul className="space-y-3 text-sm text-white/80 mb-6">
             <li className="flex items-center">
-              <svg className="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
-              參與活動
+              只能看 3 個活動
             </li>
             <li className="flex items-center">
-              <svg className="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
-              基本功能使用
+              查看精彩活動集
             </li>
-            <li className="flex items-center">
-              <svg className="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            <li className="flex items-center opacity-50">
+              <svg className="w-4 h-4 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
-              30分鐘視訊面試
+              不能參加活動
             </li>
           </ul>
           <button 
@@ -70,41 +71,36 @@ export const PricingPage: React.FC = () => {
           </button>
         </div>
 
-        {/* VIP */}
-        <div className="card-luxury p-6 border-2 border-luxury-gold transform hover:scale-105 transition-all duration-300">
-          <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-            <span className="bg-luxury-gold text-white px-4 py-1 rounded-full text-xs font-semibold">
-              推薦
-            </span>
-          </div>
+        {/* Registered */}
+        <div className="card-growth p-6 transform hover:scale-105 transition-all duration-300">
           <div className="text-center mb-4">
-            <div className="w-16 h-16 mx-auto bg-luxury-gold/10 rounded-full flex items-center justify-center mb-3">
-              <svg className="w-8 h-8 text-luxury-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+            <div className="w-16 h-16 mx-auto bg-white/20 rounded-full flex items-center justify-center mb-3">
+              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
             </div>
-            <h3 className="text-lg font-semibold mb-2">VIP會員</h3>
-            <div className="text-3xl font-bold text-luxury-gold mb-1">¥1000</div>
-            <div className="text-sm text-gray-600">入會費 + ¥300/月</div>
+            <h3 className="text-lg font-semibold mb-2 text-white">註冊會員</h3>
+            <div className="text-3xl font-bold text-white mb-1">免費</div>
+            <div className="text-sm text-white/80">免費註冊</div>
           </div>
-          <ul className="space-y-3 text-sm text-gray-600 mb-6">
+          <ul className="space-y-3 text-sm text-white/80 mb-6">
             <li className="flex items-center">
-              <svg className="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
-              優先報名權
+              可看 12 個活動
             </li>
             <li className="flex items-center">
-              <svg className="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
-              創建活動權限
+              個人資料管理
             </li>
-            <li className="flex items-center">
-              <svg className="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            <li className="flex items-center opacity-50">
+              <svg className="w-4 h-4 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
-              專屬客服支援
+              不能參加活動
             </li>
           </ul>
           <button 
@@ -115,36 +111,41 @@ export const PricingPage: React.FC = () => {
           </button>
         </div>
 
-        {/* Premium 1300 */}
-        <div className="card-luxury p-6 bg-gradient-to-br from-luxury-champagne to-luxury-pearl hover:shadow-2xl transition-shadow duration-300">
+        {/* VIP */}
+        <div className="card-connection p-6 hover:shadow-2xl transition-shadow duration-300">
+          <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+            <span className="bg-white text-blue-600 px-4 py-1 rounded-full text-xs font-semibold">
+              推薦
+            </span>
+          </div>
           <div className="text-center mb-4">
-            <div className="w-16 h-16 mx-auto bg-purple-100 rounded-full flex items-center justify-center mb-3">
-              <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+            <div className="w-16 h-16 mx-auto bg-white/20 rounded-full flex items-center justify-center mb-3">
+              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
               </svg>
             </div>
-            <h3 className="text-lg font-semibold mb-2">Premium 1300</h3>
-            <div className="text-3xl font-bold text-purple-600 mb-1">¥1300</div>
-            <div className="text-sm text-gray-600">代金券套餐</div>
+            <h3 className="text-lg font-semibold mb-2 text-white">VIP會員</h3>
+            <div className="text-3xl font-bold text-white mb-1">NT$1,300</div>
+            <div className="text-sm text-white/80">付費會員</div>
           </div>
-          <ul className="space-y-3 text-sm text-gray-600 mb-6">
+          <ul className="space-y-3 text-sm text-white/80 mb-6">
             <li className="flex items-center">
-              <svg className="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
-              包含VIP所有權益
+              無限次數活動瀏覽
             </li>
             <li className="flex items-center">
-              <svg className="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
-              ¥100代金券 x 13張
+              可參加活動 (2月後)
             </li>
             <li className="flex items-center">
-              <svg className="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
-              適用2日遊活動
+              票券折抵優惠
             </li>
           </ul>
           <button 
@@ -155,41 +156,41 @@ export const PricingPage: React.FC = () => {
           </button>
         </div>
 
-        {/* Premium 2500 */}
-        <div className="card-luxury p-6 bg-gradient-to-br from-luxury-gold/20 to-luxury-rose/20 border-2 border-luxury-gold hover:shadow-2xl transition-all duration-300">
+        {/* VVIP */}
+        <div className="card-luxury p-6 hover:shadow-2xl transition-all duration-300">
           <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-            <span className="bg-gradient-to-r from-luxury-gold to-luxury-rose text-white px-4 py-1 rounded-full text-xs font-semibold">
+            <span className="bg-white text-purple-600 px-4 py-1 rounded-full text-xs font-semibold">
               頂級
             </span>
           </div>
           <div className="text-center mb-4">
-            <div className="w-16 h-16 mx-auto bg-luxury-gold/20 rounded-full flex items-center justify-center mb-3">
-              <svg className="w-8 h-8 text-luxury-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-16 h-16 mx-auto bg-white/20 rounded-full flex items-center justify-center mb-3">
+              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
               </svg>
             </div>
-            <h3 className="text-lg font-semibold mb-2">Premium 2500</h3>
-            <div className="text-3xl font-bold text-luxury-gold mb-1">¥2500</div>
-            <div className="text-sm text-gray-600">頂級套餐</div>
+            <h3 className="text-lg font-semibold mb-2 text-white">VVIP會員</h3>
+            <div className="text-3xl font-bold text-white mb-1">NT$2,500</div>
+            <div className="text-sm text-white/80">頂級付費會員</div>
           </div>
-          <ul className="space-y-3 text-sm text-gray-600 mb-6">
+          <ul className="space-y-3 text-sm text-white/80 mb-6">
             <li className="flex items-center">
-              <svg className="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              無限次數活動瀏覽
+            </li>
+            <li className="flex items-center">
+              <svg className="w-4 h-4 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
               查看參與者名單
             </li>
             <li className="flex items-center">
-              <svg className="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
-              ¥200代金券 x 12.5張
-            </li>
-            <li className="flex items-center">
-              <svg className="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              所有頂級權益
+              最多票券折抵
             </li>
           </ul>
           <button 
@@ -209,45 +210,45 @@ export const PricingPage: React.FC = () => {
             <thead>
               <tr className="bg-gradient-to-r from-luxury-champagne to-luxury-pearl">
                 <th className="p-4 text-left font-semibold">功能特色</th>
-                <th className="p-4 text-center font-semibold">一般會員</th>
+                <th className="p-4 text-center font-semibold">訪客</th>
+                <th className="p-4 text-center font-semibold">註冊會員</th>
                 <th className="p-4 text-center font-semibold">VIP會員</th>
-                <th className="p-4 text-center font-semibold">Premium 1300</th>
-                <th className="p-4 text-center font-semibold">Premium 2500</th>
+                <th className="p-4 text-center font-semibold">VVIP會員</th>
               </tr>
             </thead>
             <tbody>
               <tr className="border-b border-gray-100">
-                <td className="p-4 font-medium">入會費用</td>
-                <td className="p-4 text-center">¥600</td>
-                <td className="p-4 text-center">¥1000</td>
-                <td className="p-4 text-center">¥1300</td>
-                <td className="p-4 text-center">¥2500</td>
+                <td className="p-4 font-medium">費用</td>
+                <td className="p-4 text-center">免費</td>
+                <td className="p-4 text-center">免費</td>
+                <td className="p-4 text-center">NT$1,300</td>
+                <td className="p-4 text-center">NT$2,500</td>
               </tr>
               <tr className="border-b border-gray-100 bg-gray-50">
-                <td className="p-4 font-medium">月費</td>
-                <td className="p-4 text-center">¥300</td>
-                <td className="p-4 text-center">¥300</td>
-                <td className="p-4 text-center">一次性付費</td>
-                <td className="p-4 text-center">一次性付費</td>
+                <td className="p-4 font-medium">活動瀏覽限制</td>
+                <td className="p-4 text-center">3個活動</td>
+                <td className="p-4 text-center">12個活動</td>
+                <td className="p-4 text-center">無限制</td>
+                <td className="p-4 text-center">無限制</td>
               </tr>
               <tr className="border-b border-gray-100">
                 <td className="p-4 font-medium">參與活動</td>
-                <td className="p-4 text-center">✅</td>
-                <td className="p-4 text-center">✅</td>
+                <td className="p-4 text-center">❌</td>
+                <td className="p-4 text-center">❌</td>
                 <td className="p-4 text-center">✅</td>
                 <td className="p-4 text-center">✅</td>
               </tr>
               <tr className="border-b border-gray-100 bg-gray-50">
                 <td className="p-4 font-medium">優先報名權</td>
                 <td className="p-4 text-center">❌</td>
-                <td className="p-4 text-center">✅</td>
+                <td className="p-4 text-center">❌</td>
                 <td className="p-4 text-center">✅</td>
                 <td className="p-4 text-center">✅</td>
               </tr>
               <tr className="border-b border-gray-100">
                 <td className="p-4 font-medium">創建活動</td>
                 <td className="p-4 text-center">❌</td>
-                <td className="p-4 text-center">✅</td>
+                <td className="p-4 text-center">❌</td>
                 <td className="p-4 text-center">✅</td>
                 <td className="p-4 text-center">✅</td>
               </tr>
@@ -268,7 +269,7 @@ export const PricingPage: React.FC = () => {
               <tr className="bg-gray-50">
                 <td className="p-4 font-medium">專屬客服</td>
                 <td className="p-4 text-center">❌</td>
-                <td className="p-4 text-center">✅</td>
+                <td className="p-4 text-center">❌</td>
                 <td className="p-4 text-center">✅</td>
                 <td className="p-4 text-center">✅</td>
               </tr>
@@ -439,13 +440,13 @@ export const PricingPage: React.FC = () => {
 
       {/* Call to Action */}
       <div className="text-center">
-        <div className="card-luxury p-8 max-w-2xl mx-auto bg-gradient-to-r from-luxury-champagne to-luxury-pearl">
-          <h2 className="text-2xl font-bold mb-4">
+        <div className="card-passion p-8 max-w-2xl mx-auto">
+          <h2 className="text-2xl font-bold mb-4 text-white">
             {isAuthenticated && user?.membership?.status === 'profile_completed' 
               ? '立即選擇您的方案' 
               : '立即開始您的社交之旅'}
           </h2>
-          <p className="text-gray-600 mb-6">
+          <p className="text-white/80 mb-6">
             {isAuthenticated && user?.membership?.status === 'profile_completed'
               ? '根據您的個人資料，我們已為您推薦最適合的方案'
               : '選擇適合的會員方案，加入台灣頂級社交圈'}
@@ -459,7 +460,7 @@ export const PricingPage: React.FC = () => {
                 ? '前往付款頁面'
                 : '立即註冊會員'}
             </button>
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-white/60">
               有任何問題？歡迎聯絡客服：0800-123-456
             </div>
           </div>
@@ -472,8 +473,8 @@ export const PricingPage: React.FC = () => {
         <div className="flex justify-center space-x-4">
           <button 
             onClick={() => navigator.share ? navigator.share({
-              title: 'SheSocial 會員方案',
-              text: '台灣高端社交活動平台 - 會員方案介紹',
+              title: '天造地設人成對 會員方案',
+              text: '1+1=∞ 台灣頂級配對平台 - 會員方案介紹',
               url: window.location.href
             }) : navigator.clipboard.writeText(window.location.href)}
             className="btn-luxury-outline text-sm"

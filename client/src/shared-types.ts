@@ -32,9 +32,10 @@ export interface EventData {
   maxParticipants?: number
   status: 'draft' | 'published' | 'full' | 'completed' | 'cancelled'
   participantVisibility?: {
-    premium_2500: boolean
+    vvip: boolean
     vip: boolean
-    regular: boolean
+    registered: boolean
+    visitor: boolean
   }
   notifications?: {
     sent: boolean
@@ -100,7 +101,7 @@ export interface UserProfile {
     }
   }
   membership: {
-    type: 'regular' | 'vip' | 'premium_1300' | 'premium_2500'
+    type: 'visitor' | 'registered' | 'vip' | 'vvip'
     joinDate: Date | string
     payments: PaymentRecord[]
     vouchers?: VoucherBalance

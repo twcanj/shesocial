@@ -169,11 +169,11 @@ Key interfaces:
 - `BookingData`: Event booking records
 - `SyncQueueItem`: Offline sync operations
 
-### Membership System
-- **regular**: Basic membership (¥600 entry + ¥300/month)
-- **vip**: VIP membership (¥1000 entry + ¥300/month)
-- **premium_1300**: ¥1300 voucher package
-- **premium_2500**: ¥2500 voucher package (can view participants)
+### Membership System (4-Tier)
+- **visitor**: Browsing only (can see 3 activities maximum)
+- **registered**: Free registration (can see 12 activities maximum)  
+- **vip**: Paid membership NT$1,300 (can participate in events after 2-month wait + voucher benefits)
+- **vvip**: Premium paid membership NT$2,500 (can view participants + maximum voucher benefits)
 
 ## React Hooks (client/src/hooks/useOfflineDB.ts)
 - `useOfflineDB()`: Main database hook
@@ -368,14 +368,14 @@ Key interfaces:
 - **Payment History**: Integration with user membership and booking records
 
 #### 2. LINE Messaging & Customer Support
-- **LINE Official Account**: Verified business account for SheSocial
+- **LINE Official Account**: Verified business account for InfinityMatch 天造地設人成對
 - **聯絡我們 Function**: Direct customer support through LINE chat
 - **Auto-Response System**: Intelligent bot for common inquiries
 - **Rich Message Support**: Images, location sharing, event information
 - **Quick Reply Buttons**: Pre-defined responses for membership and event questions
 
 #### 3. Unified Account System
-- **LINE ID Linking**: Connect LINE accounts with SheSocial membership
+- **LINE ID Linking**: Connect LINE accounts with InfinityMatch 天造地設人成對 membership
 - **Single Sign-On**: Optional LINE Login for platform access
 - **Payment-to-Support Flow**: Instant support access from payment issues
 - **Notification System**: Payment confirmations, event updates, membership reminders
@@ -748,7 +748,7 @@ Ctrl+Shift+R (Windows/Linux) or Cmd+Shift+R (Mac)
 
 ## Brand Assets
 ### Logo Implementation
-- **Logo File**: `client/public/logo.jpeg` - Official SheSocial logo with heart-shaped couple silhouettes
+- **Logo File**: `client/public/logo.jpeg` - Official InfinityMatch 天造地設人成對 logo with heart-shaped couple silhouettes
 - **Header Integration**: 48x48px with luxury gold CSS filter treatment
 - **Favicon**: Logo set as browser favicon and PWA icon
 - **Color Optimization**: CSS filters applied to match luxury gold theme
@@ -799,7 +799,7 @@ Ctrl+Shift+R (Windows/Linux) or Cmd+Shift+R (Mac)
 ## 🎉 FINAL PROJECT STATUS: SALES-OPTIMIZED PLATFORM COMPLETE
 
 ### ✅ Implementation Achievements
-The SheSocial platform has been successfully transformed into a **sales-optimized conversion system** that maximizes lead capture and business intelligence while maintaining the luxury user experience. All core features are implemented and operational.
+The InfinityMatch 天造地設人成對 platform (1+1=∞) has been successfully transformed into a **sales-optimized conversion system** that maximizes lead capture and business intelligence while maintaining the luxury user experience. All core features are implemented and operational. 天造地設，人成對 - 當二個彼此有情人相遇，愛就開始無限。
 
 ### 📊 Business Impact Summary
 - **Registration Flow Optimized**: Profile data collection before payment increases lead capture by collecting valuable customer information even from non-converting visitors

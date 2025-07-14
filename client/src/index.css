@@ -27,6 +27,21 @@
   --gradient-button: linear-gradient(135deg, #663399 0%, #b8860b 100%);
   --gradient-button-hover: linear-gradient(135deg, #5c2d85 0%, #9d6f00 100%);
   --gradient-card: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(250, 248, 255, 0.8) 100%);
+  
+  /* SheSocial Balanced 4-Element Card System */
+  /* Inspired by the natural 4-element harmony but adapted for our platform */
+  
+  /* 🔥 PASSION Element - Events & Activities (Fire Energy) */
+  --gradient-passion: linear-gradient(135deg, #ff6f61 0%, #ffb199 100%);      /* Coral - Events, activities, passion */
+  
+  /* 🌱 GROWTH Element - Members & Community (Earth Energy) */  
+  --gradient-growth: linear-gradient(135deg, #8bc34a 0%, #e6ffb2 100%);       /* Green - Members, growth, nurturing */
+  
+  /* 💙 CONNECTION Element - Social & Communication (Water Energy) */
+  --gradient-connection: linear-gradient(135deg, #2196f3 0%, #b2d7ff 100%);   /* Blue - Social, communication, flow */
+  
+  /* ✨ LUXURY Element - Premium & VIP (Air Energy) */
+  --gradient-luxury: linear-gradient(135deg, #673ab7 0%, #d1b2ff 100%);       /* Purple - Premium, luxury, elevation */
 }
 
 /* Base Styles */
@@ -285,6 +300,46 @@
     @apply card-luxury;
     border: 2px solid #673ab7;
     @apply shadow-mystical animate-mystical-glow;
+  }
+  
+  /* Balanced 4-Element Card System - Perfect page harmony */
+  
+  /* 🔥 PASSION Cards - Events, Activities, Action */
+  .card-passion {
+    background: var(--gradient-passion);
+    @apply text-white shadow-lg backdrop-blur-md rounded-2xl border border-red-200/30;
+    @apply transition-all duration-500 ease-in-out hover:shadow-xl hover:scale-105;
+  }
+  
+  /* 🌱 GROWTH Cards - Members, Community, Progress */
+  .card-growth {
+    background: var(--gradient-growth);
+    @apply text-white shadow-lg backdrop-blur-md rounded-2xl border border-green-200/30;
+    @apply transition-all duration-500 ease-in-out hover:shadow-xl hover:scale-105;
+  }
+  
+  /* 💙 CONNECTION Cards - Social, Communication, Relationships */
+  .card-connection {
+    background: var(--gradient-connection);
+    @apply text-white shadow-lg backdrop-blur-md rounded-2xl border border-blue-200/30;
+    @apply transition-all duration-500 ease-in-out hover:shadow-xl hover:scale-105;
+  }
+  
+  /* ✨ LUXURY Cards - Premium, VIP, Exclusive */
+  .card-luxury {
+    background: var(--gradient-luxury);
+    @apply text-white shadow-lg backdrop-blur-md rounded-2xl border border-purple-200/30;
+    @apply transition-all duration-500 ease-in-out hover:shadow-xl hover:scale-105;
+  }
+  
+  /* Enhanced hover effects for all 4 elements */
+  .card-passion:hover,
+  .card-growth:hover,
+  .card-connection:hover,
+  .card-luxury:hover {
+    transform: scale(1.02) rotateX(2deg) rotateY(2deg);
+    filter: brightness(1.1) contrast(1.1);
+    @apply shadow-mystical;
   }
 }
 

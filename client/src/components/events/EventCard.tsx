@@ -65,16 +65,43 @@ export const EventCard: React.FC<EventCardProps> = ({
   const availableSpots = event.maxParticipants - participantCount
   const isUserBooked = event.participants?.some(p => p.userId === user?._id) || false
 
+  // Get balanced 4-element card class
+  const getCardClass = () => {
+    // Map event characteristics to our 4 balanced elements for visual harmony
+    
+    // ✨ LUXURY Element - Premium & VIP (Purple)
+    if (event.metadata.type === '2day_trip') return 'card-luxury'
+    if (event.metadata.category === '旅遊探索') return 'card-luxury'
+    if (event.metadata.category === '商務社交') return 'card-luxury'
+    
+    // 💙 CONNECTION Element - Social & Communication (Blue)  
+    if (event.metadata.category === '美食饗宴') return 'card-connection'
+    if (event.metadata.category === '文化藝術') return 'card-connection'
+    if (event.metadata.category === '音樂娛樂') return 'card-connection'
+    
+    // 🌱 GROWTH Element - Health & Learning (Green)
+    if (event.metadata.category === '戶外活動') return 'card-growth'
+    if (event.metadata.category === '健康養生') return 'card-growth'
+    if (event.metadata.category === '學習成長') return 'card-growth'
+    
+    // 🔥 PASSION Element - Hobbies & Sports (Coral)
+    if (event.metadata.category === '興趣愛好') return 'card-passion'
+    if (event.metadata.category === '運動休閒') return 'card-passion'
+    
+    // Default fallback
+    return 'card-passion'  // 🔥 Default for any other activities
+  }
+
   return (
-    <div className="card-luxury card-luxury-hover">
+    <div className={`${getCardClass()}`}>
       <div className="p-6">
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+            <h3 className="text-xl font-semibold text-white mb-2">
               {event.name}
             </h3>
-            <div className="flex items-center space-x-3 text-sm text-gray-600">
+            <div className="flex items-center space-x-3 text-sm text-white/80">
               <span className="flex items-center">
                 <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -95,34 +122,34 @@ export const EventCard: React.FC<EventCardProps> = ({
         {/* Event Details */}
         <div className="space-y-3 mb-4">
           <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-600">活動類型</span>
-            <span className="text-sm font-medium text-luxury-gold">
+            <span className="text-sm text-white/70">活動類型</span>
+            <span className="text-sm font-medium text-white">
               {getEventTypeLabel(event.metadata.type)}
             </span>
           </div>
 
           <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-600">地點</span>
-            <span className="text-sm font-medium">{event.metadata.location}</span>
+            <span className="text-sm text-white/70">地點</span>
+            <span className="text-sm font-medium text-white">{event.metadata.location}</span>
           </div>
 
           <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-600">類別</span>
-            <span className="text-sm font-medium">{event.metadata.category}</span>
+            <span className="text-sm text-white/70">類別</span>
+            <span className="text-sm font-medium text-white">{event.metadata.category}</span>
           </div>
 
           {/* Pricing */}
-          <div className="bg-luxury-champagne/30 rounded-lg p-3 mt-4">
+          <div className="bg-white/20 backdrop-blur-sm rounded-lg p-3 mt-4">
             <div className="grid grid-cols-2 gap-3 text-sm">
               <div>
-                <span className="text-gray-600">男性費用</span>
-                <div className="font-semibold text-luxury-gold">
+                <span className="text-white/70">男性費用</span>
+                <div className="font-semibold text-white">
                   NT$ {event.metadata.pricing.male.toLocaleString()}
                 </div>
               </div>
               <div>
-                <span className="text-gray-600">女性費用</span>
-                <div className="font-semibold text-luxury-gold">
+                <span className="text-white/70">女性費用</span>
+                <div className="font-semibold text-white">
                   NT$ {event.metadata.pricing.female.toLocaleString()}
                 </div>
               </div>

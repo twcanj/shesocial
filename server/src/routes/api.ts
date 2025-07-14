@@ -8,6 +8,7 @@ import { UserModel } from '../models/User'
 import { EventModel } from '../models/Event'
 import { BookingModel } from '../models/Booking'
 import authRoutes from './auth'
+import { createAppointmentRoutes } from './appointments'
 import { authenticateToken, requireMembership, requirePermission, AuthenticatedRequest } from '../middleware/auth'
 import { UserProfile, SalesLead } from '../types/database'
 
@@ -28,6 +29,9 @@ const router = Router()
 
 // Authentication routes
 router.use('/auth', authRoutes)
+
+// Appointment system routes
+router.use('/appointments', createAppointmentRoutes(databases))
 
 // Health check endpoint
 router.get('/health', (req, res) => {

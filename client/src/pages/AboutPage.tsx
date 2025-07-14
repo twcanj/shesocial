@@ -12,20 +12,25 @@ export const AboutPage: React.FC = () => {
       <div className="container-luxury section-luxury">
         {/* Hero Section */}
         <div className="text-center mb-16">
+          <div className="mb-8">
+            <div className="text-5xl md:text-6xl font-bold text-gradient-luxury mb-4 animate-fade-in">
+              1 + 1 = ∞
+            </div>
+          </div>
           <h1 className="text-gradient-luxury animate-fade-in mb-6">
-            關於 SheSocial
+            關於 天造地設人成對 InfinityMatch
           </h1>
           <p className="text-xl text-secondary-700 max-w-3xl mx-auto mb-4">
-            尋找伴侶：一個你，一個我，畫成一個圓
+            天造地設，人成對 - 當二個彼此有情人相遇，愛就開始無限
           </p>
           <p className="text-lg text-secondary-600 max-w-4xl mx-auto">
-            台灣高端社交活動平台，專注於隱私保護、會員分級和優質體驗
+            台灣頂級配對平台，專注於隱私保護、會員分級和優質體驗
           </p>
         </div>
 
         {/* Mission Section */}
         <div className="grid lg:grid-cols-2 gap-12 mb-16">
-          <div className="card-luxury p-8">
+          <div className="card-passion p-8">
             <div className="flex items-center mb-6">
               <div className="w-16 h-16 bg-luxury-gold/10 rounded-full flex items-center justify-center mr-4">
                 <svg className="w-8 h-8 text-luxury-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -35,8 +40,8 @@ export const AboutPage: React.FC = () => {
               <h2 className="text-2xl font-bold">我們的使命</h2>
             </div>
             <p className="text-gray-600 leading-relaxed">
-              SheSocial致力於為台灣單身族群提供安全、優質的社交環境。我們相信每個人都值得擁有真摯的感情，
-              透過精心策劃的活動和嚴格的會員篩選機制，讓您在舒適的環境中遇見志同道合的人。
+              天造地設人成對致力於為台灣單身族群提供安全、優質的社交環境。我們相信每個人都值得擁有真摯的感情，
+              透過精心策劃的活動和嚴格的會員篩選機制，讓您在舒適的環境中遇見志同道合的人。我們相信，天造地設，當兩個人相遇，就有了無限可能。
             </p>
           </div>
 

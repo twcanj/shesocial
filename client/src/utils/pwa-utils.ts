@@ -1,4 +1,4 @@
-// PWA utilities for SheSocial
+// PWA utilities for InfinityMatch
 // Handles Service Worker registration and PWA installation
 
 import { useState, useEffect } from 'react'
@@ -119,7 +119,7 @@ class PWAManager {
   private notifyUpdate(): void {
     // Show update notification
     if (Notification.permission === 'granted') {
-      new Notification('SheSocial 更新可用', {
+      new Notification('InfinityMatch 更新可用', {
         body: '點擊重新載入以使用最新版本',
         icon: '/pwa-192x192.png',
         badge: '/pwa-192x192.png'

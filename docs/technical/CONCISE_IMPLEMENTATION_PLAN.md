@@ -1,7 +1,9 @@
-# SheSocial 精簡實施計劃
-## Taiwan市場導向的奢華社交平台
+# InfinityMatch 天造地設人成對 精簡實施計劃
+## 1+1=∞ Taiwan市場導向的頂級配對平台
 
-**📅 最後更新**: 2025年7月10日  
+> **天造地設，人成對 | 當二個彼此有情人相遇，愛就開始無限**
+
+**📅 最後更新**: 2025年7月14日 - 品牌重塑為 InfinityMatch 天造地設人成對 (1+1=∞)  
 **🎯 開發進度**: 100% MVP完成，全功能運行 🎉  
 **💻 技術狀態**: 前後端完整運行，CSS系統完全修復，所有API端點已驗證  
 **🚀 下一步**: 生產環境部署 + 用戶測試
@@ -53,30 +55,56 @@
 
 ---
 
-## 🛠️ 技術架構（台灣優化版）
+## 🏗️ **統一CMS架構 - 三大系統核心基礎**
 
-### 前端架構 (100% 實現) ✅
+### **CMS 中心化設計理念**
 ```javascript
-// 完全實現的離線優先架構
-React 19 + TypeScript + Vite ✅ (完整設置)
-+ Tailwind CSS 3.x + 奢華設計系統 ✅ (穩定漸變色彩系統)
-+ IndexedDB (Dexie.js) 離線存儲 ✅ (架構完成)
-+ Service Worker + PWA ✅ (組件架構)
-+ Zustand 狀態管理 ✅ (全局狀態)
-+ 模組化組件系統 ✅ (Auth/Events/Sync)
-+ CSS 梯度系統 ✅ (from-luxury-pearl 等已修復)
+const cmsArchitecturePhilosophy = {
+  concept: "單一CMS驅動三大業務系統",
+  coreSystem: "統一內容管理系統 (Unified CMS)",
+  businessSystems: [
+    "面試預約系統 (Interview Management)",
+    "VVIP介紹系統 (VVIP Intro Service)",
+    "活動管理系統 (Event Management)", 
+    "精彩活動集 (Event Showcase)"
+  ],
+  
+  technicalBenefits: [
+    "代碼重用最大化",
+    "統一數據模型",
+    "一致的用戶體驗",
+    "簡化維護成本"
+  ]
+}
 ```
 
-### 後端架構 (85% 實現) ✅
+### **CMS 技術架構設計**
 ```javascript
-// 已實現的API服務器
-Node.js + Express + TypeScript ✅ (完整運行)
-+ NeDB 文檔數據庫 ✅ (CRUD操作)
-+ JWT 認證系統 ✅ (令牌驗證)
-+ CORS + Helmet 安全 ✅ (中間件)
-+ 台灣本地化 ✅ (繁體中文錯誤)
-+ RESTful API 端點 ✅ (Users/Events/Bookings)
-+ 會員權限系統 ✅ (四級分層)
+const unifiedCMSArchitecture = {
+  // 核心CMS層
+  cmsCore: {
+    contentEngine: "統一內容引擎",
+    mediaManager: "S3/R2 媒體管理器",
+    workflowEngine: "可配置工作流程引擎",
+    permissionSystem: "細粒度權限控制"
+  },
+  
+  // 業務適配層
+  businessAdapters: {
+    interviewAdapter: "面試預約業務邏輯適配",
+    vvipAdapter: "VVIP介紹服務適配",
+    eventAdapter: "活動管理業務適配",
+    showcaseAdapter: "精彩活動集適配"
+  },
+  
+  // 共享服務層
+  sharedServices: {
+    mediaProcessing: "統一媒體處理服務",
+    notificationService: "統一通知服務",
+    auditService: "操作審計服務",
+    analyticsService: "統一分析服務"
+  }
+}
 ```
 
 ### 🎉 **100% 驗證通過的API端點**
@@ -654,4 +682,325 @@ npx tsc --noEmit
 # 4. 驗證前後端連接
 curl http://localhost:3001/health
 curl http://localhost:5176
+```
+### **CMS 數據庫架構 (NeDB 擴展)**
+```javascript
+const cmsDataSchema = {
+  // 統一內容表
+  cms_content: {
+    _id: "content_id",
+    type: "interview|vvip|event|showcase", // 內容類型
+    category: "profile|guide|template|story", // 內容分類
+    title: "內容標題",
+    content: "富文本內容 (JSON格式)",
+    media: ["關聯媒體檔案ID陣列"],
+    metadata: {
+      author: "創建者ID",
+      tags: ["標籤陣列"],
+      seo: "SEO相關設定",
+      businessData: "業務特定數據"
+    },
+    workflow: {
+      status: "draft|review|approved|published|archived",
+      assignedTo: "當前負責人ID",
+      dueDate: "截止日期",
+      history: ["工作流程歷史記錄"]
+    },
+    permissions: {
+      viewRoles: ["可查看角色"],
+      editRoles: ["可編輯角色"],
+      publishRoles: ["可發布角色"]
+    },
+    createdAt: "創建時間",
+    updatedAt: "更新時間",
+    publishedAt: "發布時間"
+  },
+  
+  // 統一媒體庫
+  cms_media: {
+    _id: "media_id",
+    filename: "原始檔名",
+    mimeType: "檔案類型",
+    size: "檔案大小",
+    storage: {
+      provider: "r2", // S3/R2
+      bucket: "存儲桶名稱",
+      key: "存儲路徑",
+      url: "公開訪問URL",
+      cdnUrl: "CDN加速URL"
+    },
+    processing: {
+      status: "pending|processing|completed|failed",
+      variants: {
+        thumbnail: "縮圖URL",
+        medium: "中等尺寸URL", 
+        webp: "WebP格式URL"
+      }
+    },
+    metadata: {
+      alt: "替代文字",
+      caption: "圖片說明",
+      tags: ["媒體標籤"],
+      exif: "EXIF數據"
+    },
+    usage: ["使用此媒體的內容ID"],
+    uploadedBy: "上傳者ID",
+    createdAt: "上傳時間"
+  },
+  
+  // 工作流程定義
+  cms_workflows: {
+    _id: "workflow_id",
+    name: "工作流程名稱",
+    contentType: "適用內容類型",
+    steps: [
+      {
+        name: "步驟名稱",
+        assignedRoles: ["負責角色"],
+        actions: ["可執行動作"],
+        conditions: "進入條件",
+        notifications: "通知設定"
+      }
+    ],
+    isActive: "是否啟用",
+    createdAt: "創建時間"
+  },
+  
+  // 面試預約擴展
+  interviews: {
+    _id: "interview_id",
+    userId: "申請者ID",
+    interviewerId: "面試官ID",
+    contentId: "關聯CMS內容ID", // 面試相關內容
+    scheduledAt: "面試時間",
+    duration: 30,
+    status: "scheduled|completed|cancelled|rescheduled",
+    meetingInfo: {
+      platform: "zoom|meet|teams",
+      meetingId: "會議ID",
+      password: "會議密碼",
+      joinUrl: "加入連結"
+    },
+    preparation: {
+      documentsRequired: ["所需文件"],
+      instructionsContentId: "準備說明內容ID"
+    },
+    result: {
+      decision: "approved|rejected|pending",
+      notes: "面試記錄",
+      followUpActions: ["後續行動"]
+    }
+  }
+}
+```
+
+### **CMS API 端點設計**
+```javascript
+const cmsAPIEndpoints = {
+  // 內容管理
+  content: {
+    "GET /api/cms/content": "獲取內容列表 (支援類型篩選)",
+    "POST /api/cms/content": "創建新內容",
+    "GET /api/cms/content/:id": "獲取特定內容",
+    "PUT /api/cms/content/:id": "更新內容",
+    "DELETE /api/cms/content/:id": "刪除內容",
+    "POST /api/cms/content/:id/publish": "發布內容",
+    "POST /api/cms/content/:id/archive": "歸檔內容"
+  },
+  
+  // 媒體管理
+  media: {
+    "GET /api/cms/media": "媒體庫列表",
+    "POST /api/cms/media/upload": "上傳媒體檔案",
+    "GET /api/cms/media/:id": "獲取媒體詳情",
+    "PUT /api/cms/media/:id": "更新媒體資訊",
+    "DELETE /api/cms/media/:id": "刪除媒體檔案",
+    "POST /api/cms/media/:id/variants": "生成媒體變體"
+  },
+  
+  // 工作流程管理
+  workflow: {
+    "GET /api/cms/workflows": "工作流程列表",
+    "POST /api/cms/content/:id/workflow/advance": "推進工作流程",
+    "GET /api/cms/content/:id/workflow/history": "工作流程歷史",
+    "POST /api/cms/content/:id/workflow/assign": "分配任務",
+    "PUT /api/cms/content/:id/workflow/status": "更新狀態"
+  },
+  
+  // 面試預約整合
+  interviews: {
+    "GET /api/interviews/availability": "查詢可用時段",
+    "POST /api/interviews/book": "預約面試",
+    "GET /api/interviews/my-bookings": "我的預約",
+    "PUT /api/interviews/:id/reschedule": "重新預約",
+    "GET /api/cms/content/interview-guides": "面試準備指南"
+  },
+  
+  // VVIP介紹服務整合
+  vvipIntro: {
+    "POST /api/vvip/intro/order": "訂購VVIP介紹服務",
+    "GET /api/vvip/intro/my-orders": "我的訂單",
+    "GET /api/cms/content/vvip-templates": "介紹模板",
+    "POST /api/cms/content/vvip-intro": "創建VVIP介紹內容"
+  }
+}
+```
+## 📅 **CMS中心化開發路線圖**
+
+### 🚀 **Phase 2A: CMS 基礎架構 (當前重點)**
+**目標**: 建立統一CMS系統，支撐三大業務模組
+
+#### **Week 1-2: CMS 核心系統**
+```javascript
+const cmsFoundationTasks = {
+  backend: [
+    "擴展 NeDB 數據庫架構 (cms_content, cms_media, cms_workflows)",
+    "實現統一內容管理 API",
+    "S3/R2 媒體存儲整合",
+    "基礎工作流程引擎"
+  ],
+  
+  frontend: [
+    "CMS 管理員界面基礎架構",
+    "統一媒體上傳組件",
+    "內容編輯器組件",
+    "工作流程狀態顯示"
+  ]
+}
+```
+
+#### **Week 3-4: 面試預約系統整合**
+```javascript
+const interviewSystemIntegration = {
+  cmsIntegration: [
+    "面試官檔案內容管理",
+    "面試準備指南內容",
+    "面試流程模板系統",
+    "面試結果記錄模板"
+  ],
+  
+  businessLogic: [
+    "面試時段管理系統",
+    "預約確認工作流程",
+    "面試官分配邏輯",
+    "面試結果審核流程"
+  ],
+  
+  userInterface: [
+    "面試預約日曆界面",
+    "面試準備資料展示",
+    "面試確認和提醒",
+    "面試結果通知"
+  ]
+}
+```
+
+### 🎯 **Phase 2B: 業務系統整合 (4-6週)**
+
+#### **VVIP介紹系統 CMS 整合**
+```javascript
+const vvipSystemIntegration = {
+  contentManagement: [
+    "VVIP介紹模板庫",
+    "專業文案編輯工具",
+    "照片編輯和排版系統",
+    "介紹頁面預覽功能"
+  ],
+  
+  productionWorkflow: [
+    "訂單管理系統",
+    "內容製作工作流程",
+    "客戶確認和修改流程",
+    "最終發布和展示"
+  ]
+}
+```
+
+#### **活動管理系統 CMS 整合**
+```javascript
+const eventSystemIntegration = {
+  contentLifecycle: [
+    "活動策劃內容管理",
+    "活動宣傳素材製作",
+    "活動進行中內容更新",
+    "活動後內容整理"
+  ],
+  
+  showcaseIntegration: [
+    "優質活動內容篩選",
+    "精彩活動集自動生成",
+    "SEO優化內容處理",
+    "社群分享功能"
+  ]
+}
+```
+
+### 📊 **Phase 2C: 高級功能和優化 (6-8週)**
+
+#### **統一分析和報告系統**
+```javascript
+const analyticsIntegration = {
+  contentAnalytics: [
+    "內容瀏覽和互動統計",
+    "工作流程效率分析",
+    "媒體使用情況報告",
+    "用戶行為分析"
+  ],
+  
+  businessIntelligence: [
+    "面試轉換率分析",
+    "VVIP服務訂單分析",
+    "活動參與度統計",
+    "收入和成本分析"
+  ]
+}
+```
+
+### 🛠️ **技術實施優先級**
+
+#### **Critical (立即開始)**
+1. **S3/R2 媒體存儲配置**
+2. **CMS 數據庫架構擴展**
+3. **統一內容管理 API**
+4. **基礎管理員界面**
+
+#### **High (2週內)**
+1. **面試預約系統整合**
+2. **媒體處理和優化**
+3. **工作流程引擎實現**
+4. **權限管理系統**
+
+#### **Medium (4週內)**
+1. **VVIP介紹系統整合**
+2. **活動管理系統整合**
+3. **精彩活動集自動化**
+4. **高級分析功能**
+
+### 💡 **CMS 實施策略**
+
+#### **漸進式開發方法**
+```javascript
+const incrementalDevelopment = {
+  phase1: "核心CMS功能 + 面試系統",
+  phase2: "VVIP介紹系統整合",
+  phase3: "活動管理完整整合",
+  phase4: "高級功能和優化",
+  
+  benefits: [
+    "快速交付核心功能",
+    "及早用戶反饋",
+    "風險分散管理",
+    "持續價值交付"
+  ]
+}
+```
+
+#### **技術債務管理**
+```javascript
+const technicalDebtManagement = {
+  codeReuse: "最大化組件和邏輯重用",
+  documentation: "完整的API和組件文檔",
+  testing: "自動化測試覆蓋",
+  refactoring: "定期代碼重構和優化"
+}
 ```

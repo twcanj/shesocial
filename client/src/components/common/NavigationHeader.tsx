@@ -40,15 +40,15 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
             >
               <img 
                 src="/logo.jpeg" 
-                alt="SheSocial Logo" 
+                alt="InfinityMatch Logo" 
                 className="h-10 w-10 md:h-12 md:w-12 object-contain filter brightness-0 invert sepia saturate-[3] hue-rotate-[25deg] brightness-[1.2]"
               />
               <div className="flex flex-col">
                 <div className="text-xl md:text-2xl font-bold text-gradient-luxury">
-                  SheSocial
+                  天造地設人成對
                 </div>
                 <div className="text-xs md:text-sm text-secondary-500 -mt-1 hidden sm:block">
-                  奢華社交活動平台
+                  InfinityMatch | 1+1=∞
                 </div>
               </div>
             </button>

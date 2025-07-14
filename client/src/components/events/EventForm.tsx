@@ -53,9 +53,10 @@ export const EventForm: React.FC<EventFormProps> = ({
     maxParticipants: 20,
     status: 'draft',
     participantVisibility: {
-      premium_2500: true,
+      vvip: true,
       vip: false,
-      regular: false
+      registered: false,
+      visitor: false
     }
   })
 
@@ -470,11 +471,11 @@ export const EventForm: React.FC<EventFormProps> = ({
               <label className="flex items-center">
                 <input
                   type="checkbox"
-                  checked={formData.participantVisibility?.premium_2500 || false}
-                  onChange={(e) => updateFormData('participantVisibility.premium_2500', e.target.checked)}
+                  checked={formData.participantVisibility?.vvip || false}
+                  onChange={(e) => updateFormData('participantVisibility.vvip', e.target.checked)}
                   className="mr-3"
                 />
-                <span>Premium $2500 會員</span>
+                <span>VVIP 會員</span>
               </label>
               <label className="flex items-center">
                 <input
@@ -488,11 +489,11 @@ export const EventForm: React.FC<EventFormProps> = ({
               <label className="flex items-center">
                 <input
                   type="checkbox"
-                  checked={formData.participantVisibility?.regular || false}
-                  onChange={(e) => updateFormData('participantVisibility.regular', e.target.checked)}
+                  checked={formData.participantVisibility?.registered || false}
+                  onChange={(e) => updateFormData('participantVisibility.registered', e.target.checked)}
                   className="mr-3"
                 />
-                <span>一般會員</span>
+                <span>註冊會員</span>
               </label>
             </div>
           </div>

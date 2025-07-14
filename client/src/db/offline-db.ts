@@ -252,7 +252,7 @@ export class SheSocialOfflineDB extends Dexie {
   async searchUsers(query: string, currentUserId: string): Promise<UserProfile[]> {
     // Only premium_2500 members can search users
     const currentUser = await this.users.get(currentUserId)
-    if (!currentUser || currentUser.membership.type !== 'premium_2500') {
+    if (!currentUser || currentUser.membership.type !== 'vvip') {
       throw new Error('Insufficient permissions to search users')
     }
 

@@ -1,7 +1,7 @@
 {
   "name": "shesocial",
   "version": "1.0.0",
-  "description": "SheSocial - Taiwan luxury social activity platform",
+  "description": "InfinityMatch 天造地設人成對 - 1+1=∞ Taiwan premium matching platform",
   "main": "index.js",
   "scripts": {
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
@@ -14,14 +14,17 @@
     "install:all": "npm install && cd client && npm install && cd ../server && npm install"
   },
   "keywords": [
-    "social",
+    "dating",
+    "matching",
     "taiwan",
     "luxury",
+    "infinity",
+    "love",
     "events",
     "crdt",
     "offline-first"
   ],
-  "author": "SheSocial Team",
+  "author": "InfinityMatch Team",
   "license": "MIT",
   "devDependencies": {
     "concurrently": "^8.2.2"

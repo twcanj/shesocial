@@ -127,7 +127,29 @@ export const EventList: React.FC<EventListProps> = ({
       return sortOrder === 'desc' ? -comparison : comparison
     })
 
-    setFilteredEvents(filtered)
+    // Apply membership-based activity viewing limits
+    const membershipType = user?.membership?.type || 'visitor'
+    let limitedEvents = filtered
+    
+    switch (membershipType) {
+      case 'visitor':
+        limitedEvents = filtered.slice(0, 3) // Visitors can only see 3 activities
+        break
+      case 'registered':
+        limitedEvents = filtered.slice(0, 12) // Registered users can only see 12 activities
+        break
+      case 'vip':
+      case 'vvip':
+        // Paid members can see all activities
+        limitedEvents = filtered
+        break
+      default:
+        // Default to visitor limits for safety
+        limitedEvents = filtered.slice(0, 3)
+        break
+    }
+
+    setFilteredEvents(limitedEvents)
   }, [events, searchTerm, filters, sortBy, sortOrder])
 
   const clearFilters = () => {
