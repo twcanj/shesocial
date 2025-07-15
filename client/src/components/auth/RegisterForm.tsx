@@ -39,7 +39,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchT
     }
 
     try {
-      await register({
+      const result = await register({
         email: formData.email,
         password: formData.password,
         profile: {
@@ -47,8 +47,16 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchT
         },
         membershipType: formData.membership
       })
-      onSuccess()
+      
+      console.log('Registration result:', result) // Debug log
+      
+      if (result.success) {
+        onSuccess()
+      } else {
+        setError(result.error || '註冊失敗')
+      }
     } catch (err) {
+      console.error('Registration error:', err) // Debug log
       setError(err instanceof Error ? err.message : '註冊失敗')
     } finally {
       setLoading(false)
@@ -119,10 +127,9 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchT
             onChange={handleChange}
             className="input-luxury"
           >
-            <option value="regular">一般會員 (¥600 + ¥300/月)</option>
-            <option value="vip">VIP會員 (¥1000 + ¥300/月)</option>
-            <option value="premium_1300">Premium 1300 (¥1300)</option>
-            <option value="premium_2500">Premium 2500 (¥2500)</option>
+            <option value="registered">註冊會員 (免費註冊)</option>
+            <option value="vip">VIP會員 (NT$1,300)</option>
+            <option value="vvip">VVIP會員 (NT$2,500)</option>
           </select>
         </div>
 

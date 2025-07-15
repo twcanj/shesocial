@@ -30,7 +30,7 @@ export interface UserProfile extends BaseDocument {
     }
   }
   membership: {
-    type: 'regular' | 'vip' | 'premium_1300' | 'premium_2500'
+    type: 'visitor' | 'registered' | 'vip' | 'vvip'
     status: 'profile_incomplete' | 'profile_completed' | 'pending_payment' | 'paid' | 'interview_scheduled' | 'interview_completed' | 'active' | 'suspended'
     joinDate: string | Date
     paymentStatus: 'pending' | 'completed' | 'failed' | 'refunded'
@@ -218,9 +218,9 @@ export interface EventData extends BaseDocument {
   }
   participants: EventParticipant[]
   participantVisibility: {
-    premium_2500: boolean
+    vvip: boolean
     vip: boolean
-    regular: boolean
+    registered: boolean
   }
   notifications: {
     sent: boolean

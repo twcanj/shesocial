@@ -165,6 +165,7 @@ export const useAuthStore = create<AuthState>()(
           const result = await response.json()
 
           if (result.success && result.data) {
+            console.log('Setting auth state after registration:', result.data) // Debug log
             set({
               user: result.data.user,
               accessToken: result.data.accessToken,
@@ -175,6 +176,7 @@ export const useAuthStore = create<AuthState>()(
             
             return result
           } else {
+            console.log('Registration failed:', result) // Debug log
             set({ isLoading: false })
             return result
           }

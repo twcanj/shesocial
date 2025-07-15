@@ -99,9 +99,9 @@ router.post('/users/complete-registration', authenticateToken, async (req: Authe
           `Expectations: ${salesLead?.expectations || 'none'}`,
           `Lead source: ${salesLead?.leadSource || 'website'}`
         ],
-        estimatedValue: salesLead?.membershipInterest === 'premium_2500' ? 2500 : 
-                       salesLead?.membershipInterest === 'premium_1300' ? 1300 :
-                       salesLead?.membershipInterest === 'vip' ? 1000 : 600,
+        estimatedValue: salesLead?.membershipInterest === 'vvip' ? 2500 : 
+                       salesLead?.membershipInterest === 'vip' ? 1300 :
+                       salesLead?.membershipInterest === 'registered' ? 0 : 0,
         conversionProbability: 75, // High since they completed profile
         contactHistory: [],
         createdAt: new Date(),
@@ -168,10 +168,9 @@ router.get('/users/recommendation', authenticateToken, async (req: Authenticated
 // Helper function to generate personalized recommendation
 function generatePersonalizedRecommendation(user: UserProfile) {
   let score = {
-    regular: 0,
+    registered: 0,
     vip: 0,
-    premium_1300: 0,
-    premium_2500: 0
+    vvip: 0
   }
   
   const reasons: string[] = []
@@ -180,15 +179,15 @@ function generatePersonalizedRecommendation(user: UserProfile) {
   // Age-based recommendations
   const age = user.profile?.age || 25
   if (age >= 25 && age <= 35) {
-    score.premium_1300 += 30
-    score.premium_2500 += 20
+    score.vip += 30
+    score.vvip += 20
     reasons.push('您的年齡層通常偏好靈活的券包方案')
   } else if (age > 35) {
-    score.premium_2500 += 40
+    score.vvip += 40
     score.vip += 30
     reasons.push('成熟族群重視查看參與者和優質服務')
   } else {
-    score.regular += 30
+    score.registered += 30
     score.vip += 20
     reasons.push('年輕族群可從基本方案開始體驗')
   }
@@ -196,8 +195,8 @@ function generatePersonalizedRecommendation(user: UserProfile) {
   // Location-based recommendations
   const location = user.profile?.location || ''
   if (['台北市', '新北市'].includes(location)) {
-    score.premium_2500 += 25
-    score.premium_1300 += 20
+    score.vvip += 25
+    score.vip += 20
     reasons.push('都會區會員重視查看參與者功能')
   }
 
@@ -231,7 +230,7 @@ function generatePersonalizedRecommendation(user: UserProfile) {
 }
 
 // User routes (protected)
-router.get('/users', authenticateToken, requireMembership('vip', 'premium_1300', 'premium_2500'), userController.getUsers.bind(userController))
+router.get('/users', authenticateToken, requireMembership('vip', 'vvip'), userController.getUsers.bind(userController))
 router.get('/users/count', authenticateToken, userController.getUserCount.bind(userController))
 router.get('/users/:id', authenticateToken, userController.getUserById.bind(userController))
 router.get('/users/email/:email', authenticateToken, userController.getUserByEmail.bind(userController))
@@ -239,8 +238,8 @@ router.get('/users/sync/:timestamp', authenticateToken, userController.getModifi
 router.post('/users', userController.createUser.bind(userController)) // Public for registration
 router.post('/users/search', authenticateToken, requirePermission('viewParticipants'), userController.searchUsers.bind(userController))
 router.put('/users/:id', authenticateToken, userController.updateUser.bind(userController))
-router.put('/users/:id/membership', authenticateToken, requireMembership('vip', 'premium_1300', 'premium_2500'), userController.updateMembership.bind(userController))
-router.delete('/users/:id', authenticateToken, requireMembership('vip', 'premium_1300', 'premium_2500'), userController.deleteUser.bind(userController))
+router.put('/users/:id/membership', authenticateToken, requireMembership('vip', 'vvip'), userController.updateMembership.bind(userController))
+router.delete('/users/:id', authenticateToken, requireMembership('vip', 'vvip'), userController.deleteUser.bind(userController))
 
 // Event routes
 router.get('/events', eventController.getEvents.bind(eventController)) // Public - anyone can see events
@@ -249,26 +248,26 @@ router.get('/events/upcoming', eventController.getUpcomingEvents.bind(eventContr
 router.get('/events/:id', eventController.getEventById.bind(eventController)) // Public
 router.get('/events/user/:userId', authenticateToken, eventController.getEventsByUser.bind(eventController))
 router.get('/events/sync/:timestamp', authenticateToken, eventController.getModifiedEvents.bind(eventController))
-router.post('/events', authenticateToken, requireMembership('vip', 'premium_1300', 'premium_2500'), eventController.createEvent.bind(eventController))
+router.post('/events', authenticateToken, requireMembership('vip', 'vvip'), eventController.createEvent.bind(eventController))
 router.post('/events/search', eventController.searchEvents.bind(eventController)) // Public
 router.post('/events/:id/participants', authenticateToken, eventController.addParticipant.bind(eventController))
-router.put('/events/:id', authenticateToken, requireMembership('vip', 'premium_1300', 'premium_2500'), eventController.updateEvent.bind(eventController))
-router.put('/events/:id/status', authenticateToken, requireMembership('vip', 'premium_1300', 'premium_2500'), eventController.updateEventStatus.bind(eventController))
-router.put('/events/:id/publish', authenticateToken, requireMembership('vip', 'premium_1300', 'premium_2500'), eventController.publishEvent.bind(eventController))
-router.put('/events/:id/cancel', authenticateToken, requireMembership('vip', 'premium_1300', 'premium_2500'), eventController.cancelEvent.bind(eventController))
-router.delete('/events/:id', authenticateToken, requireMembership('vip', 'premium_1300', 'premium_2500'), eventController.deleteEvent.bind(eventController))
+router.put('/events/:id', authenticateToken, requireMembership('vip', 'vvip'), eventController.updateEvent.bind(eventController))
+router.put('/events/:id/status', authenticateToken, requireMembership('vip', 'vvip'), eventController.updateEventStatus.bind(eventController))
+router.put('/events/:id/publish', authenticateToken, requireMembership('vip', 'vvip'), eventController.publishEvent.bind(eventController))
+router.put('/events/:id/cancel', authenticateToken, requireMembership('vip', 'vvip'), eventController.cancelEvent.bind(eventController))
+router.delete('/events/:id', authenticateToken, requireMembership('vip', 'vvip'), eventController.deleteEvent.bind(eventController))
 router.delete('/events/:id/participants/:userId', authenticateToken, eventController.removeParticipant.bind(eventController))
 
 // Booking routes (all require authentication)
-router.get('/bookings', authenticateToken, requireMembership('vip', 'premium_1300', 'premium_2500'), bookingController.getBookings.bind(bookingController))
+router.get('/bookings', authenticateToken, requireMembership('vip', 'vvip'), bookingController.getBookings.bind(bookingController))
 router.get('/bookings/count', authenticateToken, bookingController.getBookingCount.bind(bookingController))
-router.get('/bookings/revenue', authenticateToken, requireMembership('vip', 'premium_1300', 'premium_2500'), bookingController.getRevenueStats.bind(bookingController))
+router.get('/bookings/revenue', authenticateToken, requireMembership('vip', 'vvip'), bookingController.getRevenueStats.bind(bookingController))
 router.get('/bookings/:id', authenticateToken, bookingController.getBookingById.bind(bookingController))
 router.get('/bookings/user/:userId', authenticateToken, bookingController.getBookingsByUser.bind(bookingController))
 router.get('/bookings/event/:eventId', authenticateToken, requirePermission('viewParticipants'), bookingController.getBookingsByEvent.bind(bookingController))
 router.get('/bookings/user/:userId/event/:eventId', authenticateToken, bookingController.getBookingByUserAndEvent.bind(bookingController))
-router.get('/bookings/status/:status', authenticateToken, requireMembership('vip', 'premium_1300', 'premium_2500'), bookingController.getBookingsByStatus.bind(bookingController))
-router.get('/bookings/payment-status/:paymentStatus', authenticateToken, requireMembership('vip', 'premium_1300', 'premium_2500'), bookingController.getBookingsByPaymentStatus.bind(bookingController))
+router.get('/bookings/status/:status', authenticateToken, requireMembership('vip', 'vvip'), bookingController.getBookingsByStatus.bind(bookingController))
+router.get('/bookings/payment-status/:paymentStatus', authenticateToken, requireMembership('vip', 'vvip'), bookingController.getBookingsByPaymentStatus.bind(bookingController))
 router.get('/bookings/count/status/:status', authenticateToken, bookingController.getBookingCountByStatus.bind(bookingController))
 router.get('/bookings/sync/:timestamp', authenticateToken, bookingController.getModifiedBookings.bind(bookingController))
 router.post('/bookings', authenticateToken, bookingController.createBooking.bind(bookingController))

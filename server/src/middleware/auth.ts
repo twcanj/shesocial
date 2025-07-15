@@ -147,10 +147,10 @@ export const requirePermission = (permission: keyof UserProfile['membership']['p
 }
 
 // Middleware for premium member features
-export const requirePremium = requireMembership('premium_1300', 'premium_2500')
+export const requirePremium = requireMembership('vip', 'vvip')
 
 // Middleware for VIP and premium features
-export const requireVipOrPremium = requireMembership('vip', 'premium_1300', 'premium_2500')
+export const requireVipOrPremium = requireMembership('vip', 'vvip')
 
 // Middleware to check if user can view participants
 export const requireParticipantViewPermission = requirePermission('viewParticipants')

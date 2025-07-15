@@ -277,6 +277,17 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
                     </div>
                     <button 
                       onClick={() => {
+                        handlePageChange('profile')
+                        setIsMobileMenuOpen(false)
+                      }}
+                      className={`w-full btn-luxury-ghost text-left ${
+                        currentPage === 'profile' ? 'bg-luxury-gold/20 text-luxury-gold' : ''
+                      }`}
+                    >
+                      個人檔案
+                    </button>
+                    <button 
+                      onClick={() => {
                         handleLogout()
                         setIsMobileMenuOpen(false)
                       }}

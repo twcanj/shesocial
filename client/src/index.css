@@ -165,9 +165,9 @@
   .btn-luxury-ghost {
     @apply inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg;
     @apply bg-transparent;
-    color: #4a4a4a; /* Medium gray for good contrast */
-    @apply hover:bg-secondary-100;
-    @apply hover:text-primary;
+    color: #E5E4E2; /* Luxury platinum for dark backgrounds */
+    @apply hover:bg-luxury-gold/20;
+    @apply hover:text-luxury-gold;
     @apply focus:outline-none focus:ring-2 focus:ring-secondary-300 focus:ring-offset-2;
     @apply transition-all duration-200 ease-in-out;
   }
@@ -250,6 +250,23 @@
   
   .input-luxury::placeholder {
     color: rgba(229, 228, 226, 0.6); /* Platinum placeholder */
+  }
+  
+  /* Select dropdown specific styling */
+  select.input-luxury {
+    color: #E5E4E2 !important; /* Luxury platinum text */
+    background: rgba(229, 228, 226, 0.1) !important; /* Subtle platinum background */
+  }
+  
+  select.input-luxury option {
+    background: #0C0C0C !important; /* Midnight black background for options */
+    color: #E5E4E2 !important; /* Luxury platinum text */
+    padding: 8px 12px;
+  }
+  
+  select.input-luxury option:hover,
+  select.input-luxury option:focus {
+    background: #2a2a2a !important; /* Slightly lighter on hover */
   }
   
   /* Zodiac-Inspired Badges & Membership Tiers */

@@ -9,45 +9,64 @@ import OnboardingProgress from '../components/onboarding/OnboardingProgress'
 
 type TabType = 'profile' | 'media' | 'interview' | 'settings'
 
-export const ProfilePage: React.FC = () => {
+interface ProfilePageProps {
+  onNavigate?: (page: 'home' | 'events' | 'members' | 'about' | 'pricing' | 'profile' | 'admin') => void
+}
+
+export const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
   const { user } = useAuth()
   const [activeTab, setActiveTab] = useState<TabType>('profile')
   const [uploadingCategory, setUploadingCategory] = useState<string | null>(null)
+  
+  console.log('ProfilePage rendered, user:', user) // Debug log
 
   // Auto-set tab based on user status and URL parameters
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search)
-    const tabParam = urlParams.get('tab')
+    if (!user) return
     
-    if (tabParam && ['profile', 'media', 'interview', 'settings'].includes(tabParam)) {
-      setActiveTab(tabParam as TabType)
-    } else if (user) {
-      // Auto-redirect based on membership status
-      const status = user.membership?.status
-      const paymentStatus = user.membership?.paymentStatus
+    try {
+      const urlParams = new URLSearchParams(window.location.search)
+      const tabParam = urlParams.get('tab')
       
-      if (paymentStatus !== 'completed') {
-        // Redirect to payment
-        window.location.href = '/pricing'
-        return
+      if (tabParam && ['profile', 'media', 'interview', 'settings'].includes(tabParam)) {
+        setActiveTab(tabParam as TabType)
+      } else {
+        // Auto-redirect based on membership status
+        const status = user.membership?.status
+        const paymentStatus = user.membership?.paymentStatus
+        
+        console.log('ProfilePage - User status:', status, 'Payment status:', paymentStatus) // Debug log
+        
+        // Only redirect if payment is explicitly required for paid memberships
+        if (paymentStatus === 'pending' && (user.membership?.type === 'vip' || user.membership?.type === 'vvip')) {
+          // Navigate to payment page only for paid memberships with pending payment
+          if (onNavigate) {
+            onNavigate('pricing')
+          }
+          return
+        }
+        
+        if (status === 'paid' || status === 'profile_incomplete') {
+          setActiveTab('profile') // Show profile completion
+        } else if (status === 'interview_scheduled') {
+          setActiveTab('interview')
+        } else if (status === 'interview_completed') {
+          setActiveTab('media')
+        }
       }
-      
-      if (status === 'paid' || status === 'profile_incomplete') {
-        setActiveTab('profile') // Show profile completion
-      } else if (status === 'interview_scheduled') {
-        setActiveTab('interview')
-      } else if (status === 'interview_completed') {
-        setActiveTab('media')
-      }
+    } catch (error) {
+      console.error('Error in ProfilePage useEffect:', error)
+      // Fallback to profile tab
+      setActiveTab('profile')
     }
-  }, [user])
+  }, [user, onNavigate])
 
   if (!user) {
     return (
       <div className="container-luxury section-luxury">
-        <div className="card-luxury p-8 text-center">
-          <h2 className="text-2xl font-bold text-secondary-800 mb-4">請先登入</h2>
-          <p className="text-secondary-600">您需要登入才能查看個人檔案</p>
+        <div className="luxury-card-outline p-8 text-center">
+          <h2 className="text-2xl font-bold text-luxury-gold mb-4">請先登入</h2>
+          <p className="text-luxury-platinum">您需要登入才能查看個人檔案</p>
         </div>
       </div>
     )
@@ -92,7 +111,7 @@ export const ProfilePage: React.FC = () => {
     }
   ]
 
-  const handleUploadComplete = (mediaId: string, url: string) => {
+  const handleUploadComplete = (_mediaId: string, _url: string) => {
     setUploadingCategory(null)
     // Refresh media gallery or update state
     window.location.reload() // Simple approach, could be optimized
@@ -415,7 +434,7 @@ export const ProfilePage: React.FC = () => {
         <h1 className="text-gradient-luxury animate-fade-in mb-4">
           個人檔案管理
         </h1>
-        <p className="text-xl text-secondary-700">
+        <p className="text-xl text-luxury-platinum">
           管理您的個人資訊、媒體檔案和帳號設定
         </p>
       </div>

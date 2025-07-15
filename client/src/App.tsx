@@ -1,7 +1,4 @@
 import { useState } from 'react'
-import { initializeOfflineDB } from './db/offline-db'
-import { initializeSyncService } from './services/sync-service'
-import { useOfflineDB, useNetworkSync, useDBStats } from './hooks/useOfflineDB'
 import { AuthProvider } from './contexts/AuthContext'
 import { NavigationHeader } from './components/common/NavigationHeader'
 import { EventsPage } from './pages/EventsPage'
@@ -12,12 +9,7 @@ import { ProfilePage } from './pages/ProfilePage'
 import { AdminDashboard } from './pages/AdminDashboard'
 
 function App() {
-  const [count, setCount] = useState(0)
   const [currentPage, setCurrentPage] = useState<'home' | 'events' | 'members' | 'about' | 'pricing' | 'profile' | 'admin'>('home')
-  
-  const { isInitialized } = useOfflineDB()
-  const { isOnline, pendingSyncCount, manualSync } = useNetworkSync()
-  const { stats } = useDBStats()
 
   // Wrap entire app with AuthProvider once
   return (
@@ -36,7 +28,7 @@ function App() {
         {currentPage === 'members' && <MembersPage onPageChange={setCurrentPage} />}
         {currentPage === 'about' && <AboutPage />}
         {currentPage === 'pricing' && <PricingPage />}
-        {currentPage === 'profile' && <ProfilePage />}
+        {currentPage === 'profile' && <ProfilePage onNavigate={setCurrentPage} />}
         {currentPage === 'admin' && <AdminDashboard />}
         
         {/* Home page */}

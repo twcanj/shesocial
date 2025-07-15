@@ -1,5 +1,5 @@
-# SheSocial 正確會員系統架構文件
-## 基於付費/未付費的清晰分層設計
+# InfinityMatch 天造地設人成對 正確會員系統架構文件
+## 基於4-tier會員制度的清晰分層設計
 
 ---
 
@@ -14,31 +14,57 @@
 
 ## 💎 會員系統架構
 
-### 基本用戶（免費）
+### 訪客（未註冊）
 ```javascript
-const basicUser = {
-  name: "基本用戶",
+const visitor = {
+  name: "訪客",
+  cost: 0, // 無需註冊
+  currency: "NT$",
+  
+  permissions: {
+    joinEvents: false,        // ❌ 不能參加活動
+    viewParticipants: false, // ❌ 不能看參與者名單
+    uploadMedia: false,
+    bookInterview: false
+  },
+  
+  benefits: [
+    "瀏覽3個活動資訊",
+    "查看精彩活動集"
+  ],
+  
+  limitations: [
+    "最多只能瀏覽3個活動",
+    "無法參加任何活動",
+    "無法查看參與者名單"
+  ]
+}
+```
+
+### 註冊會員（免費）
+```javascript
+const registeredUser = {
+  name: "註冊會員",
   cost: 0, // 免費註冊
   currency: "NT$",
   
   permissions: {
-    joinEvents: true,        // ✅ 可以參加活動
+    joinEvents: false,        // ❌ 不能參加活動
     viewParticipants: false, // ❌ 不能看參與者名單
-    uploadMedia: "面試完成後",
-    bookInterview: true
+    uploadMedia: false,
+    bookInterview: false
   },
   
   benefits: [
     "免費註冊",
-    "瀏覽所有活動資訊", 
-    "參加所有活動",
-    "基本個人資料管理"
+    "瀏覽12個活動資訊", 
+    "個人資料管理"
   ],
   
   limitations: [
-    "無法查看活動參與者名單",
-    "無票券折抵優惠",
-    "基本客服支援"
+    "最多只能瀏覽12個活動",
+    "無法參加任何活動",
+    "無法查看參與者名單"
   ]
 }
 ```
@@ -51,15 +77,15 @@ const vipMember = {
   currency: "NT$",
   
   permissions: {
-    joinEvents: true,       // ✅ 可以參加活動
-    viewParticipants: true, // ✅ 可以看參與者名單
+    joinEvents: true,       // ✅ 可以參加活動（2個月等待期後）
+    viewParticipants: false, // ❌ 不能看參與者名單
     uploadMedia: "面試完成後",
     bookInterview: true
   },
   
   benefits: [
-    "所有基本用戶權益",
-    "查看活動參與者名單", 
+    "無限活動瀏覽",
+    "優先報名活動", 
     "優先客服支援",
     "票券折抵優惠"
   ],
@@ -78,15 +104,15 @@ const vipMember = {
 }
 ```
 
-### Premium會員（付費）
+### VVIP會員（付費）
 ```javascript
-const premiumMember = {
-  name: "Premium會員",
+const vvipMember = {
+  name: "VVIP會員",
   cost: 2500,
   currency: "NT$",
   
   permissions: {
-    joinEvents: true,       // ✅ 可以參加活動
+    joinEvents: true,       // ✅ 可以參加活動（2個月等待期後）
     viewParticipants: true, // ✅ 可以看參與者名單
     uploadMedia: "面試完成後",
     bookInterview: true
@@ -164,23 +190,25 @@ const eventPricing = {
 
 ## 🎯 核心差異比較
 
-| 功能項目 | 基本用戶 | VIP會員 | Premium會員 |
-|---------|---------|---------|-------------|
-| **註冊費用** | 免費 | NT$1,300 | NT$2,500 |
-| **參加活動** | ✅ | ✅ | ✅ |
-| **查看參與者** | ❌ | ✅ | ✅ |
-| **票券價值** | 無 | NT$400 | NT$1,300 |
-| **客服支援** | 基本 | 優先 | 專屬 |
-| **實際價值** | NT$0 | NT$1,700 | NT$3,800 |
+| 功能項目 | 訪客 | 註冊會員 | VIP會員 | VVIP會員 |
+|---------|------|---------|---------|----------|
+| **註冊費用** | 無 | 免費 | NT$1,300 | NT$2,500 |
+| **活動瀏覽** | 3個 | 12個 | 無限 | 無限 |
+| **參加活動** | ❌ | ❌ | ✅ | ✅ |
+| **查看參與者** | ❌ | ❌ | ❌ | ✅ |
+| **票券價值** | 無 | 無 | NT$400 | NT$1,300 |
+| **客服支援** | 無 | 基本 | 優先 | 專屬 |
+| **實際價值** | NT$0 | NT$0 | NT$1,700 | NT$3,800 |
 
 ---
 
 ## 📊 商業邏輯優勢
 
 ### 對用戶的價值主張
-1. **基本用戶**: 零門檻體驗平台，可參加所有活動
-2. **VIP會員**: 小額投資獲得查看權限 + 票券優惠
-3. **Premium會員**: 最大投資獲得最多優惠 + 專屬服務
+1. **訪客**: 零門檻體驗平台，可瀏覽少量活動
+2. **註冊會員**: 免費註冊，可瀏覽更多活動
+3. **VIP會員**: 小額投資獲得參與權限 + 票券優惠
+4. **VVIP會員**: 最大投資獲得查看權限 + 最多優惠 + 專屬服務
 
 ### 對平台的商業價值
 1. **用戶分層**: 清楚的付費/免費區隔
@@ -195,28 +223,34 @@ const eventPricing = {
 ```javascript
 const upgradeFlow = {
   step1: {
-    status: "基本用戶",
-    trigger: "想查看活動參與者",
-    action: "升級為VIP或Premium會員"
+    status: "訪客",
+    trigger: "想瀏覽更多活動",
+    action: "註冊成為會員"
   },
   
   step2: {
+    status: "註冊會員",
+    trigger: "想參加活動",
+    action: "升級為VIP會員"
+  },
+  
+  step3: {
     status: "VIP會員", 
-    trigger: "想要更多票券優惠",
-    action: "升級為Premium會員"
+    trigger: "想查看參與者名單",
+    action: "升級為VVIP會員"
   },
   
   pricing_strategy: {
-    vip_to_premium: "補差價NT$1,200即可升級",
-    incentive: "獲得額外NT$900票券價值"
+    vip_to_vvip: "補差價NT$1,200即可升級",
+    incentive: "獲得額外NT$900票券價值 + 查看參與者權限"
   }
 }
 ```
 
 ---
 
-*最後更新: 2025-07-13*  
-*版本: 3.0*  
-*狀態: 正確會員架構確認完成 ✅*
+*最後更新: 2025-07-15*  
+*版本: 4.0*  
+*狀態: 4-tier會員架構確認完成 ✅*
 
-**重要說明**: 此文件為正確的會員系統架構，基於「付費/未付費」的清晰分層，以及「查看參與者權限」作為核心付費誘因的商業模式設計。
+**重要說明**: 此文件為正確的會員系統架構，基於「visitor → registered → vip → vvip」的4-tier分層設計，以及「查看參與者權限」作為核心付費誘因的商業模式設計。

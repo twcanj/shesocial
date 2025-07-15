@@ -47,7 +47,7 @@ const sharedContentLayer = {
 const businessModules = {
   VVIPIntroModule: {
     purpose: "VVIP專屬會員介紹服務",
-    accessLevel: "premium_2500 專屬",
+    accessLevel: "vvip 專屬",
     monetization: "額外付費服務 (NT$1,500)",
     
     display: {

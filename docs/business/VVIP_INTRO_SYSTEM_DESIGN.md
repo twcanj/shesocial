@@ -7,7 +7,7 @@
 
 ### 核心功能
 - **會員介紹創建與管理** - 專業化的個人介紹製作服務
-- **VVIP專屬查看權限** - 只有premium_2500會員可查看其他會員介紹
+- **VVIP專屬查看權限** - 只有vvip會員可查看其他會員介紹
 - **收費服務管理** - VVIPIntro製作的獨立付費系統
 - **內容審核機制** - 確保介紹內容品質與平台形象
 
@@ -16,7 +16,7 @@
 const vvipIntroSystem = {
   service: "額外付費服務",
   target: "所有會員均可購買",
-  viewer_permission: "僅VVIP (premium_2500) 可查看",
+  viewer_permission: "僅VVIP (vvip) 可查看",
   content_location: "平台自建，完全控制權限"
 }
 ```
@@ -95,7 +95,7 @@ const VVIPIntroSchema = {
 const viewingPermissions = {
   // 只有VVIP會員可以查看其他人的介紹
   canViewIntros: (viewer, targetUser) => {
-    return viewer.membership.type === 'premium_2500' && 
+    return viewer.membership.type === 'vvip' && 
            viewer.membership.status === 'active' &&
            viewer._id !== targetUser._id // 不能查看自己的
   },
@@ -118,10 +118,10 @@ const vvipIntroPermissionMiddleware = {
   // 查看介紹列表權限
   viewIntroList: async (req, res, next) => {
     const user = req.user
-    if (user.membership.type !== 'premium_2500' || user.membership.status !== 'active') {
+    if (user.membership.type !== 'vvip' || user.membership.status !== 'active') {
       return res.status(403).json({
         error: '只有VVIP會員可以查看會員介紹',
-        requiredMembership: 'premium_2500'
+        requiredMembership: 'vvip'
       })
     }
     next()
@@ -143,7 +143,7 @@ const vvipIntroPermissionMiddleware = {
     }
     
     // 檢查是否為VVIP
-    if (user.membership.type !== 'premium_2500' || user.membership.status !== 'active') {
+    if (user.membership.type !== 'vvip' || user.membership.status !== 'active') {
       return res.status(403).json({
         error: '只有VVIP會員可以查看其他會員介紹'
       })

@@ -275,7 +275,7 @@ class NeDBSetup {
         }
       },
       membership: {
-        type: 'regular',
+        type: 'registered',
         status: 'active',
         joinDate: new Date(),
         paymentStatus: 'completed',
@@ -320,9 +320,9 @@ class NeDBSetup {
       },
       participants: [],
       participantVisibility: {
-        premium_2500: true,
+        vvip: true,
         vip: false,
-        regular: false
+        registered: false
       },
       notifications: {
         sent: false,

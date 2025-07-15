@@ -15,7 +15,7 @@ export class AuthController {
   // POST /api/auth/register
   async register(req: Request, res: Response): Promise<void> {
     try {
-      const { email, password, profile, membershipType = 'regular' } = req.body
+      const { email, password, profile, membershipType = 'registered' } = req.body
 
       // Basic validation
       if (!email || !password || !profile?.name) {
@@ -430,7 +430,7 @@ export class AuthController {
     // Permissions are updated based on membership status progression:
     // profile_incomplete -> profile_completed -> pending_payment -> paid -> interview_scheduled -> interview_completed -> active
     return {
-      viewParticipants: false, // Only premium_2500 when active
+      viewParticipants: false, // Only vvip when active
       priorityBooking: false,  // VIP+ when paid
       uploadMedia: false,      // All members when interview completed
       bookInterview: false     // All members when payment completed
@@ -454,8 +454,8 @@ export class AuthController {
       case 'active':
         // Full permissions based on membership type
         permissions.uploadMedia = true
-        permissions.viewParticipants = type === 'premium_2500'
-        permissions.priorityBooking = ['vip', 'premium_1300', 'premium_2500'].includes(type)
+        permissions.viewParticipants = type === 'vvip'
+        permissions.priorityBooking = ['vip', 'vvip'].includes(type)
         permissions.bookInterview = true
         break
         
@@ -467,7 +467,7 @@ export class AuthController {
       case 'paid':
       case 'interview_scheduled':
         permissions.bookInterview = true
-        permissions.priorityBooking = ['vip', 'premium_1300', 'premium_2500'].includes(type)
+        permissions.priorityBooking = ['vip', 'vvip'].includes(type)
         break
         
       case 'profile_completed':

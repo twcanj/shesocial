@@ -402,18 +402,18 @@ const salesLeadSystem = {
   
   personalizedRecommendations: {
     ageBasedScoring: {
-      "25-35": "premium_1300方案 +30分，premium_2500方案 +20分",
-      "35+": "premium_2500方案 +40分，VIP方案 +30分", 
-      "<25": "regular方案 +30分，VIP方案 +20分"
+      "25-35": "vip方案 +30分，vvip方案 +20分",
+      "35+": "vvip方案 +40分，vip方案 +30分", 
+      "<25": "registered方案 +30分，vip方案 +20分"
     },
     
     locationBasedScoring: {
-      "台北市,新北市": "premium_2500方案 +25分（重視查看參與者功能）"
+      "台北市,新北市": "vvip方案 +25分（重視查看參與者功能）"
     },
     
     occupationBasedScoring: {
-      "醫師,律師,主管": "premium_2500方案 +35分",
-      "工程師,設計師": "premium_1300方案 +30分"
+      "醫師,律師,主管": "vvip方案 +35分",
+      "工程師,設計師": "vip方案 +30分"
     }
   },
   
@@ -610,7 +610,7 @@ const kpiTracking = {
 ```javascript
 const privacyRules = {
   dataAccess: {
-    premium_2500: {
+    vvip: {
       canView: ["基本資料", "興趣愛好", "活動照片"],
       cannotView: ["聯絡方式", "住址", "收入資料"]
     }
