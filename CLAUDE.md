@@ -30,13 +30,37 @@ curl http://localhost:10000/health
 - **Language**: Traditional Chinese (Taiwan localization)
 
 ### Key Features
-- **4-Tier Membership**: visitor → registered → vip → vvip
+- **4-Tier Membership**: visitor → registered → vip → vvip (updated membership structure)
 - **Offline-First**: IndexedDB with bidirectional sync
 - **Admin System**: Atomic permissions with 4 departments
 - **Sales-Optimized**: Profile collection before payment
 - **Enterprise Health**: Comprehensive monitoring system
+- **Mobile-Optimized**: Responsive design with luxury theme and proper navigation
 
 ## 📋 Business Rules
+
+### 🎯 Membership System (4-Tier Structure)
+
+**Updated Membership Types:**
+- **visitor**: No registration required
+  - Can browse platform freely
+  - Limited to viewing 3 activities maximum
+  - No account creation needed
+  
+- **registered**: Free registration
+  - Basic account with email/password
+  - Can view up to 12 activities
+  - Access to basic platform features
+  
+- **vip**: Paid membership NT$1,300
+  - Priority booking for events
+  - Enhanced platform features
+  - Full event participation access
+  
+- **vvip**: Premium membership NT$2,500
+  - All VIP features plus participant viewing
+  - Maximum platform access
+  - Premium support and services
 
 ### Member Onboarding Flow
 1. **Enhanced Registration**: 3-step profile collection
@@ -88,6 +112,14 @@ curl http://localhost:10000/health
 - Payment processing (Apple Pay, Google Pay)
 - LINE Official Account integration
 
+### 🚀 Recent Fixes & Improvements
+- **Fixed ProfilePage Flash Issue**: Resolved window.location.href causing page reload and logout
+- **Mobile Navigation**: Added missing 個人檔案 button to mobile hamburger menu
+- **Dropdown Contrast**: Fixed invisible text in membership dropdown with luxury theme
+- **CORS Configuration**: Updated to support multiple development ports (5173, 5174, 5175)
+- **TypeScript Cleanup**: Resolved all backend compilation errors
+- **Membership Migration**: Complete backend migration to visitor/registered/vip/vvip structure
+
 ## 🔧 Key Files
 
 ### Frontend Core
@@ -99,8 +131,10 @@ curl http://localhost:10000/health
 ### Authentication System (Luxury Styled)
 - `client/src/components/auth/AuthModal.tsx` - Modal container with luxury styling
 - `client/src/components/auth/LoginForm.tsx` - Login form with luxury inputs
-- `client/src/components/auth/RegisterForm.tsx` - Registration form with luxury styling
+- `client/src/components/auth/RegisterForm.tsx` - Registration form with luxury styling and fixed dropdown contrast
 - `client/src/contexts/AuthContext.tsx` - Authentication context provider
+- `client/src/components/common/NavigationHeader.tsx` - Navigation with mobile profile button (fixed)
+- `client/src/pages/ProfilePage.tsx` - Profile page with proper navigation handling (fixed)
 
 ### Backend Core
 - `server/src/index.ts` - Server entry point
@@ -123,6 +157,15 @@ curl http://localhost:10000/health
 
 ## 💡 Development Notes
 
+### 🔄 Recent Changes (Latest)
+- **Membership System Migration**: Complete backend migration from old structure (regular, premium_1300, premium_2500) to new 4-tier system (visitor, registered, vip, vvip)
+- **ProfilePage Navigation Fix**: Resolved window.location.href issue that caused flash and logout
+- **Mobile UX Improvements**: Added missing 個人檔案 button to mobile navigation
+- **Dropdown Styling**: Fixed invisible text with luxury theme contrast improvements
+- **CORS Configuration**: Added support for multiple development ports (5173, 5174, 5175)
+- **TypeScript Cleanup**: Resolved all compilation errors across backend files
+- **Button Styling**: Fixed btn-luxury-ghost contrast for better visibility on dark backgrounds
+
 ### Cache Management
 - Use `npm run dev:fresh` for cache issues
 - Vite cache located in `node_modules/.vite/`
@@ -131,12 +174,32 @@ curl http://localhost:10000/health
 ### Authentication
 - JWT tokens with bcrypt password hashing
 - Separate admin authentication system
+- **Registration Flow**: Fixed to use proper navigation instead of window.location.href
+- **Mobile Navigation**: Added missing profile button for authenticated users
+- **State Management**: Fixed ProfilePage state persistence issues
 - 8-hour token expiry for admin sessions
 
 ### Database
 - NeDB for backend (11 collections)
 - IndexedDB for frontend (offline-first)
 - Bidirectional sync with conflict resolution
+
+### API Endpoints (Updated)
+**Authentication:**
+- `POST /api/auth/register` - Registration with new membership types (registered, vip, vvip)
+- `POST /api/auth/login` - Login with JWT token
+- `GET /api/auth/me` - Get current user profile
+
+**Membership Access Control:**
+- **visitor**: No API access (browse only)
+- **registered**: Basic API access for profile and events
+- **vip**: Enhanced API access with priority features
+- **vvip**: Full API access including participant viewing
+
+**Protected Routes:**
+- `requireMembership('vip', 'vvip')` - VIP and VVIP access only
+- `requirePermission('viewParticipants')` - VVIP only
+- `requirePermission('priorityBooking')` - VIP and VVIP
 
 ### Hesocial Luxury Design System
 - **Primary Colors**: Luxury gold (#D4AF37) and midnight black (#0C0C0C)
