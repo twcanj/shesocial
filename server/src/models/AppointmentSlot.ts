@@ -12,9 +12,9 @@ export class AppointmentSlotModel {
 
   // 創建預約時段
   async create(slotData: Omit<AppointmentSlot, '_id' | 'createdAt' | 'updatedAt'>): Promise<AppointmentSlot> {
-    const slot: AppointmentSlot = {
+    const slot = {
       ...slotData,
-      _id: '',
+      // Don't set _id - let NeDB generate it automatically
       bookedCount: 0,
       createdAt: new Date(),
       updatedAt: new Date()
@@ -56,9 +56,9 @@ export class AppointmentSlotModel {
         }
       }
       
-      const slotForDate: AppointmentSlot = {
+      const slotForDate = {
         ...baseSlot,
-        _id: '',
+        // Don't set _id - let NeDB generate it automatically
         date: currentDate.toISOString().split('T')[0],
         parentSlotId: i === 0 ? undefined : slots[0]?._id,
         bookedCount: 0,

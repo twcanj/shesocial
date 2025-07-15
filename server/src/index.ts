@@ -14,6 +14,9 @@ import { developmentFormat, productionFormat, errorFormat } from './middleware/l
 import apiRoutes from './routes/api'
 import adminRoutes from './routes/admin'
 
+// Database
+import NeDBSetup from './db/nedb-setup'
+
 const app = express()
 const PORT = process.env.PORT || 10000
 const NODE_ENV = process.env.NODE_ENV || 'development'
@@ -65,15 +68,103 @@ app.use('/api', apiRoutes)
 app.use('/api/admin', adminRoutes)
 
 // Health check endpoint (outside API prefix for load balancers)
-app.get('/health', (req, res) => {
-  res.json({
-    success: true,
-    message: 'SheSocial Backend is healthy',
-    timestamp: Date.now(),
-    environment: NODE_ENV,
-    version: '1.0.0',
-    uptime: process.uptime()
-  })
+app.get('/health', async (req, res) => {
+  try {
+    // Basic server health
+    const serverHealth = {
+      success: true,
+      message: 'SheSocial Backend is healthy',
+      timestamp: Date.now(),
+      environment: NODE_ENV,
+      version: '1.0.0',
+      uptime: process.uptime(),
+      memory: {
+        used: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
+        total: Math.round(process.memoryUsage().heapTotal / 1024 / 1024),
+        rss: Math.round(process.memoryUsage().rss / 1024 / 1024)
+      }
+    }
+
+    // Database health check
+    let databaseHealth = {}
+    try {
+      const dbSetup = NeDBSetup.getInstance()
+      const db = dbSetup.getDatabases()
+      
+      // Get collection counts
+      const collections = [
+        'users', 'events', 'bookings', 'syncQueue',
+        'appointments_slots', 'appointment_bookings', 'interviewers',
+        'availability_overrides', 'appointment_notifications'
+      ]
+      
+      const collectionCounts = {}
+      for (const collectionName of collections) {
+        try {
+          const count = await new Promise<number>((resolve, reject) => {
+            db[collectionName].count({}, (err, count) => {
+              if (err) reject(err)
+              else resolve(count)
+            })
+          })
+          collectionCounts[collectionName] = count
+        } catch (error) {
+          collectionCounts[collectionName] = `error: ${error.message}`
+        }
+      }
+
+      // Get database files info
+      const dbFiles = await dbSetup.listDatabaseFiles()
+      const dataPath = dbSetup.getDataPath()
+      
+      const fileStats = dbFiles.map(file => {
+        try {
+          const filePath = path.join(dataPath, file)
+          const stats = fs.statSync(filePath)
+          return {
+            name: file,
+            size: Math.round(stats.size / 1024), // KB
+            modified: stats.mtime
+          }
+        } catch (error) {
+          return {
+            name: file,
+            size: 'error',
+            modified: null
+          }
+        }
+      })
+
+      databaseHealth = {
+        status: 'connected',
+        dataPath,
+        collections: collectionCounts,
+        files: fileStats,
+        totalFiles: dbFiles.length,
+        r2Ready: true
+      }
+    } catch (error) {
+      databaseHealth = {
+        status: 'error',
+        error: error.message,
+        r2Ready: false
+      }
+    }
+
+    // Combined health response
+    res.json({
+      ...serverHealth,
+      database: databaseHealth
+    })
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Health check failed',
+      error: error.message,
+      timestamp: Date.now()
+    })
+  }
 })
 
 // Root endpoint with API documentation
@@ -90,7 +181,9 @@ app.get('/', (req, res) => {
         users: '/api/users',
         events: '/api/events',
         bookings: '/api/bookings',
+        appointments: '/api/appointments',
         admin: '/api/admin',
+        auth: '/api/auth',
         stats: '/api/stats',
         sync: '/api/sync'
       }

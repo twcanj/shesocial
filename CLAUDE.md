@@ -29,6 +29,9 @@ npm run dev:client
 
 # Start only server (backend)
 npm run dev:server
+
+# Check system health (includes database status)
+curl http://localhost:10000/health
 ```
 
 ### Build and Production
@@ -149,7 +152,14 @@ shesocial/
 
 ## Database Architecture
 
-### IndexedDB Structure (client/src/db/offline-db.ts)
+### NeDB Backend Storage (server/src/db/nedb-setup.ts)
+- **Persistent file-based storage** in `/server/data/` directory
+- **9 database collections** with .db files for R2 sync readiness
+- **Real-time health monitoring** via `/health` endpoint
+- **R2 Integration Ready**: `syncToR2()` and `restoreFromR2()` methods prepared
+- **Collections**: users, events, bookings, appointments_slots, appointment_bookings, interviewers, availability_overrides, appointment_notifications, syncQueue
+
+### IndexedDB Frontend Storage (client/src/db/offline-db.ts)
 - **users**: User profiles with membership tiers
 - **events**: Social events with metadata
 - **bookings**: User event bookings
@@ -516,14 +526,17 @@ Key interfaces:
 - API routes: `server/src/routes/api.ts`
 - Auth routes: `server/src/routes/auth.ts`
 - Admin routes: `server/src/routes/admin.ts` - Atomic permission management API
+- Appointment routes: `server/src/routes/appointments.ts` - 預約系統完整 API (425行)
 - User model: `server/src/models/User.ts`
 - Event model: `server/src/models/Event.ts`
 - Booking model: `server/src/models/Booking.ts`
-- Admin Permission model: `server/src/models/AdminPermission.ts` - Atomic permissions and roles
+- Admin Permission model: `server/src/models/AdminPermission.ts` - 2層4類權限架構
+- Appointment models: `server/src/models/AppointmentSlot.ts`, `server/src/models/AppointmentBooking.ts`, `server/src/models/Interviewer.ts`
 - Controllers: `server/src/controllers/`
 - Auth controller: `server/src/controllers/AuthController.ts`
+- Appointment controller: `server/src/controllers/AppointmentController.ts` - 預約系統控制器 (578行)
 - Admin Permission service: `server/src/services/AdminPermissionService.ts` - Permission validation and management
-- Auth middleware: `server/src/middleware/auth.ts`
+- Auth middleware: `server/src/middleware/auth.ts` - JWT + 2層4類權限驗證
 - CORS middleware: `server/src/middleware/cors.ts`
 
 **Deployment:**
@@ -563,7 +576,20 @@ Key interfaces:
 - Change password: `PUT /api/auth/change-password`
 - Logout: `POST /api/auth/logout`
 
-### Admin Authentication Endpoints (Separate System)
+### Appointment System Endpoints
+- **Interviewers**: `GET/POST/PUT/DELETE /api/appointments/interviewers`
+- **Appointment Slots**: `GET/POST/PUT/DELETE /api/appointments/slots`
+- **Appointment Bookings**: `GET/POST/PUT/DELETE /api/appointments/bookings`
+- **Availability Check**: `GET /api/appointments/slots/availability`
+- **Analytics**: `GET /api/appointments/analytics`
+- **Reports**: `GET /api/appointments/reports/export`
+
+### Health & Monitoring Endpoints
+- **Health Check**: `GET /health` - Comprehensive system status
+- **Database Status**: Included in health endpoint
+- **API Documentation**: `GET /` - Full endpoint listing
+
+### Admin Authentication Endpoints (獨立管理系統)
 - Admin login: `POST /api/admin/auth/login`
 - Admin logout: `POST /api/admin/auth/logout`
 - Admin profile: `GET /api/admin/auth/profile`
@@ -583,6 +609,31 @@ Key interfaces:
 - Update admin user: `PUT /api/admin/users/:adminId`
 - Audit logs: `GET /api/admin/audit/logs`
 - Admin health check: `GET /api/admin/health`
+
+### Appointment System Endpoints (預約系統 API)
+**時段管理 (客戶管理專責)**
+- Create appointment slot: `POST /api/appointments/slots`
+- Get available slots: `GET /api/appointments/slots/available`
+- Update slot: `PUT /api/appointments/slots/:slotId`
+- Delete slot: `DELETE /api/appointments/slots/:slotId`
+
+**預約管理 (會員+訪客)**
+- Create booking: `POST /api/appointments/bookings`
+- Get user bookings: `GET /api/appointments/bookings`
+- Update booking status: `PUT /api/appointments/bookings/:bookingId/status`
+- Reschedule booking: `PUT /api/appointments/bookings/:bookingId/reschedule`
+- Cancel booking: `PUT /api/appointments/bookings/:bookingId/cancel`
+
+**面試官管理 (客戶管理專責)**
+- Create interviewer: `POST /api/appointments/interviewers`
+- Get interviewers: `GET /api/appointments/interviewers`
+- Update interviewer: `PUT /api/appointments/interviewers/:interviewerId`
+- Set availability: `PUT /api/appointments/interviewers/:interviewerId/availability`
+
+**統計和管理**
+- Get statistics: `GET /api/appointments/stats`
+- Today's bookings: `GET /api/appointments/today`
+- Reminder bookings: `GET /api/appointments/reminders`
 
 ### Key Dependencies
 

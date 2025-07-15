@@ -12,9 +12,9 @@ export class AppointmentBookingModel {
 
   // 創建預約
   async create(bookingData: Omit<AppointmentBooking, '_id' | 'createdAt' | 'updatedAt' | 'bookedAt'>): Promise<AppointmentBooking> {
-    const booking: AppointmentBooking = {
+    const booking = {
       ...bookingData,
-      _id: '',
+      // Don't set _id - let NeDB generate it automatically
       confirmationSent: false,
       remindersSent: 0,
       completed: false,

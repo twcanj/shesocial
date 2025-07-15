@@ -507,6 +507,160 @@ export const DEFAULT_PERMISSION_ATOMS: Omit<PermissionAtom, '_id' | 'createdAt' 
     version: '1.0'
   },
   
+  // Appointment Management Permissions
+  {
+    atomId: 'appointments:view',
+    group: 'appointments',
+    action: 'view',
+    name: '查看預約',
+    description: '查看預約時段和預約記錄',
+    riskLevel: 'low',
+    version: '1.0'
+  },
+  {
+    atomId: 'appointments:create',
+    group: 'appointments',
+    action: 'create',
+    name: '創建預約時段',
+    description: '創建可預約時段',
+    riskLevel: 'medium',
+    requiresAll: ['appointments:view'],
+    version: '1.0'
+  },
+  {
+    atomId: 'appointments:edit',
+    group: 'appointments',
+    action: 'edit',
+    name: '編輯預約',
+    description: '編輯預約時段和預約記錄',
+    riskLevel: 'medium',
+    requiresAll: ['appointments:view'],
+    version: '1.0'
+  },
+  {
+    atomId: 'appointments:delete',
+    group: 'appointments',
+    action: 'delete',
+    name: '刪除預約',
+    description: '刪除預約時段和預約記錄',
+    riskLevel: 'high',
+    requiresAll: ['appointments:view'],
+    version: '1.0'
+  },
+  {
+    atomId: 'appointments:manage',
+    group: 'appointments',
+    action: 'manage',
+    name: '管理預約系統',
+    description: '完整預約系統管理權限',
+    riskLevel: 'high',
+    requiresAll: ['appointments:view', 'appointments:create'],
+    version: '1.0'
+  },
+  {
+    atomId: 'appointments:export',
+    group: 'appointments',
+    action: 'export',
+    name: '匯出預約數據',
+    description: '匯出預約數據報表',
+    riskLevel: 'medium',
+    requiresAll: ['appointments:view'],
+    version: '1.0'
+  },
+  
+  // Interviewer Management Permissions
+  {
+    atomId: 'interviewers:view',
+    group: 'interviewers',
+    action: 'view',
+    name: '查看面試官',
+    description: '查看面試官列表和資料',
+    riskLevel: 'low',
+    version: '1.0'
+  },
+  {
+    atomId: 'interviewers:create',
+    group: 'interviewers',
+    action: 'create',
+    name: '創建面試官',
+    description: '創建面試官資料',
+    riskLevel: 'medium',
+    requiresAll: ['interviewers:view'],
+    version: '1.0'
+  },
+  {
+    atomId: 'interviewers:edit',
+    group: 'interviewers',
+    action: 'edit',
+    name: '編輯面試官',
+    description: '編輯面試官資料和設定',
+    riskLevel: 'medium',
+    requiresAll: ['interviewers:view'],
+    version: '1.0'
+  },
+  {
+    atomId: 'interviewers:delete',
+    group: 'interviewers',
+    action: 'delete',
+    name: '刪除面試官',
+    description: '刪除面試官資料',
+    riskLevel: 'high',
+    requiresAll: ['interviewers:view'],
+    version: '1.0'
+  },
+  {
+    atomId: 'interviewers:manage',
+    group: 'interviewers',
+    action: 'manage',
+    name: '管理面試官資源',
+    description: '完整面試官資源管理',
+    riskLevel: 'high',
+    requiresAll: ['interviewers:view', 'interviewers:create'],
+    version: '1.0'
+  },
+  {
+    atomId: 'interviewers:schedule',
+    group: 'interviewers',
+    action: 'schedule',
+    name: '面試官排程管理',
+    description: '管理面試官可預約時段',
+    riskLevel: 'medium',
+    requiresAll: ['interviewers:view'],
+    version: '1.0'
+  },
+  
+  // Export Permissions for Reports
+  {
+    atomId: 'content:export',
+    group: 'content',
+    action: 'export',
+    name: '匯出內容數據',
+    description: '匯出內容相關數據',
+    riskLevel: 'medium',
+    requiresAll: ['content:view'],
+    version: '1.0'
+  },
+  {
+    atomId: 'events:export',
+    group: 'events',
+    action: 'export',
+    name: '匯出活動數據',
+    description: '匯出活動相關數據',
+    riskLevel: 'medium',
+    requiresAll: ['events:view'],
+    version: '1.0'
+  },
+  {
+    atomId: 'interviews:export',
+    group: 'interviews',
+    action: 'export',
+    name: '匯出面試數據',
+    description: '匯出面試相關數據',
+    riskLevel: 'high',
+    requiresAll: ['interviews:view'],
+    version: '1.0'
+  },
+  
   // Admin Management Permissions (Super Admin Only)
   {
     atomId: 'admin:create',
@@ -558,79 +712,103 @@ export const DEFAULT_PERMISSION_ATOMS: Omit<PermissionAtom, '_id' | 'createdAt' 
   }
 ]
 
-// Default role configurations
+// Default role configurations - 2層4類權限架構
 export const DEFAULT_ADMIN_ROLES: Omit<AdminRole, '_id' | 'createdAt' | 'updatedAt' | 'createdBy' | 'lastModifiedBy'>[] = [
+  // === 第一層：最高權限層 ===
+  
   {
     roleId: 'super_admin',
-    name: '總管理',
+    name: '總管理員',
     department: 'executive',
-    permissions: ['*'], // All permissions
+    permissions: ['*'], // All permissions - 業務最高決策權
     isCustom: false,
-    description: '總管理者，最高決策層，擁有所有權限',
+    description: '總管理員：業務最高決策權，擁有所有權限',
     isActive: true,
     version: '1.0'
   },
   {
     roleId: 'system_admin',
-    name: '系統管理',
+    name: '系統維護員',
     department: 'technical',
-    permissions: [
-      'system:monitoring',
-      'system:config', 
-      'system:backup',
-      'system:maintenance',
-      'system:logs',
-      'system:security',
-      'users:view',
-      'admin:audit'
-    ],
+    permissions: ['*'], // All permissions - 技術最高權限
     isCustom: false,
-    description: '系統管理者，技術維護和系統運營專家',
+    description: '系統維護員：技術最高權限，負責系統安全和穩定運行',
     isActive: true,
     version: '1.0'
   },
+
+  // === 第二層：日常營運層 ===
+  
   {
     roleId: 'operation_admin',
-    name: '營運管理',
+    name: '日常營運',
     department: 'operations',
     permissions: [
+      // 內容管理
       'content:view',
-      'content:moderate',
+      'content:moderate', 
       'content:edit',
       'content:feature',
+      'content:export',
+      // 活動管理
       'events:view',
       'events:create',
       'events:edit',
       'events:participants',
       'events:showcase',
-      'users:view',
-      'users:edit',
-      'users:status'
+      'events:export',
+      // 一般用戶查看（不包含編輯和狀態管理）
+      'users:view'
+      // 註：預約時段和面試官管理移至客戶管理
     ],
     isCustom: false,
-    description: '營運管理者，內容營運和一般用戶管理專家',
+    description: '日常營運：內容營運、活動管理，不觸及客戶和面試相關管理',
     isActive: true,
     version: '1.0'
   },
   {
-    roleId: 'premium_admin',
-    name: '付費用戶管理者',
+    roleId: 'customer_admin',
+    name: '客戶管理',
     department: 'members',
     permissions: [
+      // 用戶管理
+      'users:view',
+      'users:edit',
+      'users:status',
+      'users:export',
+      // 面試管理
       'interviews:view',
       'interviews:schedule',
-      'interviews:conduct',
+      'interviews:conduct', 
       'interviews:review',
       'interviews:reschedule',
+      'interviews:export',
+      // 面試官管理（完整管理）
+      'interviewers:view',
+      'interviewers:create',
+      'interviewers:edit',
+      'interviewers:delete',
+      'interviewers:manage',
+      'interviewers:schedule', // 面試官排程管理
+      // 預約時段管理（面試相關）
+      'appointments:view',
+      'appointments:create',   // 創建面試時段
+      'appointments:edit',
+      'appointments:delete',
+      'appointments:manage',
+      'appointments:export',
+      // 付費管理
       'payments:view',
       'payments:process',
+      'payments:reports',
+      // VIP服務
       'vvip:intro_management',
       'vvip:consultation',
       'vvip:priority_support',
-      'users:view'
+      'vvip:exclusive_events'
     ],
     isCustom: false,
-    description: '付費用戶管理者，VIP/VVIP會員專屬服務專家',
+    description: '客戶管理：面試流程、面試官維護、預約時段、付費用戶、VIP服務專責管理',
     isActive: true,
     version: '1.0'
   }

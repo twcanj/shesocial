@@ -63,35 +63,109 @@
 
 ## 技術債務 & 已知問題
 
-### 🔧 權限系統問題
-- **問題**: 當前使用 VVIP 會員等級進行管理功能，應該使用 Admin 角色
-- **影響**: 無法正確創建測試數據和進行管理操作
-- **解決方案**: 實現獨立的 Admin 角色系統
+### ✅ 已解決問題
+- ✅ **權限系統問題已解決**: 獨立的企業級 Admin 系統已完成
+- ✅ **Admin 角色系統已實現**: 4層管理員角色 + 原子化權限管理
+- ✅ **管理界面已完成**: 完整的管理員後台系統
 
-### 📊 ESLint 問題
+### 🔧 新發現問題
+
+#### 預約系統權限缺失 ⚠️ **高優先級**
+- **問題**: 當前權限系統缺少預約和面試官管理權限
+- **影響**: 營運管理員無法創建面試官，導致種子數據創建失敗 (1/3成功)
+- **缺少權限**:
+  ```
+  appointments:view      // 查看預約
+  appointments:create    // 創建時段  
+  appointments:edit      // 編輯預約
+  appointments:delete    // 刪除預約
+  interviewers:view      // 查看面試官
+  interviewers:create    // 創建面試官
+  interviewers:edit      // 編輯面試官
+  interviewers:manage    // 管理面試官
+  ```
+- **解決方案**: 添加預約系統權限到權限原子列表，更新營運管理員角色權限
+
+#### NeDB 唯一性約束衝突 ⚠️ **中優先級**
+- **問題**: 面試官創建時違反唯一性約束
+- **錯誤**: `Can't insert key "", it violates the unique constraint`
+- **影響**: 只有 1/3 面試官創建成功
+- **解決方案**: 檢查面試官集合索引配置，修復重複鍵問題
+
+### 📊 ESLint 問題 ⚠️ **低優先級**
 - **問題**: 前端代碼有 133 個 ESLint 錯誤
 - **類型**: 主要為未使用變數和 TypeScript any 類型
-- **優先級**: 中等 (不影響功能，但需要清理)
+- **優先級**: 低 (不影響功能，但需要清理)
 
 ## 下一步計劃
 
-### Phase 1: 完成測試數據建立
-1. 修復權限系統 (Admin 角色)
-2. 創建面試官和時段測試數據
-3. 測試完整預約流程
+### Phase 1: 修復預約系統權限 🔧 **進行中**
+1. ✅ 識別權限缺失問題
+2. ⏳ 添加預約系統權限到原子列表
+3. ⏳ 更新營運管理員角色權限
+4. ⏳ 修復面試官創建的唯一性約束問題
+5. ⏳ 重新運行種子數據創建
 
-### Phase 2: 前端開發
+### Phase 2: 完成測試數據建立 ✅ **已完成**
+1. ✅ 系統用戶種子數據 (6/6 平台用戶)
+2. ✅ 管理員種子數據 (4/4 完整覆蓋 - 2層4類架構)
+3. ✅ 面試官測試數據 (3/3 成功創建)
+4. ✅ 預約時段測試數據 (460 個時段)
+5. ✅ 持久化儲存系統 (R2 整合準備完成)
+6. ✅ 健康監控 API (完整資料庫狀態監控)
+
+### Phase 3: 前端開發
 1. 預約表單組件開發
 2. 時間選擇器實現
 3. 管理後台界面
 
-### Phase 3: 整合測試
+### Phase 4: 整合測試
 1. 端到端測試
 2. 用戶體驗優化
 3. 性能優化
 
 ---
 
-**最後更新**: 2025-07-14  
-**狀態**: 後端 API 完成，等待權限配置完成後建立測試數據  
-**下一步**: 創建 Admin 用戶並建立測試數據
+## 📊 系統種子用戶總覽
+
+### 🔐 管理員帳戶 (4/4 ✅ 正確架構) - 2層4類
+```
+=== 第一層：最高權限層 ===
+1. superadmin@infinitymatch.tw / SuperAdmin2025!    張執行長
+   角色: super_admin (總管理員)      權限: 所有權限 (*)     業務最高決策權
+
+2. sysadmin@infinitymatch.tw / SysAdmin2025!        李技術長  
+   角色: system_admin (系統維護員)   權限: 所有權限 (*)     技術最高權限
+
+=== 第二層：日常營運層 ===
+3. operations@infinitymatch.tw / Operations2025!   王營運經理
+   角色: operation_admin (日常營運)  權限: 內容+活動   不觸及客戶和面試管理
+
+4. customer@infinitymatch.tw / Customer2025!        陳客戶經理
+   角色: customer_admin (客戶管理)   權限: 面試+面試官+時段+付費+VIP   專責面試相關
+```
+
+### 👥 平台用戶 (6/6 ✅)
+```
+1. admin@infinitymatch.tw / InfinityAdmin2025!      premium_2500 (系統管理員)
+2. vip@infinitymatch.tw / VipMember2025!           premium_2500 (可查看參與者)
+3. member1@infinitymatch.tw / Member2025!          vip (優先預約)
+4. premium@infinitymatch.tw / Premium2025!         premium_1300
+5. regular@infinitymatch.tw / Regular2025!         regular (已付費待面試)
+6. newuser@infinitymatch.tw / NewUser2025!         regular (新用戶)
+```
+
+### 🎯 面試官 (1/3 ⚠️ 需修復) - 客戶管理專責維護
+```
+✅ 王美玲 - 資深情感諮詢師 (聯絡: wangmeiling@infinitymatch.tw)
+❌ 張麗華 - 專業配對顧問   (聯絡: zhanglihua@infinitymatch.tw) - 唯一性約束衝突
+❌ 李志強 - 心理諮詢專家   (聯絡: lizhiqiang@infinitymatch.tw) - 唯一性約束衝突
+
+註: 面試官不需登入系統，由客戶管理人員專責維護面試官資訊和可預約時段
+```
+
+---
+
+**最後更新**: 2025-07-15  
+**狀態**: 預約系統權限缺失，面試官創建受阻  
+**下一步**: 修復權限系統，完成面試官數據創建

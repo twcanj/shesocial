@@ -12,9 +12,9 @@ export class InterviewerModel {
 
   // 創建面試官
   async create(interviewerData: Omit<Interviewer, '_id' | 'createdAt' | 'updatedAt'>): Promise<Interviewer> {
-    const interviewer: Interviewer = {
+    const interviewer = {
       ...interviewerData,
-      _id: '',
+      // Don't set _id - let NeDB generate it automatically
       totalAppointments: 0,
       completedAppointments: 0,
       averageRating: 0,
@@ -46,10 +46,23 @@ export class InterviewerModel {
     })
   }
 
-  // 根據用戶ID獲取面試官
-  async getByUserId(userId: string): Promise<Interviewer | null> {
+  // 根據姓名獲取面試官
+  async getByName(name: string): Promise<Interviewer | null> {
     return new Promise((resolve, reject) => {
-      this.db.interviewers.findOne({ userId }, (err: any, doc: Interviewer) => {
+      this.db.interviewers.findOne({ name }, (err: any, doc: Interviewer) => {
+        if (err) {
+          reject(new Error(`查詢面試官失敗: ${err.message}`))
+          return
+        }
+        resolve(doc)
+      })
+    })
+  }
+
+  // 根據聯絡信箱獲取面試官
+  async getByEmail(email: string): Promise<Interviewer | null> {
+    return new Promise((resolve, reject) => {
+      this.db.interviewers.findOne({ email }, (err: any, doc: Interviewer) => {
         if (err) {
           reject(new Error(`查詢面試官失敗: ${err.message}`))
           return

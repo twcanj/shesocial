@@ -3,6 +3,7 @@
 
 import Datastore from '@seald-io/nedb'
 import path from 'path'
+import fs from 'fs'
 import { UserProfile, EventData, BookingData, SyncQueueItem } from '../types/database'
 
 export interface DatabaseCollections {
@@ -26,7 +27,18 @@ class NeDBSetup {
   private constructor(dbPath?: string) {
     // Use absolute path relative to project root
     this.dbPath = dbPath || path.join(__dirname, '../../data')
+    
+    // Ensure data directory exists
+    this.ensureDataDirectory()
+    
     this.db = this.initializeDatabases()
+  }
+
+  private ensureDataDirectory(): void {
+    if (!fs.existsSync(this.dbPath)) {
+      fs.mkdirSync(this.dbPath, { recursive: true })
+      console.log(`📁 Created data directory: ${this.dbPath}`)
+    }
   }
 
   public static getInstance(dbPath?: string): NeDBSetup {
@@ -37,43 +49,53 @@ class NeDBSetup {
   }
 
   private initializeDatabases(): DatabaseCollections {
-    // Use in-memory databases for development to avoid file system issues
+    // Use persistent file-based databases for production readiness
+    // This enables future R2 storage integration
     const databases = {
       users: new Datastore<UserProfile>({ 
-        inMemoryOnly: true,
+        filename: path.join(this.dbPath, 'users.db'),
+        autoload: true,
         timestampData: true
       }),
       events: new Datastore<EventData>({ 
-        inMemoryOnly: true,
+        filename: path.join(this.dbPath, 'events.db'),
+        autoload: true,
         timestampData: true
       }),
       bookings: new Datastore<BookingData>({ 
-        inMemoryOnly: true,
+        filename: path.join(this.dbPath, 'bookings.db'),
+        autoload: true,
         timestampData: true
       }),
       syncQueue: new Datastore<SyncQueueItem>({ 
-        inMemoryOnly: true,
+        filename: path.join(this.dbPath, 'sync-queue.db'),
+        autoload: true,
         timestampData: true
       }),
       // New appointment system collections
       appointments_slots: new Datastore<any>({ 
-        inMemoryOnly: true,
+        filename: path.join(this.dbPath, 'appointments-slots.db'),
+        autoload: true,
         timestampData: true
       }),
       appointment_bookings: new Datastore<any>({ 
-        inMemoryOnly: true,
+        filename: path.join(this.dbPath, 'appointment-bookings.db'),
+        autoload: true,
         timestampData: true
       }),
       interviewers: new Datastore<any>({ 
-        inMemoryOnly: true,
+        filename: path.join(this.dbPath, 'interviewers.db'),
+        autoload: true,
         timestampData: true
       }),
       availability_overrides: new Datastore<any>({ 
-        inMemoryOnly: true,
+        filename: path.join(this.dbPath, 'availability-overrides.db'),
+        autoload: true,
         timestampData: true
       }),
       appointment_notifications: new Datastore<any>({ 
-        inMemoryOnly: true,
+        filename: path.join(this.dbPath, 'appointment-notifications.db'),
+        autoload: true,
         timestampData: true
       })
     }
@@ -81,7 +103,7 @@ class NeDBSetup {
     // Set up indexes for better performance (with error handling)
     this.setupIndexes(databases)
     
-    console.log(`💾 NeDB databases initialized in-memory for development`)
+    console.log(`💾 NeDB databases initialized with persistent storage at: ${this.dbPath}`)
     return databases
   }
 
@@ -131,11 +153,12 @@ class NeDBSetup {
       databases.appointment_bookings.ensureIndex({ fieldName: 'scheduledDate' })
       databases.appointment_bookings.ensureIndex({ fieldName: 'guestInfo.email' })
 
-      // Interviewers indexes
-      databases.interviewers.ensureIndex({ fieldName: 'userId' })
-      databases.interviewers.ensureIndex({ fieldName: 'email', unique: true })
+      // Interviewers indexes (no constraints - document DB, managed resources)
+      databases.interviewers.ensureIndex({ fieldName: 'name' }) // For searching by name
+      databases.interviewers.ensureIndex({ fieldName: 'email' }) // For contact, no unique constraint
       databases.interviewers.ensureIndex({ fieldName: 'isActive' })
       databases.interviewers.ensureIndex({ fieldName: 'appointmentTypes' })
+      databases.interviewers.ensureIndex({ fieldName: 'specialties' })
 
       // Availability overrides indexes
       databases.availability_overrides.ensureIndex({ fieldName: 'interviewerId' })
@@ -300,6 +323,28 @@ class NeDBSetup {
     })
 
     console.log('Test data inserted successfully')
+  }
+
+  // Future R2 integration methods
+  public getDataPath(): string {
+    return this.dbPath
+  }
+
+  public async syncToR2(): Promise<void> {
+    // TODO: Implement R2 upload functionality
+    // This will read all .db files from this.dbPath and upload to R2
+    console.log('📤 R2 sync not yet implemented - will upload files from:', this.dbPath)
+  }
+
+  public async restoreFromR2(): Promise<void> {
+    // TODO: Implement R2 download functionality  
+    // This will download .db files from R2 to this.dbPath
+    console.log('📥 R2 restore not yet implemented - will download files to:', this.dbPath)
+  }
+
+  public async listDatabaseFiles(): Promise<string[]> {
+    const files = fs.readdirSync(this.dbPath)
+    return files.filter(file => file.endsWith('.db'))
   }
 }
 
