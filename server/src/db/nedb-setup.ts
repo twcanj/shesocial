@@ -4,7 +4,7 @@
 import Datastore from '@seald-io/nedb'
 import path from 'path'
 import fs from 'fs'
-import { UserProfile, EventData, BookingData, SyncQueueItem } from '../types/database'
+import { UserProfile, EventData, BookingData, SyncQueueItem, StartupRecord, HealthLog } from '../types/database'
 
 export interface DatabaseCollections {
   users: Datastore<UserProfile>
@@ -17,6 +17,9 @@ export interface DatabaseCollections {
   interviewers: Datastore<any>
   availability_overrides: Datastore<any>
   appointment_notifications: Datastore<any>
+  // Health monitoring collections
+  startup_records: Datastore<StartupRecord>
+  health_logs: Datastore<HealthLog>
 }
 
 class NeDBSetup {
@@ -97,6 +100,17 @@ class NeDBSetup {
         filename: path.join(this.dbPath, 'appointment-notifications.db'),
         autoload: true,
         timestampData: true
+      }),
+      // Health monitoring collections
+      startup_records: new Datastore<StartupRecord>({ 
+        filename: path.join(this.dbPath, 'startup-records.db'),
+        autoload: true,
+        timestampData: true
+      }),
+      health_logs: new Datastore<HealthLog>({ 
+        filename: path.join(this.dbPath, 'health-logs.db'),
+        autoload: true,
+        timestampData: true
       })
     }
 
@@ -172,7 +186,20 @@ class NeDBSetup {
       databases.appointment_notifications.ensureIndex({ fieldName: 'status' })
       databases.appointment_notifications.ensureIndex({ fieldName: 'scheduledFor' })
 
-      console.log('📊 Database indexes created successfully (including appointment system)')
+      // Health monitoring indexes
+      databases.startup_records.ensureIndex({ fieldName: 'serverStartTime' })
+      databases.startup_records.ensureIndex({ fieldName: 'environment' })
+      databases.startup_records.ensureIndex({ fieldName: 'allSystemsHealthy' })
+      databases.startup_records.ensureIndex({ fieldName: 'processId' })
+      databases.startup_records.ensureIndex({ fieldName: 'createdAt' })
+
+      databases.health_logs.ensureIndex({ fieldName: 'recordType' })
+      databases.health_logs.ensureIndex({ fieldName: 'timestamp' })
+      databases.health_logs.ensureIndex({ fieldName: 'healthScore' })
+      databases.health_logs.ensureIndex({ fieldName: 'database.status' })
+      databases.health_logs.ensureIndex({ fieldName: 'createdAt' })
+
+      console.log('📊 Database indexes created successfully (including appointment system + health monitoring)')
     } catch (error) {
       console.warn('⚠️ Warning: Some database indexes could not be created:', error)
     }

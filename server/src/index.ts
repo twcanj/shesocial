@@ -17,6 +17,9 @@ import adminRoutes from './routes/admin'
 // Database
 import NeDBSetup from './db/nedb-setup'
 
+// Health Check Service
+import StartupHealthCheck from './services/StartupHealthCheck'
+
 const app = express()
 const PORT = process.env.PORT || 10000
 const NODE_ENV = process.env.NODE_ENV || 'development'
@@ -95,7 +98,8 @@ app.get('/health', async (req, res) => {
       const collections = [
         'users', 'events', 'bookings', 'syncQueue',
         'appointments_slots', 'appointment_bookings', 'interviewers',
-        'availability_overrides', 'appointment_notifications'
+        'availability_overrides', 'appointment_notifications',
+        'startup_records', 'health_logs'
       ]
       
       const collectionCounts = {}
@@ -152,10 +156,24 @@ app.get('/health', async (req, res) => {
     }
 
     // Combined health response
-    res.json({
+    const healthResponse = {
       ...serverHealth,
       database: databaseHealth
-    })
+    }
+
+    // Record health check in database (if requested via query parameter)
+    const shouldLog = req.query.log === 'true' || req.query.record === 'true'
+    if (shouldLog) {
+      try {
+        const healthCheck = new StartupHealthCheck()
+        await healthCheck.createHealthLog('manual')
+        console.log('📊 Manual health check logged to database')
+      } catch (error) {
+        console.warn('⚠️ Failed to log health check:', error.message)
+      }
+    }
+
+    res.json(healthResponse)
 
   } catch (error) {
     res.status(500).json({
@@ -230,16 +248,49 @@ process.on('SIGINT', () => {
   process.exit(0)
 })
 
-// Start server
-app.listen(PORT, () => {
-  console.log('🚀 SheSocial Backend Server Started')
-  console.log('🌏 Taiwan Luxury Social Platform API')
-  console.log(`📡 Server running on port ${PORT}`)
-  console.log(`🔧 Environment: ${NODE_ENV}`)
-  console.log(`⏰ Started at: ${new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' })}`)
-  console.log(`🔗 Health check: http://localhost:${PORT}/health`)
-  console.log(`📚 API docs: http://localhost:${PORT}/api`)
-  console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
-})
+// Run startup health checks and start server
+async function startServer() {
+  try {
+    console.log('🏥 Initializing startup health checks...')
+    
+    // Run comprehensive health checks
+    const healthCheck = new StartupHealthCheck()
+    const allSystemsHealthy = await healthCheck.runAllChecks()
+    
+    // Start the server regardless of health check results (graceful degradation)
+    app.listen(PORT, async () => {
+      console.log('🚀 SheSocial Backend Server Started')
+      console.log('🌏 Taiwan Luxury Social Platform API')
+      console.log(`📡 Server running on port ${PORT}`)
+      console.log(`🔧 Environment: ${NODE_ENV}`)
+      console.log(`⏰ Started at: ${new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' })}`)
+      console.log(`🔗 Health check: http://localhost:${PORT}/health`)
+      console.log(`📚 API docs: http://localhost:${PORT}/api`)
+      
+      if (allSystemsHealthy) {
+        console.log('✅ All systems operational and ready!')
+      } else {
+        console.log('⚠️ Server started with warnings - some features may be limited')
+        console.log('   Check startup health logs for details')
+      }
+      
+      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
+      
+      // Create initial health log
+      try {
+        await healthCheck.createHealthLog('startup')
+      } catch (error) {
+        console.warn('⚠️ Failed to create startup health log:', error.message)
+      }
+    })
+    
+  } catch (error) {
+    console.error('❌ Server startup failed:', error)
+    process.exit(1)
+  }
+}
+
+// Start the server
+startServer()
 
 export default app

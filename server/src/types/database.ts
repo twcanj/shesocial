@@ -295,6 +295,70 @@ export interface ConflictItem {
   resolution: 'server_wins' | 'client_wins' | 'merge_required'
 }
 
+// Startup Health Check Types (inspired by fortuneT implementation)
+export interface StartupRecord extends BaseDocument {
+  serverStartTime: Date
+  environment: string
+  nodeVersion: string
+  processId: number
+  memoryAtStartup: {
+    used: number
+    total: number
+    rss: number
+  }
+  databaseStatus: 'connected' | 'error' | 'initializing'
+  healthCheckResults: HealthCheckResult[]
+  allSystemsHealthy: boolean
+  warningCount: number
+  errorCount: number
+  startupDuration: number // in milliseconds
+  systemInfo: {
+    platform: string
+    arch: string
+    hostname: string
+  }
+}
+
+export interface HealthCheckResult {
+  component: string
+  status: 'healthy' | 'warning' | 'error'
+  message: string
+  checkDuration: number // in milliseconds
+  timestamp: Date
+  details?: any
+}
+
+export interface HealthLog extends BaseDocument {
+  recordType: 'startup' | 'periodic' | 'manual' | 'shutdown'
+  serverUptime: number
+  timestamp: Date
+  memory: {
+    used: number
+    total: number
+    rss: number
+  }
+  database: {
+    status: 'connected' | 'error'
+    collections: Record<string, number | string>
+    files: Array<{
+      name: string
+      size: number | string
+      modified: Date | null
+    }>
+    totalFiles: number
+    r2Ready: boolean
+  }
+  healthScore: number // 0-100, overall system health
+  warnings: string[]
+  errors: string[]
+  systemInfo: {
+    processId: number
+    nodeVersion: string
+    environment: string
+    platform: string
+  }
+}
+
 // Database Collections
 export interface DatabaseCollections {
   users: UserProfile
@@ -306,6 +370,8 @@ export interface DatabaseCollections {
   admins: AdminUser
   moderationQueue: ModerationQueue
   salesLeads: SalesLead
+  startup_records: StartupRecord
+  health_logs: HealthLog
 }
 
 // Utility Types
