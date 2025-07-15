@@ -42,19 +42,19 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToRegis
   return (
     <div className="max-w-md mx-auto">
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-gradient-luxury mb-2">歡迎回來</h2>
-        <p className="text-gray-600">登入您的SheSocial帳戶</p>
+        <h2 className="text-3xl font-bold text-luxury-gold mb-2">歡迎回來</h2>
+        <p className="text-luxury-platinum/80">登入您的SheSocial帳戶</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {error && (
-          <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
-            {error}
+          <div className="luxury-card-outline p-4 border-red-500/50 bg-red-500/10">
+            <p className="text-red-400 text-sm">{error}</p>
           </div>
         )}
 
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="email" className="block text-sm font-medium text-luxury-platinum mb-2">
             電子郵件
           </label>
           <input 
@@ -65,12 +65,12 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToRegis
             value={formData.email}
             onChange={handleChange}
             placeholder="請輸入您的電子郵件"
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-luxury-gold focus:border-luxury-gold transition-colors"
+            className="input-luxury"
           />
         </div>
 
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="password" className="block text-sm font-medium text-luxury-platinum mb-2">
             密碼
           </label>
           <input 
@@ -81,18 +81,18 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToRegis
             value={formData.password}
             onChange={handleChange}
             placeholder="請輸入您的密碼"
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-luxury-gold focus:border-luxury-gold transition-colors"
+            className="input-luxury"
           />
         </div>
 
         <button 
           type="submit"
           disabled={loading}
-          className="btn-luxury w-full"
+          className="luxury-button w-full"
         >
           {loading ? (
             <div className="flex items-center justify-center">
-              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-luxury-midnight-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
@@ -104,12 +104,12 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToRegis
         </button>
 
         <div className="text-center">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-luxury-platinum/80">
             還沒有帳戶？{' '}
             <button
               type="button"
               onClick={onSwitchToRegister}
-              className="text-luxury-gold hover:text-luxury-rose font-medium transition-colors"
+              className="text-luxury-gold hover:text-luxury-gold/80 font-medium transition-colors"
             >
               立即註冊
             </button>

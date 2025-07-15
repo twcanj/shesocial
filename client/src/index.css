@@ -2,20 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Zodiac-Inspired Mystical Variables for SheSocial */
+/* Enhanced Luxury Variables for SheSocial (Inspired by hesocial) */
 :root {
   --font-family-primary: 'Inter', 'Noto Sans TC', system-ui, sans-serif;
   --font-family-secondary: 'Noto Serif TC', Georgia, serif;
+  --font-family-luxury: 'Playfair Display', serif;
   
-  /* Mystical Shadows */
-  --shadow-luxury: 0 10px 25px -3px rgba(102, 51, 153, 0.15), 0 4px 6px -2px rgba(255, 215, 0, 0.1);
-  --shadow-mystical: 0 0 20px rgba(102, 51, 153, 0.3), 0 0 40px rgba(255, 215, 0, 0.2);
-  --shadow-mystical-glow: 0 0 8px rgba(255, 215, 0, 0.6);
+  /* Enhanced Luxury Shadows (hesocial inspired) */
+  --shadow-luxury: 0 10px 25px -3px rgba(102, 51, 153, 0.15), 0 4px 6px -2px rgba(212, 175, 55, 0.1);
+  --shadow-luxury-gold: 0 10px 25px -3px rgba(212, 175, 55, 0.15), 0 4px 6px -2px rgba(212, 175, 55, 0.1);
+  --shadow-mystical: 0 0 20px rgba(102, 51, 153, 0.3), 0 0 40px rgba(212, 175, 55, 0.2);
+  --shadow-mystical-glow: 0 0 8px rgba(212, 175, 55, 0.6);
   
-  /* Zodiac Gradients */
-  --gradient-luxury: linear-gradient(135deg, #663399 0%, #b8860b 100%);
-  --gradient-luxury-muted: linear-gradient(135deg, #faf8ff 0%, #fffef7 100%);
-  --gradient-mystical: linear-gradient(135deg, #663399 0%, #8b5bff 50%, #b8860b 100%);
+  /* Enhanced Luxury Gradients (hesocial inspired) */
+  --gradient-luxury: linear-gradient(135deg, #663399 0%, #D4AF37 100%);
+  --gradient-luxury-muted: linear-gradient(135deg, #faf8ff 0%, #F7E7CE 100%);
+  --gradient-mystical: linear-gradient(135deg, #663399 0%, #8b5bff 50%, #D4AF37 100%);
+  --gradient-hesocial: linear-gradient(to-br, #D4AF37 0%, #E5E4E2 20%, #F7E7CE 60%, #D4AF37 100%);
   
   /* Membership Tier Gradients (Zodiac Inspired) */
   --gradient-regular: linear-gradient(135deg, #b5c334 0%, #e0ffb3 100%);    /* Taurus */
@@ -51,20 +54,19 @@
   }
   
   body {
-    @apply bg-gradient-to-br from-luxury-ivory via-primary-50 to-secondary-50;
-    color: #1a1a1a; /* Dark charcoal for excellent readability */
+    /* Hesocial midnight black background */
+    background: #0C0C0C;
+    color: #E5E4E2; /* Luxury platinum text for contrast */
     font-family: var(--font-family-primary);
     font-feature-settings: 'rlig' 1, 'calt' 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* Mystical body background */
-    background: linear-gradient(135deg, #fffef7 0%, #faf8ff 50%, #fffef7 100%);
   }
   
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-family-secondary);
+    font-family: var(--font-family-luxury);
     @apply font-semibold tracking-tight;
-    color: #1a1a1a; /* Ensure headings have excellent contrast */
+    color: #D4AF37; /* Hesocial golden text */
   }
   
   h1 {
@@ -208,9 +210,11 @@
     @apply shadow-mystical;
   }
   
-  /* Navigation */
+  /* Navigation optimized for dark theme */
   .nav-luxury {
-    @apply bg-white/90 backdrop-blur-md border-b border-white/20;
+    background: rgba(12, 12, 12, 0.95); /* Dark background with transparency */
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2); /* Golden border */
     @apply sticky top-0 z-50;
   }
   
@@ -228,18 +232,24 @@
       inset 0 -1px 0 rgba(0, 0, 0, 0.1);
   }
   
-  /* Input Fields */
+  /* Input Fields optimized for dark background */
   .input-luxury {
     @apply w-full px-4 py-3 text-base rounded-lg;
-    @apply bg-white/80 border border-secondary-200;
+    background: rgba(229, 228, 226, 0.1); /* Subtle platinum background */
+    border: 1px solid rgba(212, 175, 55, 0.3); /* Golden border */
     @apply focus:outline-none focus:ring-2 focus:border-transparent;
-    color: #1a1a1a; /* Dark text for readability */
-    focus-ring-color: #4a2470; /* Darker purple for focus */
+    color: #E5E4E2; /* Luxury platinum text */
     @apply transition-all duration-200 ease-in-out;
   }
   
+  .input-luxury:focus {
+    background: rgba(229, 228, 226, 0.15);
+    border-color: #D4AF37; /* Hesocial golden focus */
+    box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+  }
+  
   .input-luxury::placeholder {
-    color: #6b7280; /* Medium gray for placeholder text */
+    color: rgba(229, 228, 226, 0.6); /* Platinum placeholder */
   }
   
   /* Zodiac-Inspired Badges & Membership Tiers */
@@ -325,12 +335,7 @@
     @apply transition-all duration-500 ease-in-out hover:shadow-xl hover:scale-105;
   }
   
-  /* ✨ LUXURY Cards - Premium, VIP, Exclusive */
-  .card-luxury {
-    background: var(--gradient-luxury);
-    @apply text-white shadow-lg backdrop-blur-md rounded-2xl border border-purple-200/30;
-    @apply transition-all duration-500 ease-in-out hover:shadow-xl hover:scale-105;
-  }
+  /* ✨ LUXURY Cards - Premium, VIP, Exclusive (Removed - using new luxury-card-* system) */
   
   /* Enhanced hover effects for all 4 elements */
   .card-passion:hover,
@@ -340,6 +345,173 @@
     transform: scale(1.02) rotateX(2deg) rotateY(2deg);
     filter: brightness(1.1) contrast(1.1);
     @apply shadow-mystical;
+  }
+  
+  /* Sophisticated hesocial luxury components */
+  .luxury-gradient {
+    @apply bg-gradient-to-br from-luxury-gold/20 via-luxury-platinum/10 to-luxury-champagne/30;
+  }
+  
+  .luxury-glass {
+    @apply bg-white/10 backdrop-blur-luxury border border-white/20;
+  }
+  
+  .luxury-button {
+    @apply px-8 py-3 font-medium rounded-lg transition-all duration-300 
+           shadow-lg hover:shadow-xl transform hover:-translate-y-0.5;
+    background: #D4AF37; /* Hesocial golden background */
+    color: #0C0C0C; /* Midnight black text */
+  }
+  
+  .luxury-button:hover {
+    background: rgba(212, 175, 55, 0.9); /* Slightly transparent on hover */
+  }
+  
+  .luxury-button-outline {
+    @apply px-8 py-3 font-medium rounded-lg transition-all duration-300
+           shadow-lg hover:shadow-xl transform hover:-translate-y-0.5;
+    border: 2px solid #D4AF37; /* Golden border */
+    background: transparent;
+    color: #D4AF37; /* Golden text */
+  }
+  
+  .luxury-button-outline:hover {
+    background: #D4AF37; /* Golden background on hover */
+    color: #0C0C0C; /* Midnight black text on hover */
+  }
+  
+  .luxury-hero-title {
+    @apply text-6xl md:text-8xl font-luxury font-bold text-luxury-gold;
+  }
+  
+  .luxury-hero-subtitle {
+    @apply text-xl md:text-2xl leading-relaxed;
+    color: #E5E4E2; /* Luxury platinum for subtitle */
+  }
+  
+  .luxury-section-title {
+    @apply text-4xl md:text-5xl font-luxury font-bold;
+    color: #D4AF37; /* Hesocial golden for section titles */
+  }
+  
+  .luxury-feature-card {
+    @apply luxury-glass p-8 rounded-2xl hover:bg-luxury-gold/5 transition-all duration-300 group;
+  }
+  
+  .luxury-feature-icon {
+    @apply h-12 w-12 text-luxury-gold group-hover:scale-110 transition-transform duration-300;
+  }
+  
+  .luxury-feature-title {
+    @apply text-xl font-luxury font-semibold;
+    color: #D4AF37; /* Hesocial golden for feature titles */
+  }
+  
+  .luxury-feature-description {
+    @apply leading-relaxed;
+    color: #E5E4E2; /* Luxury platinum for descriptions */
+    opacity: 0.8;
+  }
+  
+  .luxury-pricing-card {
+    @apply relative p-8 rounded-2xl transition-all duration-300 hover:scale-105;
+  }
+  
+  .luxury-pricing-card-popular {
+    @apply bg-luxury-gold text-luxury-midnight-black shadow-2xl;
+  }
+  
+  .luxury-pricing-card-regular {
+    @apply luxury-glass hover:bg-white/10;
+  }
+  
+  .luxury-scroll-indicator {
+    @apply w-6 h-10 border-2 border-luxury-gold rounded-full flex justify-center;
+  }
+  
+  .luxury-scroll-dot {
+    @apply w-1 h-3 bg-luxury-gold rounded-full mt-2 animate-bounce;
+  }
+  
+  /* Exact hesocial luxury card design */
+  .luxury-card {
+    @apply relative p-8 rounded-2xl transition-all duration-300 hover:scale-105;
+  }
+  
+  .luxury-card-selected {
+    @apply luxury-card;
+    background: #D4AF37; /* Golden background for selected/popular cards */
+    color: #0C0C0C; /* Midnight black text */
+    @apply shadow-2xl;
+  }
+  
+  .luxury-card-outline {
+    @apply luxury-card luxury-glass;
+    border: 2px solid #D4AF37; /* Golden border for outline cards */
+    background: rgba(229, 228, 226, 0.05); /* Subtle background */
+    color: #E5E4E2; /* Platinum text */
+    @apply hover:bg-white/10;
+  }
+  
+  /* Hesocial-style popular badge */
+  .luxury-card-badge {
+    @apply absolute -top-4 left-1/2 transform -translate-x-1/2;
+  }
+  
+  .luxury-card-badge-inner {
+    @apply bg-luxury-midnight-black text-luxury-gold px-4 py-2 rounded-full text-sm font-medium flex items-center;
+  }
+  
+  /* Hesocial-style card buttons */
+  .luxury-card-button-selected {
+    @apply w-full py-3 px-6 rounded-lg font-medium transition-all duration-300 flex items-center justify-center;
+    background: #0C0C0C; /* Midnight black background */
+    color: #D4AF37; /* Golden text */
+    @apply hover:bg-black/90;
+  }
+  
+  .luxury-card-button-outline {
+    @apply w-full py-3 px-6 rounded-lg font-medium transition-all duration-300 flex items-center justify-center;
+    border: 2px solid #D4AF37; /* Golden border */
+    background: transparent;
+    color: #D4AF37; /* Golden text */
+    @apply hover:bg-luxury-gold hover:text-luxury-midnight-black;
+  }
+  
+  /* Hesocial-style feature list dots */
+  .luxury-feature-dot-selected {
+    @apply w-2 h-2 rounded-full mr-3;
+    background: #0C0C0C; /* Midnight black dot for selected cards */
+  }
+  
+  .luxury-feature-dot-outline {
+    @apply w-2 h-2 rounded-full mr-3;
+    background: #D4AF37; /* Golden dot for outline cards */
+  }
+  
+  /* Hesocial-style card titles and pricing */
+  .luxury-card-title {
+    @apply text-2xl font-luxury font-bold mb-2 text-center;
+  }
+  
+  .luxury-card-pricing {
+    @apply flex items-baseline justify-center;
+  }
+  
+  .luxury-card-price {
+    @apply text-4xl font-bold;
+  }
+  
+  .luxury-card-period {
+    @apply text-lg ml-1;
+  }
+  
+  .luxury-card-features {
+    @apply space-y-4 mb-8;
+  }
+  
+  .luxury-card-feature {
+    @apply flex items-center text-sm;
   }
 }
 
@@ -362,21 +534,22 @@
     animation: gradientShift 4s ease-in-out infinite;
   }
   
-  /* High contrast text utilities */
+  /* High contrast text utilities for midnight black background */
   .text-primary {
-    color: #1a1a1a !important;
+    color: #E5E4E2 !important; /* Luxury platinum for primary text */
   }
   
   .text-secondary {
-    color: #4a4a4a !important;
+    color: #D4AF37 !important; /* Hesocial golden for secondary text */
   }
   
   .text-muted {
-    color: #6b7280 !important;
+    color: #E5E4E2 !important; /* Platinum with opacity for muted text */
+    opacity: 0.7;
   }
   
   .text-accent {
-    color: #4a2470 !important; /* Darker purple for better contrast */
+    color: #D4AF37 !important; /* Hesocial golden for accent text */
   }
   
   /* Zodiac-Inspired Animations */
@@ -402,6 +575,19 @@
   
   .animate-gradient-shift {
     animation: gradientShift 4s ease-in-out infinite;
+  }
+  
+  /* Sophisticated hesocial animations */
+  .animate-luxury-fade {
+    animation: luxuryFade 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  
+  .animate-luxury-slide {
+    animation: luxurySlide 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  
+  .animate-luxury-scale {
+    animation: luxuryScale 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
 }
 
@@ -464,46 +650,46 @@
   }
 }
 
-/* Additional High-Contrast Utilities for Better Readability */
+/* Optimized for midnight black background */
 .nav-link {
-  color: #4a4a4a !important;
+  color: #E5E4E2 !important; /* Luxury platinum for navigation */
   transition: color 0.3s ease;
 }
 
 .nav-link:hover {
-  color: #4a2470 !important;
+  color: #D4AF37 !important; /* Hesocial golden on hover */
 }
 
 .nav-link.active {
-  color: #4a2470 !important;
+  color: #D4AF37 !important; /* Hesocial golden for active */
   font-weight: 600;
 }
 
 .form-label {
-  color: #1a1a1a !important;
+  color: #E5E4E2 !important; /* Luxury platinum for form labels */
   font-weight: 500;
 }
 
 .text-error {
-  color: #b91c1c !important;
+  color: #ff6b6b !important; /* Bright red for errors on dark background */
 }
 
 .text-success {
-  color: #047857 !important;
+  color: #51cf66 !important; /* Bright green for success on dark background */
 }
 
-/* Ensure all paragraph text has good contrast */
+/* Ensure all paragraph text has good contrast on dark background */
 p {
-  color: #1a1a1a;
+  color: #E5E4E2; /* Luxury platinum for paragraph text */
 }
 
-/* Ensure link text has good contrast */
+/* Ensure link text has good contrast on dark background */
 a {
-  color: #4a2470;
+  color: #D4AF37; /* Hesocial golden for links */
 }
 
 a:hover {
-  color: #663399;
+  color: #F7E7CE; /* Lighter champagne on hover */
 }
 
 /* Override any bright gold/yellow text with readable alternatives */

@@ -41,14 +41,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
   return (
     <div 
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 bg-luxury-midnight-black bg-opacity-80 flex items-center justify-center z-50 p-4"
       onClick={handleBackdropClick}
     >
-      <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto relative">
+      <div className="bg-luxury-midnight-black border border-luxury-gold/20 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto relative">
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors z-10"
+          className="absolute top-4 right-4 text-luxury-platinum/60 hover:text-luxury-gold transition-colors z-10"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -74,16 +74,16 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               />
               
               {/* Option to use enhanced registration */}
-              <div className="mt-6 p-4 bg-luxury-gold/10 border border-luxury-gold/20 rounded-lg">
+              <div className="mt-6 luxury-card-outline p-4">
                 <h4 className="font-semibold text-luxury-gold mb-2">
                   獲得個性化推薦
                 </h4>
-                <p className="text-sm text-gray-600 mb-3">
+                <p className="text-sm text-luxury-platinum/80 mb-3">
                   填寫詳細資料，我們將為您推薦最適合的會員方案並提供專屬優惠
                 </p>
                 <button
                   onClick={handleUseEnhancedRegistration}
-                  className="btn-luxury-outline text-sm"
+                  className="luxury-button-outline text-sm"
                 >
                   使用進階註冊
                 </button>

@@ -56,11 +56,11 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
             {/* Database Status Indicator - Hidden on very small screens */}
             <div className="hidden sm:flex items-center space-x-2 ml-4">
               <div className={`w-2 h-2 rounded-full ${isInitialized ? 'bg-green-500' : 'bg-red-500'}`}></div>
-              <span className="text-xs text-secondary-600">
+              <span className="text-xs text-luxury-platinum/60">
                 {isInitialized ? 'DB Ready' : 'DB Loading'}
               </span>
               <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-500' : 'bg-yellow-500'}`}></div>
-              <span className="text-xs text-secondary-600">
+              <span className="text-xs text-luxury-platinum/60">
                 {isOnline ? 'Online' : 'Offline'}
               </span>
               {pendingSyncCount > 0 && (
@@ -74,41 +74,51 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-8">
             <button 
+              onClick={() => handlePageChange('home')}
+              className={`font-medium transition-colors duration-300 ${
+                currentPage === 'home' 
+                  ? 'text-luxury-gold' 
+                  : 'text-luxury-platinum hover:text-luxury-gold'
+              }`}
+            >
+              首頁
+            </button>
+            <button 
               onClick={() => handlePageChange('events')}
-              className={`transition-colors ${
+              className={`font-medium transition-colors duration-300 ${
                 currentPage === 'events' 
-                  ? 'text-luxury-gold font-semibold' 
-                  : 'text-secondary-600 hover:text-luxury-gold'
+                  ? 'text-luxury-gold' 
+                  : 'text-luxury-platinum hover:text-luxury-gold'
               }`}
             >
               活動
             </button>
             <button 
               onClick={() => handlePageChange('members')}
-              className={`transition-colors ${
+              className={`font-medium transition-colors duration-300 ${
                 currentPage === 'members' 
-                  ? 'text-luxury-gold font-semibold' 
-                  : 'text-secondary-600 hover:text-luxury-gold'
+                  ? 'text-luxury-gold' 
+                  : 'text-luxury-platinum hover:text-luxury-gold'
               }`}
             >
               會員
             </button>
             <button 
               onClick={() => handlePageChange('pricing')}
-              className={`transition-colors ${
+              className={`font-medium transition-colors duration-300 ${
                 currentPage === 'pricing' 
-                  ? 'text-luxury-gold font-semibold' 
-                  : 'text-secondary-600 hover:text-luxury-gold'
+                  ? 'text-luxury-gold' 
+                  : 'text-luxury-platinum hover:text-luxury-gold'
               }`}
             >
               方案
             </button>
             <button 
               onClick={() => handlePageChange('about')}
-              className={`transition-colors ${
+              className={`font-medium transition-colors duration-300 ${
                 currentPage === 'about' 
-                  ? 'text-luxury-gold font-semibold' 
-                  : 'text-secondary-600 hover:text-luxury-gold'
+                  ? 'text-luxury-gold' 
+                  : 'text-luxury-platinum hover:text-luxury-gold'
               }`}
             >
               關於
@@ -118,7 +128,7 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
           {/* Mobile Menu Button */}
           <button 
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 rounded-md text-secondary-600 hover:text-luxury-gold hover:bg-secondary-100 transition-colors"
+            className="md:hidden p-2 rounded-md text-luxury-platinum hover:text-luxury-gold hover:bg-white/5 transition-colors"
             aria-label="Toggle mobile menu"
           >
             <svg 
@@ -146,10 +156,10 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
                     </svg>
                   </div>
                   <div>
-                    <div className="text-sm font-medium text-secondary-700">
+                    <div className="text-sm font-medium text-luxury-platinum">
                       {user?.profile?.name || user?.email}
                     </div>
-                    <div className="text-xs text-secondary-500 capitalize">
+                    <div className="text-xs text-luxury-platinum/60 capitalize">
                       {user?.membership?.type || 'regular'} 會員
                     </div>
                   </div>
@@ -173,13 +183,13 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
               <div className="flex items-center space-x-3">
                 <button 
                   onClick={openLogin}
-                  className="btn-luxury-ghost"
+                  className="px-4 py-2 font-medium rounded-lg transition-all duration-300 border-2 border-luxury-gold bg-luxury-midnight-black text-luxury-gold hover:bg-luxury-gold hover:text-luxury-midnight-black"
                 >
                   登入
                 </button>
                 <button 
                   onClick={openRegister}
-                  className="btn-luxury"
+                  className="px-4 py-2 font-medium rounded-lg transition-all duration-300 bg-luxury-gold text-luxury-midnight-black hover:bg-luxury-gold/90 shadow-lg"
                 >
                   註冊
                 </button>
@@ -190,46 +200,56 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
 
         {/* Mobile Navigation Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden border-t border-secondary-200 bg-white">
+          <div className="md:hidden border-t border-luxury-gold/20 bg-luxury-midnight-black">
             <div className="px-4 py-4 space-y-4">
               {/* Mobile Navigation Links */}
               <div className="space-y-3">
                 <button 
+                  onClick={() => handlePageChange('home')}
+                  className={`block w-full text-left px-4 py-3 rounded-lg font-medium transition-colors duration-300 ${
+                    currentPage === 'home' 
+                      ? 'text-luxury-gold' 
+                      : 'text-luxury-platinum hover:text-luxury-gold'
+                  }`}
+                >
+                  首頁
+                </button>
+                <button 
                   onClick={() => handlePageChange('events')}
-                  className={`block w-full text-left px-3 py-2 rounded-md transition-colors ${
+                  className={`block w-full text-left px-4 py-3 rounded-lg font-medium transition-colors duration-300 ${
                     currentPage === 'events' 
-                      ? 'text-luxury-gold font-semibold bg-luxury-gold/10' 
-                      : 'text-secondary-600 hover:text-luxury-gold hover:bg-secondary-50'
+                      ? 'text-luxury-gold' 
+                      : 'text-luxury-platinum hover:text-luxury-gold'
                   }`}
                 >
                   活動
                 </button>
                 <button 
                   onClick={() => handlePageChange('members')}
-                  className={`block w-full text-left px-3 py-2 rounded-md transition-colors ${
+                  className={`block w-full text-left px-4 py-3 rounded-lg font-medium transition-colors duration-300 ${
                     currentPage === 'members' 
-                      ? 'text-luxury-gold font-semibold bg-luxury-gold/10' 
-                      : 'text-secondary-600 hover:text-luxury-gold hover:bg-secondary-50'
+                      ? 'text-luxury-gold' 
+                      : 'text-luxury-platinum hover:text-luxury-gold'
                   }`}
                 >
                   會員
                 </button>
                 <button 
                   onClick={() => handlePageChange('pricing')}
-                  className={`block w-full text-left px-3 py-2 rounded-md transition-colors ${
+                  className={`block w-full text-left px-4 py-3 rounded-lg font-medium transition-colors duration-300 ${
                     currentPage === 'pricing' 
-                      ? 'text-luxury-gold font-semibold bg-luxury-gold/10' 
-                      : 'text-secondary-600 hover:text-luxury-gold hover:bg-secondary-50'
+                      ? 'text-luxury-gold' 
+                      : 'text-luxury-platinum hover:text-luxury-gold'
                   }`}
                 >
                   方案
                 </button>
                 <button 
                   onClick={() => handlePageChange('about')}
-                  className={`block w-full text-left px-3 py-2 rounded-md transition-colors ${
+                  className={`block w-full text-left px-4 py-3 rounded-lg font-medium transition-colors duration-300 ${
                     currentPage === 'about' 
-                      ? 'text-luxury-gold font-semibold bg-luxury-gold/10' 
-                      : 'text-secondary-600 hover:text-luxury-gold hover:bg-secondary-50'
+                      ? 'text-luxury-gold' 
+                      : 'text-luxury-platinum hover:text-luxury-gold'
                   }`}
                 >
                   關於
@@ -237,7 +257,7 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
               </div>
 
               {/* Mobile Auth Section */}
-              <div className="border-t border-secondary-200 pt-4">
+              <div className="border-t border-luxury-gold/20 pt-4">
                 {isAuthenticated ? (
                   <div className="space-y-3">
                     <div className="flex items-center space-x-3 px-3 py-2">
@@ -247,10 +267,10 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
                         </svg>
                       </div>
                       <div>
-                        <div className="text-sm font-medium text-secondary-700">
+                        <div className="text-sm font-medium text-luxury-platinum">
                           {user?.profile?.name || user?.email}
                         </div>
-                        <div className="text-xs text-secondary-500 capitalize">
+                        <div className="text-xs text-luxury-platinum/60 capitalize">
                           {user?.membership?.type || 'regular'} 會員
                         </div>
                       </div>
@@ -272,7 +292,7 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
                         openLogin()
                         setIsMobileMenuOpen(false)
                       }}
-                      className="w-full btn-luxury-ghost text-left"
+                      className="w-full px-4 py-3 font-medium rounded-lg transition-all duration-300 border-2 border-luxury-gold bg-luxury-midnight-black text-luxury-gold hover:bg-luxury-gold hover:text-luxury-midnight-black text-left"
                     >
                       登入
                     </button>
@@ -281,7 +301,7 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
                         openRegister()
                         setIsMobileMenuOpen(false)
                       }}
-                      className="w-full btn-luxury text-left"
+                      className="w-full px-4 py-3 font-medium rounded-lg transition-all duration-300 bg-luxury-gold text-luxury-midnight-black hover:bg-luxury-gold/90 shadow-lg text-left"
                     >
                       註冊
                     </button>
@@ -290,8 +310,8 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
               </div>
 
               {/* Mobile Status Indicators */}
-              <div className="border-t border-secondary-200 pt-4">
-                <div className="flex items-center justify-between text-xs text-secondary-500">
+              <div className="border-t border-luxury-gold/20 pt-4">
+                <div className="flex items-center justify-between text-xs text-luxury-platinum/60">
                   <div className="flex items-center space-x-2">
                     <div className={`w-2 h-2 rounded-full ${isInitialized ? 'bg-green-500' : 'bg-red-500'}`}></div>
                     <span>{isInitialized ? 'DB Ready' : 'DB Loading'}</span>

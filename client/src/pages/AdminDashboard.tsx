@@ -21,10 +21,10 @@ export const AdminDashboard: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-luxury-midnight-black flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-luxury-gold mx-auto mb-4"></div>
-          <p className="text-gray-600">載入管理面板...</p>
+          <p className="text-luxury-platinum">載入管理面板...</p>
         </div>
       </div>
     )
@@ -48,7 +48,7 @@ export const AdminDashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="min-h-screen bg-luxury-midnight-black flex">
       {/* Sidebar */}
       <AdminSidebar
         activeSection={activeSection}
@@ -60,14 +60,14 @@ export const AdminDashboard: React.FC = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top Bar */}
-        <header className="bg-white shadow-sm border-b border-gray-200">
+        <header className="bg-luxury-midnight-black/95 backdrop-blur-sm border-b border-luxury-gold/20">
           <div className="px-6 py-4">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">
+                <h1 className="text-2xl font-bold text-luxury-gold">
                   {getSectionTitle(activeSection)}
                 </h1>
-                <p className="text-sm text-gray-600 mt-1">
+                <p className="text-sm text-luxury-platinum/80 mt-1">
                   InfinityMatch 管理系統
                 </p>
               </div>
@@ -75,11 +75,11 @@ export const AdminDashboard: React.FC = () => {
               {/* Admin Info */}
               <div className="flex items-center space-x-4">
                 <div className="text-right">
-                  <p className="text-sm font-medium text-gray-900">{admin?.username}</p>
-                  <p className="text-xs text-gray-500">{admin?.department}</p>
+                  <p className="text-sm font-medium text-luxury-platinum">{admin?.username}</p>
+                  <p className="text-xs text-luxury-platinum/60">{admin?.department}</p>
                 </div>
                 <div className="w-8 h-8 bg-luxury-gold rounded-full flex items-center justify-center">
-                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 text-luxury-midnight-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
                 </div>
@@ -131,12 +131,12 @@ const AdminLogin: React.FC<{ onLogin: (username: string, password: string) => Pr
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-luxury-champagne to-luxury-pearl flex items-center justify-center">
+    <div className="min-h-screen bg-luxury-midnight-black flex items-center justify-center">
       <div className="max-w-md w-full space-y-8 p-8">
-        <div className="text-center">
+        <div className="luxury-card-selected p-8 text-center">
           <img className="mx-auto h-16 w-16 rounded-full" src="/logo.jpeg" alt="InfinityMatch" />
-          <h2 className="mt-6 text-3xl font-bold text-gray-900">管理員登入</h2>
-          <p className="mt-2 text-sm text-gray-600">
+          <h2 className="mt-6 text-3xl font-bold text-luxury-midnight-black">管理員登入</h2>
+          <p className="mt-2 text-sm text-luxury-midnight-black/80">
             InfinityMatch 管理系統
           </p>
         </div>
@@ -144,7 +144,7 @@ const AdminLogin: React.FC<{ onLogin: (username: string, password: string) => Pr
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="username" className="block text-sm font-medium text-luxury-platinum">
                 管理員帳號
               </label>
               <input
@@ -160,7 +160,7 @@ const AdminLogin: React.FC<{ onLogin: (username: string, password: string) => Pr
             </div>
             
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="password" className="block text-sm font-medium text-luxury-platinum">
                 密碼
               </label>
               <input
@@ -177,19 +177,19 @@ const AdminLogin: React.FC<{ onLogin: (username: string, password: string) => Pr
           </div>
 
           {error && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-md">
-              <p className="text-sm text-red-700">{error}</p>
+            <div className="luxury-card-outline p-3 border-red-500/50 bg-red-500/10">
+              <p className="text-sm text-red-400">{error}</p>
             </div>
           )}
 
           <button
             type="submit"
             disabled={loading}
-            className="btn-luxury w-full"
+            className="luxury-button w-full"
           >
             {loading ? (
               <>
-                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-luxury-midnight-black" fill="none" viewBox="0 0 24 24">
                   <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" className="opacity-25"></circle>
                   <path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" className="opacity-75"></path>
                 </svg>

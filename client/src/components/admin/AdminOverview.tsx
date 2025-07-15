@@ -39,9 +39,9 @@ export const AdminOverview: React.FC = () => {
         {/* Loading skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 animate-pulse">
-              <div className="h-4 bg-gray-200 rounded w-3/4 mb-4"></div>
-              <div className="h-8 bg-gray-200 rounded w-1/2"></div>
+            <div key={i} className="luxury-card-outline p-6 animate-pulse">
+              <div className="h-4 bg-luxury-platinum/20 rounded w-3/4 mb-4"></div>
+              <div className="h-8 bg-luxury-platinum/20 rounded w-1/2"></div>
             </div>
           ))}
         </div>
@@ -85,11 +85,11 @@ export const AdminOverview: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Welcome Header */}
-      <div className="bg-gradient-to-r from-luxury-champagne to-luxury-pearl p-6 rounded-lg">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+      <div className="luxury-card-selected p-6 rounded-lg">
+        <h2 className="text-2xl font-bold text-luxury-midnight-black mb-2">
           {getWelcomeMessage()}，{admin?.profile?.realName}
         </h2>
-        <p className="text-gray-600">
+        <p className="text-luxury-midnight-black/80">
           歡迎回到 InfinityMatch 管理系統。以下是今日的系統概況。
         </p>
       </div>
@@ -97,17 +97,17 @@ export const AdminOverview: React.FC = () => {
       {/* System Statistics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Total Users */}
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        <div className="luxury-card-outline p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">總用戶數</p>
-              <p className="text-3xl font-bold text-gray-900">{stats?.totalUsers.toLocaleString()}</p>
-              <p className="text-sm text-green-600 mt-1">
+              <p className="text-sm font-medium text-luxury-platinum/80">總用戶數</p>
+              <p className="text-3xl font-bold text-luxury-gold">{stats?.totalUsers.toLocaleString()}</p>
+              <p className="text-sm text-green-400 mt-1">
                 +{Math.floor((stats?.totalUsers || 0) * 0.05)} 本月新增
               </p>
             </div>
-            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-              <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-12 h-12 bg-luxury-gold/20 rounded-lg flex items-center justify-center">
+              <svg className="w-6 h-6 text-luxury-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
               </svg>
             </div>
@@ -115,17 +115,17 @@ export const AdminOverview: React.FC = () => {
         </div>
 
         {/* Active Users */}
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        <div className="luxury-card-outline p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">活躍用戶</p>
-              <p className="text-3xl font-bold text-gray-900">{stats?.activeUsers.toLocaleString()}</p>
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="text-sm font-medium text-luxury-platinum/80">活躍用戶</p>
+              <p className="text-3xl font-bold text-luxury-gold">{stats?.activeUsers.toLocaleString()}</p>
+              <p className="text-sm text-luxury-platinum/60 mt-1">
                 {((stats?.activeUsers || 0) / (stats?.totalUsers || 1) * 100).toFixed(1)}% 活躍率
               </p>
             </div>
-            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-              <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
+              <svg className="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
@@ -133,17 +133,17 @@ export const AdminOverview: React.FC = () => {
         </div>
 
         {/* Total Events */}
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        <div className="luxury-card-outline p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">總活動數</p>
-              <p className="text-3xl font-bold text-gray-900">{stats?.totalEvents}</p>
-              <p className="text-sm text-blue-600 mt-1">
+              <p className="text-sm font-medium text-luxury-platinum/80">總活動數</p>
+              <p className="text-3xl font-bold text-luxury-gold">{stats?.totalEvents}</p>
+              <p className="text-sm text-blue-400 mt-1">
                 {stats?.upcomingEvents} 個即將開始
               </p>
             </div>
-            <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-              <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center">
+              <svg className="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
             </div>
@@ -151,17 +151,17 @@ export const AdminOverview: React.FC = () => {
         </div>
 
         {/* Total Bookings */}
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        <div className="luxury-card-outline p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">總預訂數</p>
-              <p className="text-3xl font-bold text-gray-900">{stats?.totalBookings.toLocaleString()}</p>
-              <p className="text-sm text-orange-600 mt-1">
+              <p className="text-sm font-medium text-luxury-platinum/80">總預訂數</p>
+              <p className="text-3xl font-bold text-luxury-gold">{stats?.totalBookings.toLocaleString()}</p>
+              <p className="text-sm text-orange-400 mt-1">
                 平均 {((stats?.totalBookings || 0) / (stats?.totalEvents || 1)).toFixed(1)} 人/活動
               </p>
             </div>
-            <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-              <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center">
+              <svg className="w-6 h-6 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
               </svg>
             </div>
@@ -172,62 +172,62 @@ export const AdminOverview: React.FC = () => {
       {/* System Health & Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* System Health */}
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">系統健康狀況</h3>
+        <div className="luxury-card-outline p-6">
+          <h3 className="text-lg font-semibold text-luxury-gold mb-4">系統健康狀況</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">系統狀態</span>
+              <span className="text-sm text-luxury-platinum/80">系統狀態</span>
               <div className="flex items-center space-x-2">
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="text-sm font-medium text-green-600">健康</span>
+                <span className="text-sm font-medium text-green-400">健康</span>
               </div>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">最後備份</span>
-              <span className="text-sm text-gray-900">
+              <span className="text-sm text-luxury-platinum/80">最後備份</span>
+              <span className="text-sm text-luxury-platinum">
                 {stats?.lastBackup ? new Date(stats.lastBackup).toLocaleString('zh-TW') : '未知'}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">服務器負載</span>
-              <span className="text-sm text-gray-900">23%</span>
+              <span className="text-sm text-luxury-platinum/80">服務器負載</span>
+              <span className="text-sm text-luxury-platinum">23%</span>
             </div>
           </div>
         </div>
 
         {/* Department Tasks */}
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">部門任務</h3>
+        <div className="luxury-card-outline p-6">
+          <h3 className="text-lg font-semibold text-luxury-gold mb-4">部門任務</h3>
           <div className="space-y-3">
             {getDepartmentTasks(admin?.department).map((task, index) => (
               <div key={index} className="flex items-start space-x-3">
                 <div className="w-2 h-2 bg-luxury-gold rounded-full mt-2"></div>
-                <span className="text-sm text-gray-600">{task}</span>
+                <span className="text-sm text-luxury-platinum">{task}</span>
               </div>
             ))}
           </div>
         </div>
 
         {/* Quick Actions */}
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">快速操作</h3>
+        <div className="luxury-card-selected p-6">
+          <h3 className="text-lg font-semibold text-luxury-midnight-black mb-4">快速操作</h3>
           <div className="space-y-3">
             {hasPermission('admin:audit') && (
-              <button className="w-full text-left px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md transition-colors">
+              <button className="w-full text-left px-3 py-2 text-sm text-luxury-midnight-black hover:bg-luxury-midnight-black/10 rounded-md transition-colors">
                 檢視審計日誌
               </button>
             )}
             {hasPermission('admin:permissions') && (
-              <button className="w-full text-left px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md transition-colors">
+              <button className="w-full text-left px-3 py-2 text-sm text-luxury-midnight-black hover:bg-luxury-midnight-black/10 rounded-md transition-colors">
                 管理權限設定
               </button>
             )}
             {hasPermission('admin:create') && (
-              <button className="w-full text-left px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md transition-colors">
+              <button className="w-full text-left px-3 py-2 text-sm text-luxury-midnight-black hover:bg-luxury-midnight-black/10 rounded-md transition-colors">
                 新增管理員
               </button>
             )}
-            <button className="w-full text-left px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md transition-colors">
+            <button className="w-full text-left px-3 py-2 text-sm text-luxury-midnight-black hover:bg-luxury-midnight-black/10 rounded-md transition-colors">
               系統設定
             </button>
           </div>
@@ -236,8 +236,8 @@ export const AdminOverview: React.FC = () => {
 
       {/* Recent Activity (if has audit permission) */}
       {hasPermission('admin:audit') && (
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">最近活動</h3>
+        <div className="luxury-card-outline p-6">
+          <h3 className="text-lg font-semibold text-luxury-gold mb-4">最近活動</h3>
           <div className="space-y-4">
             {/* Mock recent activities */}
             {[
@@ -252,8 +252,8 @@ export const AdminOverview: React.FC = () => {
                   activity.type === 'event' ? 'bg-green-500' :
                   activity.type === 'admin' ? 'bg-orange-500' : 'bg-gray-500'
                 }`}></div>
-                <span className="text-gray-500">{activity.time}</span>
-                <span className="text-gray-900">{activity.action}</span>
+                <span className="text-luxury-platinum/60">{activity.time}</span>
+                <span className="text-luxury-platinum">{activity.action}</span>
               </div>
             ))}
           </div>

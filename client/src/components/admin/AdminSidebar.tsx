@@ -96,31 +96,31 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
   }
 
   return (
-    <div className="w-64 bg-white shadow-lg flex flex-col">
+    <div className="w-64 bg-luxury-midnight-black border-r border-luxury-gold/20 flex flex-col">
       {/* Logo & Brand */}
-      <div className="p-6 border-b border-gray-200">
+      <div className="p-6 border-b border-luxury-gold/20">
         <div className="flex items-center space-x-3">
           <img src="/logo.jpeg" alt="InfinityMatch" className="w-10 h-10 rounded-full" />
           <div>
-            <h1 className="text-lg font-bold text-gray-900">InfinityMatch</h1>
-            <p className="text-sm text-gray-500">管理系統</p>
+            <h1 className="text-lg font-bold text-luxury-gold">InfinityMatch</h1>
+            <p className="text-sm text-luxury-platinum/80">管理系統</p>
           </div>
         </div>
       </div>
 
       {/* Admin Profile Card */}
-      <div className="p-4 border-b border-gray-200">
-        <div className={`bg-gradient-to-r ${getDepartmentColor(admin?.department)} p-4 rounded-lg text-white`}>
+      <div className="p-4 border-b border-luxury-gold/20">
+        <div className="luxury-card-selected p-4 rounded-lg">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-10 h-10 bg-luxury-midnight-black/20 rounded-full flex items-center justify-center">
+              <svg className="w-5 h-5 text-luxury-midnight-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate">{admin?.profile?.realName}</p>
-              <p className="text-xs text-white/80">{getDepartmentName(admin?.department)}</p>
-              <p className="text-xs text-white/60">{admin?.profile?.employeeId}</p>
+              <p className="text-sm font-medium truncate text-luxury-midnight-black">{admin?.profile?.realName}</p>
+              <p className="text-xs text-luxury-midnight-black/80">{getDepartmentName(admin?.department)}</p>
+              <p className="text-xs text-luxury-midnight-black/60">{admin?.profile?.employeeId}</p>
             </div>
           </div>
         </div>
@@ -140,11 +140,11 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
               onClick={() => onSectionChange(item.id)}
               className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors ${
                 isActive
-                  ? 'bg-luxury-gold text-white shadow-md'
-                  : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                  ? 'bg-luxury-gold text-luxury-midnight-black shadow-md'
+                  : 'text-luxury-platinum hover:bg-luxury-gold/10 hover:text-luxury-gold'
               }`}
             >
-              <span className={isActive ? 'text-white' : 'text-gray-400'}>
+              <span className={isActive ? 'text-luxury-midnight-black' : 'text-luxury-platinum/60'}>
                 {item.icon}
               </span>
               <span className="font-medium">{item.name}</span>
@@ -154,21 +154,21 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
       </nav>
 
       {/* System Status */}
-      <div className="p-4 border-t border-gray-200">
+      <div className="p-4 border-t border-luxury-gold/20">
         <div className="flex items-center justify-between text-sm">
-          <span className="text-gray-500">系統狀態</span>
+          <span className="text-luxury-platinum/80">系統狀態</span>
           <div className="flex items-center space-x-2">
             <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-            <span className="text-green-600 font-medium">正常運行</span>
+            <span className="text-green-400 font-medium">正常運行</span>
           </div>
         </div>
       </div>
 
       {/* Logout */}
-      <div className="p-4 border-t border-gray-200">
+      <div className="p-4 border-t border-luxury-gold/20">
         <button
           onClick={onLogout}
-          className="w-full flex items-center space-x-3 px-3 py-2 text-gray-600 hover:bg-red-50 hover:text-red-600 rounded-lg transition-colors"
+          className="w-full flex items-center space-x-3 px-3 py-2 text-luxury-platinum hover:bg-red-500/10 hover:text-red-400 rounded-lg transition-colors"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />

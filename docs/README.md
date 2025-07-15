@@ -2,43 +2,90 @@
 
 > **天造地設，人成對 | 1+1=∞ 當二個彼此有情人相遇，愛就開始無限**
 
-這裡是 InfinityMatch 天造地設人成對 台灣頂級配對平台的完整文檔目錄。
+Complete documentation for the InfinityMatch 天造地設人成對 Taiwan premium social platform.
 
-## 📂 文檔結構
+## 📖 Complete Documentation Structure
 
-### 📋 Business (商業文檔)
-- [`BUSINESS_RULES.md`](./business/BUSINESS_RULES.md) - 會員制度、票券系統、商業規則
-- [`社交活動網站規格書.markdown`](./business/社交活動網站規格書.markdown) - 原始需求規格書
+### 🔧 Core Development
+- **[CLAUDE.md](../CLAUDE.md)** - Essential development guide (streamlined)
+- **[Development Guide](DEVELOPMENT_GUIDE.md)** - Commands, setup, and environment
+- **[Architecture Overview](ARCHITECTURE_OVERVIEW.md)** - System design and technology stack
+- **[API Reference](API_REFERENCE.md)** - Complete API endpoints and authentication
+- **[File Locations](FILE_LOCATIONS.md)** - Complete file reference with descriptions
 
-### 🔧 Development (開發文檔)
-- [`DEVELOPMENT_STATUS_SUMMARY.md`](./development/DEVELOPMENT_STATUS_SUMMARY.md) - 開發狀態總結
-- [`IMPLEMENTATION_STATUS.md`](./development/IMPLEMENTATION_STATUS.md) - 實施狀態追蹤
-- [`MILESTONE_COMPLETED.md`](./development/MILESTONE_COMPLETED.md) - 已完成里程碑
-- [`TODO_ACTION_PLAN.md`](./development/TODO_ACTION_PLAN.md) - 待辦事項與行動計劃
+### 📊 Business Documentation
+- **[Business Rules](business/BUSINESS_RULES.md)** - Core business logic and member workflow
+- **[Admin System Architecture](business/ADMIN_SYSTEM_ARCHITECTURE.md)** - Permission and role system
+- **[Membership System](business/MEMBERSHIP_SYSTEM_CORRECT.md)** - 4-tier membership structure
+- **[Content Management](business/CONTENT_MANAGEMENT_ARCHITECTURE.md)** - Media and moderation workflow
+- **[Member Lifecycle](business/MEMBER_LIFECYCLE_MANAGEMENT.md)** - Onboarding and verification
+- **[VVIP System](business/VVIP_INTRO_SYSTEM_DESIGN.md)** - Premium member features
+- **[Original Specification](business/社交活動網站規格書.markdown)** - Original requirements document
 
-### ⚙️ Technical (技術文檔)
-- [`CONCISE_IMPLEMENTATION_PLAN.md`](./technical/CONCISE_IMPLEMENTATION_PLAN.md) - 簡潔實施計劃
-- [`TROUBLESHOOTING.md`](./technical/TROUBLESHOOTING.md) - 故障排除指南
+### 🛠️ Technical Documentation
+- **[Mobile Optimization](technical/MOBILE_OPTIMIZATION.md)** - Responsive design guidelines
+- **[Troubleshooting](technical/TROUBLESHOOTING.md)** - Common issues and solutions
+- **[CMS Architecture](technical/CMS_ARCHITECTURE.md)** - Content management system
+- **[Concise Implementation](technical/CONCISE_IMPLEMENTATION_PLAN.md)** - Development strategy
 
-### 🚀 Deployment (部署文檔)
-*待添加部署相關文檔*
+### 🚀 Deployment & Operations
+- **[Domain Strategy](deployment/DOMAIN_STRATEGY.md)** - Domain planning and management
+- **[Domain Management](deployment/DOMAIN_MANAGEMENT.md)** - DNS and hosting configuration
+- **[Health Monitoring](operations/HEALTH_MONITORING.md)** - System monitoring and alerts
 
-## 🔗 Quick Links
+### 📋 Development Status
+- **[Task History](TASK_HISTORY.md)** - Completed achievements archive
+- **[Implementation Status](development/IMPLEMENTATION_STATUS.md)** - Current development state
+- **[Development Summary](development/DEVELOPMENT_STATUS_SUMMARY.md)** - Progress overview
+- **[Deployment Status](development/DEPLOYMENT_STATUS.md)** - Production readiness
+- **[Admin Permission Analysis](development/ADMIN_PERMISSION_ANALYSIS.md)** - Permission system details
+- **[Appointment System Guide](development/APPOINTMENT_SYSTEM_GUIDE.md)** - Booking system implementation
+- **[Milestone Completed](development/MILESTONE_COMPLETED.md)** - Achievement tracking
+- **[TODO Action Plan](development/TODO_ACTION_PLAN.md)** - Next steps planning
 
-### 開發者入門
-1. 閱讀 [README.md](../README.md) 了解項目概述
-2. 查看 [CONCISE_IMPLEMENTATION_PLAN.md](./technical/CONCISE_IMPLEMENTATION_PLAN.md) 了解技術架構
-3. 參考 [TROUBLESHOOTING.md](./technical/TROUBLESHOOTING.md) 解決常見問題
+### 📡 API Documentation
+- **[Appointment API](api/APPOINTMENT_API.md)** - Complete appointment system endpoints
 
-### 商業理解
-1. 查看 [BUSINESS_RULES.md](./business/BUSINESS_RULES.md) 了解會員制度
-2. 閱讀 [社交活動網站規格書.markdown](./business/社交活動網站規格書.markdown) 了解原始需求
+## 🎯 Quick Navigation
 
-### 項目進度
-1. 查看 [DEVELOPMENT_STATUS_SUMMARY.md](./development/DEVELOPMENT_STATUS_SUMMARY.md) 了解整體進度
-2. 檢查 [MILESTONE_COMPLETED.md](./development/MILESTONE_COMPLETED.md) 了解已完成功能
-3. 參考 [TODO_ACTION_PLAN.md](./development/TODO_ACTION_PLAN.md) 了解下一步計劃
+### For Developers
+1. Start with **[CLAUDE.md](../CLAUDE.md)** for essential info
+2. Review **[Development Guide](DEVELOPMENT_GUIDE.md)** for setup
+3. Check **[Architecture Overview](ARCHITECTURE_OVERVIEW.md)** for system understanding
+4. Use **[File Locations](FILE_LOCATIONS.md)** to find specific files
+5. Reference **[API Reference](API_REFERENCE.md)** for endpoints
+
+### For Business Stakeholders
+1. **[Business Rules](business/BUSINESS_RULES.md)** - Core business logic
+2. **[Membership System](business/MEMBERSHIP_SYSTEM_CORRECT.md)** - Revenue model
+3. **[Member Lifecycle](business/MEMBER_LIFECYCLE_MANAGEMENT.md)** - User journey
+4. **[Admin System](business/ADMIN_SYSTEM_ARCHITECTURE.md)** - Management capabilities
+
+### For Operations
+1. **[Health Monitoring](operations/HEALTH_MONITORING.md)** - System monitoring
+2. **[Domain Management](deployment/DOMAIN_MANAGEMENT.md)** - Infrastructure
+3. **[Deployment Status](development/DEPLOYMENT_STATUS.md)** - Production readiness
+
+## 📊 Project Status
+
+### ✅ Complete & Production Ready
+- **Platform**: Enterprise-grade social platform
+- **Features**: All core functionality implemented
+- **Documentation**: Comprehensive and organized
+- **Architecture**: Scalable and maintainable
+- **Design**: Luxury zodiac-inspired theme
+- **Localization**: Taiwan Traditional Chinese
+
+### 🔄 Next Development Phase
+- LINE Pay integration for Taiwan market
+- Advanced media features (video upload)
+- Payment processing (Apple Pay, Google Pay)
+- LINE Official Account integration
 
 ---
 
-*最後更新: 2025年7月14日 - 品牌重塑為 InfinityMatch 天造地設人成對 (1+1=∞)*
+**Documentation Status**: ✅ **Complete and Organized**
+
+This documentation structure provides comprehensive coverage of the InfinityMatch 天造地設人成對 platform, from development setup to business operations. All files are cross-referenced and maintained for easy navigation and understanding.
+
+*最後更新: 2025年7月15日 - Complete documentation reorganization with streamlined CLAUDE.md*

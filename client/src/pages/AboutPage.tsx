@@ -20,41 +20,41 @@ export const AboutPage: React.FC = () => {
           <h1 className="text-gradient-luxury animate-fade-in mb-6">
             關於 天造地設人成對 InfinityMatch
           </h1>
-          <p className="text-xl text-secondary-700 max-w-3xl mx-auto mb-4">
+          <p className="text-xl text-luxury-platinum max-w-3xl mx-auto mb-4">
             天造地設，人成對 - 當二個彼此有情人相遇，愛就開始無限
           </p>
-          <p className="text-lg text-secondary-600 max-w-4xl mx-auto">
+          <p className="text-lg text-luxury-platinum/80 max-w-4xl mx-auto">
             台灣頂級配對平台，專注於隱私保護、會員分級和優質體驗
           </p>
         </div>
 
         {/* Mission Section */}
         <div className="grid lg:grid-cols-2 gap-12 mb-16">
-          <div className="card-passion p-8">
+          <div className="luxury-card-selected p-8">
             <div className="flex items-center mb-6">
               <div className="w-16 h-16 bg-luxury-gold/10 rounded-full flex items-center justify-center mr-4">
                 <svg className="w-8 h-8 text-luxury-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
               </div>
-              <h2 className="text-2xl font-bold">我們的使命</h2>
+              <h2 className="text-2xl font-bold text-luxury-midnight-black">我們的使命</h2>
             </div>
-            <p className="text-gray-600 leading-relaxed">
+            <p className="text-luxury-midnight-black/80 leading-relaxed">
               天造地設人成對致力於為台灣單身族群提供安全、優質的社交環境。我們相信每個人都值得擁有真摯的感情，
               透過精心策劃的活動和嚴格的會員篩選機制，讓您在舒適的環境中遇見志同道合的人。我們相信，天造地設，當兩個人相遇，就有了無限可能。
             </p>
           </div>
 
-          <div className="card-luxury p-8">
+          <div className="luxury-card-outline p-8">
             <div className="flex items-center mb-6">
               <div className="w-16 h-16 bg-luxury-gold/10 rounded-full flex items-center justify-center mr-4">
                 <svg className="w-8 h-8 text-luxury-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
               </div>
-              <h2 className="text-2xl font-bold">隱私承諾</h2>
+              <h2 className="text-2xl font-bold text-luxury-gold">隱私承諾</h2>
             </div>
-            <p className="text-gray-600 leading-relaxed">
+            <p className="text-luxury-platinum leading-relaxed">
               我們深知隱私的重要性，採用業界最高標準的資料保護措施。所有會員資料經過加密處理，
               活動參與者資訊僅在必要時分享，確保您的個人隱私得到最完善的保護。
             </p>
@@ -63,7 +63,7 @@ export const AboutPage: React.FC = () => {
 
         {/* Core Values */}
         <div className="mb-16">
-          <h2 className="text-3xl font-bold text-center mb-12">核心價值</h2>
+          <h2 className="text-3xl font-bold text-center mb-12 text-luxury-gold">核心價值</h2>
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
               <div className="w-20 h-20 mx-auto bg-luxury-gold/10 rounded-full flex items-center justify-center mb-6">
@@ -71,8 +71,8 @@ export const AboutPage: React.FC = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-4">品質至上</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-semibold mb-4 text-luxury-gold">品質至上</h3>
+              <p className="text-luxury-platinum">
                 精心挑選活動地點，嚴格篩選會員資格，確保每一次體驗都達到最高標準
               </p>
             </div>
@@ -83,8 +83,8 @@ export const AboutPage: React.FC = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 01-3 0m3 0V9a1.5 1.5 0 012-1.415M18 15v3m0 0l-3-3m3 3l3-3" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-4">真誠交流</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-semibold mb-4 text-luxury-gold">真誠交流</h3>
+              <p className="text-luxury-platinum">
                 營造真實、開放的交流環境，讓每位會員都能展現最真實的自己
               </p>
             </div>
@@ -95,8 +95,8 @@ export const AboutPage: React.FC = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-4">安全保障</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-semibold mb-4 text-luxury-gold">安全保障</h3>
+              <p className="text-luxury-platinum">
                 建立完善的安全機制，保護會員的人身安全和隱私安全
               </p>
             </div>
@@ -104,8 +104,8 @@ export const AboutPage: React.FC = () => {
         </div>
 
         {/* Platform Features */}
-        <div className="card-luxury p-8 mb-16">
-          <h2 className="text-2xl font-bold text-center mb-8">平台特色</h2>
+        <div className="luxury-card-outline p-8 mb-16">
+          <h2 className="text-2xl font-bold text-center mb-8 text-luxury-gold">平台特色</h2>
           <div className="grid md:grid-cols-2 gap-8">
             <div className="space-y-6">
               <div className="flex items-start">
@@ -115,8 +115,8 @@ export const AboutPage: React.FC = () => {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold mb-2">離線優先設計</h3>
-                  <p className="text-gray-600">
+                  <h3 className="text-lg font-semibold mb-2 text-luxury-gold">離線優先設計</h3>
+                  <p className="text-luxury-platinum">
                     即使在捷運隧道中也能正常使用，完整的離線功能讓您隨時隨地管理活動
                   </p>
                 </div>
@@ -129,8 +129,8 @@ export const AboutPage: React.FC = () => {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold mb-2">台灣在地支付</h3>
-                  <p className="text-gray-600">
+                  <h3 className="text-lg font-semibold mb-2 text-luxury-gold">台灣在地支付</h3>
+                  <p className="text-luxury-platinum">
                     支援LINE Pay、Apple Pay、Google Pay等台灣常用支付方式
                   </p>
                 </div>
@@ -143,8 +143,8 @@ export const AboutPage: React.FC = () => {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold mb-2">資料安全加密</h3>
-                  <p className="text-gray-600">
+                  <h3 className="text-lg font-semibold mb-2 text-luxury-gold">資料安全加密</h3>
+                  <p className="text-luxury-platinum">
                     採用JWT認證和bcrypt加密，保護您的個人資料和隱私安全
                   </p>
                 </div>
@@ -159,8 +159,8 @@ export const AboutPage: React.FC = () => {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold mb-2">分級會員制度</h3>
-                  <p className="text-gray-600">
+                  <h3 className="text-lg font-semibold mb-2 text-luxury-gold">分級會員制度</h3>
+                  <p className="text-luxury-platinum">
                     4階段會員等級，提供不同層次的服務和專屬權益
                   </p>
                 </div>
@@ -173,8 +173,8 @@ export const AboutPage: React.FC = () => {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold mb-2">視訊面試機制</h3>
-                  <p className="text-gray-600">
+                  <h3 className="text-lg font-semibold mb-2 text-luxury-gold">視訊面試機制</h3>
+                  <p className="text-luxury-platinum">
                     所有新會員需通過30分鐘視訊面試，確保會員品質和真實性
                   </p>
                 </div>
@@ -187,8 +187,8 @@ export const AboutPage: React.FC = () => {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold mb-2">精選活動地點</h3>
-                  <p className="text-gray-600">
+                  <h3 className="text-lg font-semibold mb-2 text-luxury-gold">精選活動地點</h3>
+                  <p className="text-luxury-platinum">
                     每3個月6場活動，精選台灣各地景點，小班制高品質體驗
                   </p>
                 </div>
@@ -199,36 +199,36 @@ export const AboutPage: React.FC = () => {
 
         {/* Technology Stack */}
         <div className="mb-16">
-          <h2 className="text-2xl font-bold text-center mb-8">技術架構</h2>
+          <h2 className="text-2xl font-bold text-center mb-8 text-luxury-gold">技術架構</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="card-luxury p-6 text-center">
+            <div className="luxury-card-outline p-6 text-center">
               <div className="text-3xl mb-4">⚛️</div>
-              <h3 className="text-lg font-semibold mb-2">前端技術</h3>
-              <p className="text-secondary-600 text-sm">
+              <h3 className="text-lg font-semibold mb-2 text-luxury-gold">前端技術</h3>
+              <p className="text-luxury-platinum text-sm">
                 React 19 + TypeScript + Vite
               </p>
             </div>
             
-            <div className="card-luxury p-6 text-center">
+            <div className="luxury-card-outline p-6 text-center">
               <div className="text-3xl mb-4">🗄️</div>
-              <h3 className="text-lg font-semibold mb-2">離線存儲</h3>
-              <p className="text-secondary-600 text-sm">
+              <h3 className="text-lg font-semibold mb-2 text-luxury-gold">離線存儲</h3>
+              <p className="text-luxury-platinum text-sm">
                 IndexedDB + Dexie.js
               </p>
             </div>
             
-            <div className="card-luxury p-6 text-center">
+            <div className="luxury-card-outline p-6 text-center">
               <div className="text-3xl mb-4">🎨</div>
-              <h3 className="text-lg font-semibold mb-2">設計系統</h3>
-              <p className="text-secondary-600 text-sm">
+              <h3 className="text-lg font-semibold mb-2 text-luxury-gold">設計系統</h3>
+              <p className="text-luxury-platinum text-sm">
                 Tailwind CSS + 奢華主題
               </p>
             </div>
             
-            <div className="card-luxury p-6 text-center">
+            <div className="luxury-card-outline p-6 text-center">
               <div className="text-3xl mb-4">📱</div>
-              <h3 className="text-lg font-semibold mb-2">PWA 應用</h3>
-              <p className="text-secondary-600 text-sm">
+              <h3 className="text-lg font-semibold mb-2 text-luxury-gold">PWA 應用</h3>
+              <p className="text-luxury-platinum text-sm">
                 Service Worker + 離線功能
               </p>
             </div>
@@ -237,9 +237,9 @@ export const AboutPage: React.FC = () => {
 
         {/* Contact Information */}
         <div className="text-center">
-          <div className="card-luxury p-8 max-w-2xl mx-auto">
-            <h2 className="text-2xl font-bold mb-6">聯絡我們</h2>
-            <div className="space-y-4 text-gray-600">
+          <div className="luxury-card-selected p-8 max-w-2xl mx-auto">
+            <h2 className="text-2xl font-bold mb-6 text-luxury-midnight-black">聯絡我們</h2>
+            <div className="space-y-4 text-luxury-midnight-black/80">
               <div className="flex items-center justify-center">
                 <svg className="w-5 h-5 mr-3 text-luxury-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -247,13 +247,13 @@ export const AboutPage: React.FC = () => {
                 <span>support@shesocial.tw</span>
               </div>
               <div className="flex items-center justify-center">
-                <svg className="w-5 h-5 mr-3 text-luxury-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 mr-3 text-luxury-midnight-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                 </svg>
                 <span>客服專線：0800-123-456</span>
               </div>
               <div className="flex items-center justify-center">
-                <svg className="w-5 h-5 mr-3 text-luxury-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 mr-3 text-luxury-midnight-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                 </svg>
                 <span>台北市信義區信義路五段7號</span>
@@ -262,7 +262,7 @@ export const AboutPage: React.FC = () => {
             <div className="mt-8">
               <button 
                 onClick={openRegister}
-                className="btn-luxury mr-4"
+                className="luxury-card-button-selected mr-4"
               >
                 立即加入
               </button>
@@ -270,7 +270,7 @@ export const AboutPage: React.FC = () => {
                 trigger={(onClick) => (
                   <button 
                     onClick={onClick}
-                    className="btn-luxury-outline"
+                    className="luxury-button-outline"
                   >
                     預約諮詢
                   </button>

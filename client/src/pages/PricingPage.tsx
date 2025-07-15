@@ -31,171 +31,161 @@ export const PricingPage: React.FC = () => {
       {/* Membership Tiers */}
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
         {/* Visitor */}
-        <div className="card-passion p-6 hover:shadow-2xl transition-shadow duration-300">
-          <div className="text-center mb-4">
-            <div className="w-16 h-16 mx-auto bg-white/20 rounded-full flex items-center justify-center mb-3">
-              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="luxury-card-outline">
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 mx-auto bg-luxury-gold/20 rounded-full flex items-center justify-center mb-3">
+              <svg className="w-8 h-8 text-luxury-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
               </svg>
             </div>
-            <h3 className="text-lg font-semibold mb-2 text-white">訪客</h3>
-            <div className="text-3xl font-bold text-white mb-1">免費</div>
-            <div className="text-sm text-white/80">只能瀏覽</div>
+            <h3 className="luxury-card-title">訪客</h3>
+            <div className="luxury-card-pricing">
+              <span className="luxury-card-price">免費</span>
+            </div>
+            <div className="text-sm opacity-80 mt-1">只能瀏覽</div>
           </div>
-          <ul className="space-y-3 text-sm text-white/80 mb-6">
-            <li className="flex items-center">
-              <svg className="w-4 h-4 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              只能看 3 個活動
+          <ul className="luxury-card-features">
+            <li className="luxury-card-feature">
+              <div className="luxury-feature-dot-outline"></div>
+              <span>只能看 3 個活動</span>
             </li>
-            <li className="flex items-center">
-              <svg className="w-4 h-4 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              查看精彩活動集
+            <li className="luxury-card-feature">
+              <div className="luxury-feature-dot-outline"></div>
+              <span>查看精彩活動集</span>
             </li>
-            <li className="flex items-center opacity-50">
-              <svg className="w-4 h-4 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-              不能參加活動
+            <li className="luxury-card-feature opacity-50">
+              <div className="luxury-feature-dot-outline opacity-50"></div>
+              <span>不能參加活動</span>
             </li>
           </ul>
           <button 
             onClick={openRegister}
-            className="btn-luxury-outline w-full"
+            className="luxury-card-button-outline"
           >
             {isAuthenticated && user?.membership?.status === 'profile_completed' ? '選擇此方案' : '選擇方案'}
           </button>
         </div>
 
         {/* Registered */}
-        <div className="card-growth p-6 transform hover:scale-105 transition-all duration-300">
-          <div className="text-center mb-4">
-            <div className="w-16 h-16 mx-auto bg-white/20 rounded-full flex items-center justify-center mb-3">
-              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="luxury-card-outline">
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 mx-auto bg-luxury-gold/20 rounded-full flex items-center justify-center mb-3">
+              <svg className="w-8 h-8 text-luxury-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
             </div>
-            <h3 className="text-lg font-semibold mb-2 text-white">註冊會員</h3>
-            <div className="text-3xl font-bold text-white mb-1">免費</div>
-            <div className="text-sm text-white/80">免費註冊</div>
+            <h3 className="luxury-card-title">註冊會員</h3>
+            <div className="luxury-card-pricing">
+              <span className="luxury-card-price">免費</span>
+            </div>
+            <div className="text-sm opacity-80 mt-1">免費註冊</div>
           </div>
-          <ul className="space-y-3 text-sm text-white/80 mb-6">
-            <li className="flex items-center">
-              <svg className="w-4 h-4 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              可看 12 個活動
+          <ul className="luxury-card-features">
+            <li className="luxury-card-feature">
+              <div className="luxury-feature-dot-outline"></div>
+              <span>可看 12 個活動</span>
             </li>
-            <li className="flex items-center">
-              <svg className="w-4 h-4 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              個人資料管理
+            <li className="luxury-card-feature">
+              <div className="luxury-feature-dot-outline"></div>
+              <span>個人資料管理</span>
             </li>
-            <li className="flex items-center opacity-50">
-              <svg className="w-4 h-4 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-              不能參加活動
+            <li className="luxury-card-feature opacity-50">
+              <div className="luxury-feature-dot-outline opacity-50"></div>
+              <span>不能參加活動</span>
             </li>
           </ul>
           <button 
             onClick={openRegister}
-            className="btn-luxury w-full"
+            className="luxury-card-button-outline"
           >
             {isAuthenticated && user?.membership?.status === 'profile_completed' ? '選擇此方案' : '選擇方案'}
           </button>
         </div>
 
         {/* VIP */}
-        <div className="card-connection p-6 hover:shadow-2xl transition-shadow duration-300">
-          <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-            <span className="bg-white text-blue-600 px-4 py-1 rounded-full text-xs font-semibold">
+        <div className="luxury-card-selected">
+          <div className="luxury-card-badge">
+            <div className="luxury-card-badge-inner">
+              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+              </svg>
               推薦
-            </span>
+            </div>
           </div>
-          <div className="text-center mb-4">
-            <div className="w-16 h-16 mx-auto bg-white/20 rounded-full flex items-center justify-center mb-3">
-              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 mx-auto bg-luxury-midnight-black/20 rounded-full flex items-center justify-center mb-3">
+              <svg className="w-8 h-8 text-luxury-midnight-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
               </svg>
             </div>
-            <h3 className="text-lg font-semibold mb-2 text-white">VIP會員</h3>
-            <div className="text-3xl font-bold text-white mb-1">NT$1,300</div>
-            <div className="text-sm text-white/80">付費會員</div>
+            <h3 className="luxury-card-title">VIP會員</h3>
+            <div className="luxury-card-pricing">
+              <span className="luxury-card-price">NT$1,300</span>
+            </div>
+            <div className="text-sm opacity-80 mt-1">付費會員</div>
           </div>
-          <ul className="space-y-3 text-sm text-white/80 mb-6">
-            <li className="flex items-center">
-              <svg className="w-4 h-4 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              無限次數活動瀏覽
+          <ul className="luxury-card-features">
+            <li className="luxury-card-feature">
+              <div className="luxury-feature-dot-selected"></div>
+              <span>無限次數活動瀏覽</span>
             </li>
-            <li className="flex items-center">
-              <svg className="w-4 h-4 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              可參加活動 (2月後)
+            <li className="luxury-card-feature">
+              <div className="luxury-feature-dot-selected"></div>
+              <span>可參加活動 (2月後)</span>
             </li>
-            <li className="flex items-center">
-              <svg className="w-4 h-4 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              票券折抵優惠
+            <li className="luxury-card-feature">
+              <div className="luxury-feature-dot-selected"></div>
+              <span>票券折抵優惠</span>
             </li>
           </ul>
           <button 
             onClick={openRegister}
-            className="btn-luxury-outline w-full"
+            className="luxury-card-button-selected"
           >
             {isAuthenticated && user?.membership?.status === 'profile_completed' ? '選擇此方案' : '選擇方案'}
           </button>
         </div>
 
         {/* VVIP */}
-        <div className="card-luxury p-6 hover:shadow-2xl transition-all duration-300">
-          <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-            <span className="bg-white text-purple-600 px-4 py-1 rounded-full text-xs font-semibold">
+        <div className="luxury-card-outline">
+          <div className="luxury-card-badge">
+            <div className="luxury-card-badge-inner">
+              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+              </svg>
               頂級
-            </span>
+            </div>
           </div>
-          <div className="text-center mb-4">
-            <div className="w-16 h-16 mx-auto bg-white/20 rounded-full flex items-center justify-center mb-3">
-              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 mx-auto bg-luxury-gold/20 rounded-full flex items-center justify-center mb-3">
+              <svg className="w-8 h-8 text-luxury-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
               </svg>
             </div>
-            <h3 className="text-lg font-semibold mb-2 text-white">VVIP會員</h3>
-            <div className="text-3xl font-bold text-white mb-1">NT$2,500</div>
-            <div className="text-sm text-white/80">頂級付費會員</div>
+            <h3 className="luxury-card-title">VVIP會員</h3>
+            <div className="luxury-card-pricing">
+              <span className="luxury-card-price">NT$2,500</span>
+            </div>
+            <div className="text-sm opacity-80 mt-1">頂級付費會員</div>
           </div>
-          <ul className="space-y-3 text-sm text-white/80 mb-6">
-            <li className="flex items-center">
-              <svg className="w-4 h-4 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              無限次數活動瀏覽
+          <ul className="luxury-card-features">
+            <li className="luxury-card-feature">
+              <div className="luxury-feature-dot-outline"></div>
+              <span>無限次數活動瀏覽</span>
             </li>
-            <li className="flex items-center">
-              <svg className="w-4 h-4 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              查看參與者名單
+            <li className="luxury-card-feature">
+              <div className="luxury-feature-dot-outline"></div>
+              <span>查看參與者名單</span>
             </li>
-            <li className="flex items-center">
-              <svg className="w-4 h-4 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              最多票券折抵
+            <li className="luxury-card-feature">
+              <div className="luxury-feature-dot-outline"></div>
+              <span>最多票券折抵</span>
             </li>
           </ul>
           <button 
             onClick={openRegister}
-            className="btn-luxury w-full"
+            className="luxury-card-button-outline"
           >
             {isAuthenticated && user?.membership?.status === 'profile_completed' ? '選擇此方案' : '選擇方案'}
           </button>
@@ -204,211 +194,319 @@ export const PricingPage: React.FC = () => {
 
       {/* Comparison Table */}
       <div className="mb-16">
-        <h2 className="text-2xl font-bold text-center mb-8">方案比較</h2>
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse bg-white rounded-lg overflow-hidden shadow-lg">
-            <thead>
-              <tr className="bg-gradient-to-r from-luxury-champagne to-luxury-pearl">
-                <th className="p-4 text-left font-semibold">功能特色</th>
-                <th className="p-4 text-center font-semibold">訪客</th>
-                <th className="p-4 text-center font-semibold">註冊會員</th>
-                <th className="p-4 text-center font-semibold">VIP會員</th>
-                <th className="p-4 text-center font-semibold">VVIP會員</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="border-b border-gray-100">
-                <td className="p-4 font-medium">費用</td>
-                <td className="p-4 text-center">免費</td>
-                <td className="p-4 text-center">免費</td>
-                <td className="p-4 text-center">NT$1,300</td>
-                <td className="p-4 text-center">NT$2,500</td>
-              </tr>
-              <tr className="border-b border-gray-100 bg-gray-50">
-                <td className="p-4 font-medium">活動瀏覽限制</td>
-                <td className="p-4 text-center">3個活動</td>
-                <td className="p-4 text-center">12個活動</td>
-                <td className="p-4 text-center">無限制</td>
-                <td className="p-4 text-center">無限制</td>
-              </tr>
-              <tr className="border-b border-gray-100">
-                <td className="p-4 font-medium">參與活動</td>
-                <td className="p-4 text-center">❌</td>
-                <td className="p-4 text-center">❌</td>
-                <td className="p-4 text-center">✅</td>
-                <td className="p-4 text-center">✅</td>
-              </tr>
-              <tr className="border-b border-gray-100 bg-gray-50">
-                <td className="p-4 font-medium">優先報名權</td>
-                <td className="p-4 text-center">❌</td>
-                <td className="p-4 text-center">❌</td>
-                <td className="p-4 text-center">✅</td>
-                <td className="p-4 text-center">✅</td>
-              </tr>
-              <tr className="border-b border-gray-100">
-                <td className="p-4 font-medium">創建活動</td>
-                <td className="p-4 text-center">❌</td>
-                <td className="p-4 text-center">❌</td>
-                <td className="p-4 text-center">✅</td>
-                <td className="p-4 text-center">✅</td>
-              </tr>
-              <tr className="border-b border-gray-100 bg-gray-50">
-                <td className="p-4 font-medium">查看參與者名單</td>
-                <td className="p-4 text-center">❌</td>
-                <td className="p-4 text-center">❌</td>
-                <td className="p-4 text-center">❌</td>
-                <td className="p-4 text-center">✅</td>
-              </tr>
-              <tr className="border-b border-gray-100">
-                <td className="p-4 font-medium">代金券</td>
-                <td className="p-4 text-center">❌</td>
-                <td className="p-4 text-center">❌</td>
-                <td className="p-4 text-center">¥100 x 13張</td>
-                <td className="p-4 text-center">¥200 x 12.5張</td>
-              </tr>
-              <tr className="bg-gray-50">
-                <td className="p-4 font-medium">專屬客服</td>
-                <td className="p-4 text-center">❌</td>
-                <td className="p-4 text-center">❌</td>
-                <td className="p-4 text-center">✅</td>
-                <td className="p-4 text-center">✅</td>
-              </tr>
-            </tbody>
-          </table>
+        <h2 className="luxury-card-title text-center mb-8">方案比較</h2>
+        <div className="luxury-card-outline p-6">
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="border-b-2 border-luxury-gold">
+                  <th className="p-4 text-left font-semibold text-luxury-gold">功能特色</th>
+                  <th className="p-4 text-center font-semibold text-luxury-gold">訪客</th>
+                  <th className="p-4 text-center font-semibold text-luxury-gold">註冊會員</th>
+                  <th className="p-4 text-center font-semibold text-luxury-gold bg-luxury-gold/10 rounded-t-lg">VIP會員</th>
+                  <th className="p-4 text-center font-semibold text-luxury-gold">VVIP會員</th>
+                </tr>
+              </thead>
+              <tbody className="text-luxury-platinum">
+                <tr className="border-b border-luxury-gold/20">
+                  <td className="p-4 font-medium text-luxury-gold">費用</td>
+                  <td className="p-4 text-center">免費</td>
+                  <td className="p-4 text-center">免費</td>
+                  <td className="p-4 text-center bg-luxury-gold/10 font-bold text-luxury-gold">NT$1,300</td>
+                  <td className="p-4 text-center font-bold text-luxury-gold">NT$2,500</td>
+                </tr>
+                <tr className="border-b border-luxury-gold/20 bg-luxury-midnight-black/5">
+                  <td className="p-4 font-medium text-luxury-gold">活動瀏覽限制</td>
+                  <td className="p-4 text-center">3個活動</td>
+                  <td className="p-4 text-center">12個活動</td>
+                  <td className="p-4 text-center bg-luxury-gold/10 font-bold text-luxury-gold">無限制</td>
+                  <td className="p-4 text-center font-bold text-luxury-gold">無限制</td>
+                </tr>
+                <tr className="border-b border-luxury-gold/20">
+                  <td className="p-4 font-medium text-luxury-gold">參與活動</td>
+                  <td className="p-4 text-center">
+                    <span className="inline-flex items-center justify-center w-6 h-6 bg-red-500/20 rounded-full">
+                      <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </span>
+                  </td>
+                  <td className="p-4 text-center">
+                    <span className="inline-flex items-center justify-center w-6 h-6 bg-red-500/20 rounded-full">
+                      <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </span>
+                  </td>
+                  <td className="p-4 text-center bg-luxury-gold/10">
+                    <span className="inline-flex items-center justify-center w-6 h-6 bg-green-500/20 rounded-full">
+                      <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </span>
+                  </td>
+                  <td className="p-4 text-center">
+                    <span className="inline-flex items-center justify-center w-6 h-6 bg-green-500/20 rounded-full">
+                      <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </span>
+                  </td>
+                </tr>
+                <tr className="border-b border-luxury-gold/20 bg-luxury-midnight-black/5">
+                  <td className="p-4 font-medium text-luxury-gold">優先報名權</td>
+                  <td className="p-4 text-center">
+                    <span className="inline-flex items-center justify-center w-6 h-6 bg-red-500/20 rounded-full">
+                      <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </span>
+                  </td>
+                  <td className="p-4 text-center">
+                    <span className="inline-flex items-center justify-center w-6 h-6 bg-red-500/20 rounded-full">
+                      <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </span>
+                  </td>
+                  <td className="p-4 text-center bg-luxury-gold/10">
+                    <span className="inline-flex items-center justify-center w-6 h-6 bg-green-500/20 rounded-full">
+                      <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </span>
+                  </td>
+                  <td className="p-4 text-center">
+                    <span className="inline-flex items-center justify-center w-6 h-6 bg-green-500/20 rounded-full">
+                      <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </span>
+                  </td>
+                </tr>
+                <tr className="border-b border-luxury-gold/20">
+                  <td className="p-4 font-medium text-luxury-gold">創建活動</td>
+                  <td className="p-4 text-center">
+                    <span className="inline-flex items-center justify-center w-6 h-6 bg-red-500/20 rounded-full">
+                      <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </span>
+                  </td>
+                  <td className="p-4 text-center">
+                    <span className="inline-flex items-center justify-center w-6 h-6 bg-red-500/20 rounded-full">
+                      <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </span>
+                  </td>
+                  <td className="p-4 text-center bg-luxury-gold/10">
+                    <span className="inline-flex items-center justify-center w-6 h-6 bg-green-500/20 rounded-full">
+                      <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </span>
+                  </td>
+                  <td className="p-4 text-center">
+                    <span className="inline-flex items-center justify-center w-6 h-6 bg-green-500/20 rounded-full">
+                      <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </span>
+                  </td>
+                </tr>
+                <tr className="border-b border-luxury-gold/20 bg-luxury-midnight-black/5">
+                  <td className="p-4 font-medium text-luxury-gold">查看參與者名單</td>
+                  <td className="p-4 text-center">
+                    <span className="inline-flex items-center justify-center w-6 h-6 bg-red-500/20 rounded-full">
+                      <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </span>
+                  </td>
+                  <td className="p-4 text-center">
+                    <span className="inline-flex items-center justify-center w-6 h-6 bg-red-500/20 rounded-full">
+                      <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </span>
+                  </td>
+                  <td className="p-4 text-center bg-luxury-gold/10">
+                    <span className="inline-flex items-center justify-center w-6 h-6 bg-red-500/20 rounded-full">
+                      <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </span>
+                  </td>
+                  <td className="p-4 text-center">
+                    <span className="inline-flex items-center justify-center w-6 h-6 bg-green-500/20 rounded-full">
+                      <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </span>
+                  </td>
+                </tr>
+                <tr className="border-b border-luxury-gold/20">
+                  <td className="p-4 font-medium text-luxury-gold">代金券</td>
+                  <td className="p-4 text-center">
+                    <span className="inline-flex items-center justify-center w-6 h-6 bg-red-500/20 rounded-full">
+                      <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </span>
+                  </td>
+                  <td className="p-4 text-center">
+                    <span className="inline-flex items-center justify-center w-6 h-6 bg-red-500/20 rounded-full">
+                      <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </span>
+                  </td>
+                  <td className="p-4 text-center bg-luxury-gold/10 font-medium text-luxury-gold">¥100 x 13張</td>
+                  <td className="p-4 text-center font-bold text-luxury-gold">¥200 x 12.5張</td>
+                </tr>
+                <tr className="bg-luxury-midnight-black/5">
+                  <td className="p-4 font-medium text-luxury-gold">專屬客服</td>
+                  <td className="p-4 text-center">
+                    <span className="inline-flex items-center justify-center w-6 h-6 bg-red-500/20 rounded-full">
+                      <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </span>
+                  </td>
+                  <td className="p-4 text-center">
+                    <span className="inline-flex items-center justify-center w-6 h-6 bg-red-500/20 rounded-full">
+                      <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </span>
+                  </td>
+                  <td className="p-4 text-center bg-luxury-gold/10">
+                    <span className="inline-flex items-center justify-center w-6 h-6 bg-green-500/20 rounded-full">
+                      <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </span>
+                  </td>
+                  <td className="p-4 text-center">
+                    <span className="inline-flex items-center justify-center w-6 h-6 bg-green-500/20 rounded-full">
+                      <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
       {/* Detailed Information */}
       <div className="grid md:grid-cols-2 gap-12 mb-16">
         <div className="space-y-8">
-          <div className="p-6 bg-gray-50 rounded-lg">
+          <div className="luxury-card-outline p-6">
             <h4 className="text-lg font-semibold mb-4 text-luxury-gold">代金券使用規則</h4>
-            <ul className="text-sm text-gray-600 space-y-3">
-              <li className="flex items-start">
-                <svg className="w-5 h-5 text-luxury-gold mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                僅適用於2日遊活動
+            <ul className="luxury-card-features">
+              <li className="luxury-card-feature">
+                <div className="luxury-feature-dot-outline"></div>
+                <span>僅適用於2日遊活動</span>
               </li>
-              <li className="flex items-start">
-                <svg className="w-5 h-5 text-luxury-gold mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                無使用期限限制
+              <li className="luxury-card-feature">
+                <div className="luxury-feature-dot-outline"></div>
+                <span>無使用期限限制</span>
               </li>
-              <li className="flex items-start">
-                <svg className="w-5 h-5 text-luxury-gold mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                可轉讓給他人使用
+              <li className="luxury-card-feature">
+                <div className="luxury-feature-dot-outline"></div>
+                <span>可轉讓給他人使用</span>
               </li>
-              <li className="flex items-start">
-                <svg className="w-5 h-5 text-luxury-gold mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                不可兌換現金
+              <li className="luxury-card-feature">
+                <div className="luxury-feature-dot-outline"></div>
+                <span>不可兌換現金</span>
               </li>
-              <li className="flex items-start">
-                <svg className="w-5 h-5 text-luxury-gold mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                每次活動限用一張
+              <li className="luxury-card-feature">
+                <div className="luxury-feature-dot-outline"></div>
+                <span>每次活動限用一張</span>
               </li>
             </ul>
           </div>
 
-          <div className="p-6 bg-luxury-gold/5 border border-luxury-gold/20 rounded-lg">
-            <h4 className="text-lg font-semibold mb-4 text-luxury-gold">活動安排</h4>
-            <ul className="text-sm text-gray-700 space-y-3">
-              <li className="flex items-start">
-                <svg className="w-5 h-5 text-luxury-gold mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                每3個月舉辦6場活動
+          <div className="luxury-card-selected p-6">
+            <h4 className="text-lg font-semibold mb-4 text-luxury-midnight-black">活動安排</h4>
+            <ul className="luxury-card-features">
+              <li className="luxury-card-feature">
+                <div className="luxury-feature-dot-selected"></div>
+                <span>每3個月舉辦6場活動</span>
               </li>
-              <li className="flex items-start">
-                <svg className="w-5 h-5 text-luxury-gold mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                </svg>
-                台灣各地精選景點
+              <li className="luxury-card-feature">
+                <div className="luxury-feature-dot-selected"></div>
+                <span>台灣各地精選景點</span>
               </li>
-              <li className="flex items-start">
-                <svg className="w-5 h-5 text-luxury-gold mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 01-3 0m3 0V9a1.5 1.5 0 012-1.415M18 15v3m0 0l-3-3m3 3l3-3" />
-                </svg>
-                小班制精緻體驗（8-16人）
+              <li className="luxury-card-feature">
+                <div className="luxury-feature-dot-selected"></div>
+                <span>小班制精緻體驗（8-16人）</span>
               </li>
-              <li className="flex items-start">
-                <svg className="w-5 h-5 text-luxury-gold mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
-                安全保障和隱私保護
+              <li className="luxury-card-feature">
+                <div className="luxury-feature-dot-selected"></div>
+                <span>安全保障和隱私保護</span>
               </li>
             </ul>
           </div>
         </div>
 
         <div className="space-y-8">
-          <div className="p-6 bg-blue-50 rounded-lg">
-            <h4 className="text-lg font-semibold mb-4 text-blue-700">會員申請流程</h4>
+          <div className="luxury-card-outline p-6">
+            <h4 className="text-lg font-semibold mb-4 text-luxury-gold">會員申請流程</h4>
             <div className="space-y-4">
               <div className="flex items-start">
-                <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold mr-4 mt-0.5">1</div>
-                <div className="text-sm text-gray-700">
-                  <div className="font-medium mb-1">線上註冊</div>
+                <div className="w-8 h-8 bg-luxury-gold text-luxury-midnight-black rounded-full flex items-center justify-center text-sm font-bold mr-4 mt-0.5">1</div>
+                <div className="text-sm text-luxury-platinum">
+                  <div className="font-medium mb-1 text-luxury-gold">線上註冊</div>
                   <div>選擇適合的會員等級並填寫基本資料</div>
                 </div>
               </div>
               <div className="flex items-start">
-                <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold mr-4 mt-0.5">2</div>
-                <div className="text-sm text-gray-700">
-                  <div className="font-medium mb-1">預約面試</div>
+                <div className="w-8 h-8 bg-luxury-gold text-luxury-midnight-black rounded-full flex items-center justify-center text-sm font-bold mr-4 mt-0.5">2</div>
+                <div className="text-sm text-luxury-platinum">
+                  <div className="font-medium mb-1 text-luxury-gold">預約面試</div>
                   <div>安排30分鐘視訊面試時間</div>
                 </div>
               </div>
               <div className="flex items-start">
-                <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold mr-4 mt-0.5">3</div>
-                <div className="text-sm text-gray-700">
-                  <div className="font-medium mb-1">身份驗證</div>
+                <div className="w-8 h-8 bg-luxury-gold text-luxury-midnight-black rounded-full flex items-center justify-center text-sm font-bold mr-4 mt-0.5">3</div>
+                <div className="text-sm text-luxury-platinum">
+                  <div className="font-medium mb-1 text-luxury-gold">身份驗證</div>
                   <div>完成身份驗證和資料確認</div>
                 </div>
               </div>
               <div className="flex items-start">
-                <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold mr-4 mt-0.5">4</div>
-                <div className="text-sm text-gray-700">
-                  <div className="font-medium mb-1">開始使用</div>
+                <div className="w-8 h-8 bg-luxury-gold text-luxury-midnight-black rounded-full flex items-center justify-center text-sm font-bold mr-4 mt-0.5">4</div>
+                <div className="text-sm text-luxury-platinum">
+                  <div className="font-medium mb-1 text-luxury-gold">開始使用</div>
                   <div>完成付款後即可開始使用所有功能</div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="p-6 bg-green-50 rounded-lg">
-            <h4 className="text-lg font-semibold mb-4 text-green-700">安全保障</h4>
-            <ul className="text-sm text-gray-700 space-y-3">
-              <li className="flex items-start">
-                <svg className="w-5 h-5 text-green-600 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
-                嚴格身份驗證機制
+          <div className="luxury-card-outline p-6">
+            <h4 className="text-lg font-semibold mb-4 text-luxury-gold">安全保障</h4>
+            <ul className="luxury-card-features">
+              <li className="luxury-card-feature">
+                <div className="luxury-feature-dot-outline"></div>
+                <span>嚴格身份驗證機制</span>
               </li>
-              <li className="flex items-start">
-                <svg className="w-5 h-5 text-green-600 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-                個人資料加密保護
+              <li className="luxury-card-feature">
+                <div className="luxury-feature-dot-outline"></div>
+                <span>個人資料加密保護</span>
               </li>
-              <li className="flex items-start">
-                <svg className="w-5 h-5 text-green-600 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
-                活動安全保險
+              <li className="luxury-card-feature">
+                <div className="luxury-feature-dot-outline"></div>
+                <span>活動安全保險</span>
               </li>
-              <li className="flex items-start">
-                <svg className="w-5 h-5 text-green-600 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                </svg>
-                24小時客服支援
+              <li className="luxury-card-feature">
+                <div className="luxury-feature-dot-outline"></div>
+                <span>24小時客服支援</span>
               </li>
             </ul>
           </div>
@@ -417,36 +515,36 @@ export const PricingPage: React.FC = () => {
 
       {/* FAQ Section */}
       <div className="mb-16">
-        <h2 className="text-2xl font-bold text-center mb-8">常見問題</h2>
+        <h2 className="text-2xl font-bold text-center mb-8 text-luxury-gold">常見問題</h2>
         <div className="grid md:grid-cols-2 gap-6">
-          <div className="p-6 bg-white rounded-lg shadow-md">
+          <div className="luxury-card-outline p-6">
             <h4 className="font-semibold mb-3 text-luxury-gold">Q: 代金券可以累積使用嗎？</h4>
-            <p className="text-sm text-gray-600">每次活動限用一張代金券，無法累積使用。但代金券無使用期限，可以保留到下次活動使用。</p>
+            <p className="text-sm text-luxury-platinum">每次活動限用一張代金券，無法累積使用。但代金券無使用期限，可以保留到下次活動使用。</p>
           </div>
-          <div className="p-6 bg-white rounded-lg shadow-md">
+          <div className="luxury-card-outline p-6">
             <h4 className="font-semibold mb-3 text-luxury-gold">Q: 可以中途升級會員等級嗎？</h4>
-            <p className="text-sm text-gray-600">可以隨時升級會員等級，差價部分需要補足。降級則需要等到下一個計費周期。</p>
+            <p className="text-sm text-luxury-platinum">可以隨時升級會員等級，差價部分需要補足。降級則需要等到下一個計費周期。</p>
           </div>
-          <div className="p-6 bg-white rounded-lg shadow-md">
+          <div className="luxury-card-outline p-6">
             <h4 className="font-semibold mb-3 text-luxury-gold">Q: 視訊面試需要準備什麼？</h4>
-            <p className="text-sm text-gray-600">請準備身份證件、穩定的網路連線和安靜的環境。面試約30分鐘，主要了解您的參與動機。</p>
+            <p className="text-sm text-luxury-platinum">請準備身份證件、穩定的網路連線和安靜的環境。面試約30分鐘，主要了解您的參與動機。</p>
           </div>
-          <div className="p-6 bg-white rounded-lg shadow-md">
+          <div className="luxury-card-outline p-6">
             <h4 className="font-semibold mb-3 text-luxury-gold">Q: 活動取消或無法參加怎麼辦？</h4>
-            <p className="text-sm text-gray-600">活動開始前24小時可免費取消。如使用代金券，會原數退回帳戶。</p>
+            <p className="text-sm text-luxury-platinum">活動開始前24小時可免費取消。如使用代金券，會原數退回帳戶。</p>
           </div>
         </div>
       </div>
 
       {/* Call to Action */}
       <div className="text-center">
-        <div className="card-passion p-8 max-w-2xl mx-auto">
-          <h2 className="text-2xl font-bold mb-4 text-white">
+        <div className="luxury-card-selected p-8 max-w-2xl mx-auto">
+          <h2 className="luxury-card-title mb-4">
             {isAuthenticated && user?.membership?.status === 'profile_completed' 
               ? '立即選擇您的方案' 
               : '立即開始您的社交之旅'}
           </h2>
-          <p className="text-white/80 mb-6">
+          <p className="text-luxury-midnight-black/80 mb-6">
             {isAuthenticated && user?.membership?.status === 'profile_completed'
               ? '根據您的個人資料，我們已為您推薦最適合的方案'
               : '選擇適合的會員方案，加入台灣頂級社交圈'}
@@ -454,13 +552,13 @@ export const PricingPage: React.FC = () => {
           <div className="space-y-4">
             <button 
               onClick={openRegister}
-              className="btn-luxury px-8 py-3 text-lg"
+              className="luxury-card-button-selected px-8 py-3 text-lg"
             >
               {isAuthenticated && user?.membership?.status === 'profile_completed'
                 ? '前往付款頁面'
                 : '立即註冊會員'}
             </button>
-            <div className="text-sm text-white/60">
+            <div className="text-sm text-luxury-midnight-black/60">
               有任何問題？歡迎聯絡客服：0800-123-456
             </div>
           </div>
@@ -469,7 +567,7 @@ export const PricingPage: React.FC = () => {
 
       {/* Share Section */}
       <div className="mt-12 text-center">
-        <p className="text-sm text-gray-500 mb-4">分享給朋友</p>
+        <p className="text-sm text-luxury-platinum/70 mb-4">分享給朋友</p>
         <div className="flex justify-center space-x-4">
           <button 
             onClick={() => navigator.share ? navigator.share({
@@ -477,7 +575,7 @@ export const PricingPage: React.FC = () => {
               text: '1+1=∞ 台灣頂級配對平台 - 會員方案介紹',
               url: window.location.href
             }) : navigator.clipboard.writeText(window.location.href)}
-            className="btn-luxury-outline text-sm"
+            className="luxury-button-outline text-sm"
           >
             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />

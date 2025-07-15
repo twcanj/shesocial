@@ -185,23 +185,23 @@ export const EventsPage: React.FC = () => {
           </div>
 
           {/* Navigation Tabs */}
-          <div className="flex space-x-1 bg-white/50 rounded-lg p-1">
+          <div className="flex space-x-4 bg-luxury-midnight-black/5 backdrop-blur-sm rounded-lg p-2">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-all ${
+                className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
                   activeTab === tab.id
-                    ? 'bg-luxury-gold text-white shadow-md'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-white/70'
+                    ? 'bg-luxury-gold text-luxury-midnight-black shadow-lg'
+                    : 'text-luxury-platinum hover:text-luxury-gold hover:bg-white/10'
                 }`}
               >
                 {tab.icon}
                 <span>{tab.label}</span>
-                <span className={`text-xs px-2 py-1 rounded-full ${
+                <span className={`text-xs px-2 py-1 rounded-full font-medium ${
                   activeTab === tab.id
-                    ? 'bg-white/20 text-white'
-                    : 'bg-gray-200 text-gray-600'
+                    ? 'bg-luxury-midnight-black/20 text-luxury-midnight-black'
+                    : 'bg-luxury-gold/20 text-luxury-gold'
                 }`}>
                   {tab.count}
                 </span>
@@ -224,22 +224,22 @@ export const EventsPage: React.FC = () => {
 
         {/* Statistics Cards */}
         {isAuthenticated && (
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-            <div className="card-luxury p-4 text-center">
-              <div className="text-2xl font-bold text-luxury-gold mb-1">{stats.total}</div>
-              <div className="text-sm text-gray-600">總活動數</div>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div className="luxury-card-outline p-6 text-center">
+              <div className="text-3xl font-bold text-luxury-gold mb-2">{stats.total}</div>
+              <div className="text-sm text-luxury-platinum/80 font-medium">總活動數</div>
             </div>
-            <div className="card-luxury p-4 text-center">
-              <div className="text-2xl font-bold text-green-600 mb-1">{stats.upcoming}</div>
-              <div className="text-sm text-gray-600">即將開始</div>
+            <div className="luxury-card-outline p-6 text-center">
+              <div className="text-3xl font-bold text-green-400 mb-2">{stats.upcoming}</div>
+              <div className="text-sm text-luxury-platinum/80 font-medium">即將開始</div>
             </div>
-            <div className="card-luxury p-4 text-center">
-              <div className="text-2xl font-bold text-blue-600 mb-1">{stats.participated}</div>
-              <div className="text-sm text-gray-600">已參與</div>
+            <div className="luxury-card-selected p-6 text-center">
+              <div className="text-3xl font-bold text-luxury-midnight-black mb-2">{stats.participated}</div>
+              <div className="text-sm text-luxury-midnight-black/80 font-medium">已參與</div>
             </div>
-            <div className="card-luxury p-4 text-center">
-              <div className="text-2xl font-bold text-purple-600 mb-1">{stats.created}</div>
-              <div className="text-sm text-gray-600">已創建</div>
+            <div className="luxury-card-outline p-6 text-center">
+              <div className="text-3xl font-bold text-purple-400 mb-2">{stats.created}</div>
+              <div className="text-sm text-luxury-platinum/80 font-medium">已創建</div>
             </div>
           </div>
         )}
@@ -260,17 +260,17 @@ export const EventsPage: React.FC = () => {
         {/* Membership Upgrade Reminder */}
         {isAuthenticated && !hasPermission('priorityBooking') && (
           <div className="mt-12 text-center">
-            <div className="card-luxury p-8 max-w-md mx-auto bg-gradient-to-r from-luxury-champagne to-luxury-pearl">
-              <svg className="mx-auto h-12 w-12 text-luxury-gold mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="luxury-card-selected p-8 max-w-md mx-auto">
+              <svg className="mx-auto h-12 w-12 text-luxury-midnight-black mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
               </svg>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <h3 className="luxury-card-title mb-2">
                 升級VIP會員
               </h3>
-              <p className="text-gray-600 mb-4">
+              <p className="text-luxury-midnight-black/80 mb-6">
                 升級為VIP或Premium會員，享受優先報名、創建活動等專屬功能
               </p>
-              <button className="btn-luxury">
+              <button className="luxury-card-button-selected">
                 立即升級
               </button>
             </div>

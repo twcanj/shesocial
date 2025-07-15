@@ -70,10 +70,12 @@ export interface LoginCredentials {
 }
 
 export interface RegisterData {
-  name: string
   email: string
   password: string
-  membership: UserProfile['membership']['type']
+  profile: {
+    name: string
+  }
+  membershipType: UserProfile['membership']['type']
 }
 
 export interface ChangePasswordData {
@@ -93,7 +95,7 @@ export interface AuthResponse {
   message?: string
 }
 
-const API_BASE_URL = 'http://localhost:3001/api'
+const API_BASE_URL = 'http://localhost:10000/api'
 
 export const useAuthStore = create<AuthState>()(
   persist(

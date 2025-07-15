@@ -40,10 +40,12 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchT
 
     try {
       await register({
-        name: formData.name,
         email: formData.email,
         password: formData.password,
-        membership: formData.membership
+        profile: {
+          name: formData.name
+        },
+        membershipType: formData.membership
       })
       onSuccess()
     } catch (err) {
@@ -63,19 +65,19 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchT
   return (
     <div className="max-w-md mx-auto">
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-gradient-luxury mb-2">加入SheSocial</h2>
-        <p className="text-gray-600">開始您的高端社交之旅</p>
+        <h2 className="text-3xl font-bold text-luxury-gold mb-2">加入SheSocial</h2>
+        <p className="text-luxury-platinum/80">開始您的高端社交之旅</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {error && (
-          <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
-            {error}
+          <div className="luxury-card-outline p-4 border-red-500/50 bg-red-500/10">
+            <p className="text-red-400 text-sm">{error}</p>
           </div>
         )}
 
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="name" className="block text-sm font-medium text-luxury-platinum mb-2">
             姓名
           </label>
           <input 
@@ -86,12 +88,12 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchT
             value={formData.name}
             onChange={handleChange}
             placeholder="請輸入您的姓名"
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-luxury-gold focus:border-luxury-gold transition-colors"
+            className="input-luxury"
           />
         </div>
 
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="email" className="block text-sm font-medium text-luxury-platinum mb-2">
             電子郵件
           </label>
           <input 
@@ -102,12 +104,12 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchT
             value={formData.email}
             onChange={handleChange}
             placeholder="請輸入您的電子郵件"
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-luxury-gold focus:border-luxury-gold transition-colors"
+            className="input-luxury"
           />
         </div>
 
         <div>
-          <label htmlFor="membership" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="membership" className="block text-sm font-medium text-luxury-platinum mb-2">
             會員等級
           </label>
           <select
@@ -115,7 +117,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchT
             name="membership"
             value={formData.membership}
             onChange={handleChange}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-luxury-gold focus:border-luxury-gold transition-colors"
+            className="input-luxury"
           >
             <option value="regular">一般會員 (¥600 + ¥300/月)</option>
             <option value="vip">VIP會員 (¥1000 + ¥300/月)</option>
@@ -125,7 +127,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchT
         </div>
 
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="password" className="block text-sm font-medium text-luxury-platinum mb-2">
             密碼
           </label>
           <input 
@@ -136,12 +138,12 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchT
             value={formData.password}
             onChange={handleChange}
             placeholder="請輸入密碼（至少6個字符）"
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-luxury-gold focus:border-luxury-gold transition-colors"
+            className="input-luxury"
           />
         </div>
 
         <div>
-          <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="confirmPassword" className="block text-sm font-medium text-luxury-platinum mb-2">
             確認密碼
           </label>
           <input 
@@ -152,18 +154,18 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchT
             value={formData.confirmPassword}
             onChange={handleChange}
             placeholder="請再次輸入密碼"
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-luxury-gold focus:border-luxury-gold transition-colors"
+            className="input-luxury"
           />
         </div>
 
         <button 
           type="submit"
           disabled={loading}
-          className="btn-luxury w-full"
+          className="luxury-button w-full"
         >
           {loading ? (
             <div className="flex items-center justify-center">
-              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-luxury-midnight-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
@@ -175,27 +177,27 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchT
         </button>
 
         <div className="text-center">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-luxury-platinum/80">
             已經有帳戶？{' '}
             <button
               type="button"
               onClick={onSwitchToLogin}
-              className="text-luxury-gold hover:text-luxury-rose font-medium transition-colors"
+              className="text-luxury-gold hover:text-luxury-gold/80 font-medium transition-colors"
             >
               立即登入
             </button>
           </p>
         </div>
 
-        <div className="mt-6 p-4 bg-luxury-gold/10 rounded-lg">
+        <div className="mt-6 luxury-card-outline p-4">
           <h4 className="font-semibold text-luxury-gold mb-2">入會流程說明</h4>
-          <div className="text-xs text-secondary-700 space-y-1">
+          <div className="text-xs text-luxury-platinum space-y-1">
             <p>1. 🎯 <strong>選擇會員方案</strong> → 完成付費</p>
             <p>2. 📝 <strong>完善個人資料</strong> → 填寫基本資訊</p>
             <p>3. 🎥 <strong>視訊面試驗證</strong> → 30分鐘身份確認</p>
             <p>4. 📸 <strong>上傳個人媒體</strong> → 照片和介紹影片</p>
           </div>
-          <p className="text-xs text-gray-600 text-center mt-3">
+          <p className="text-xs text-luxury-platinum/60 text-center mt-3">
             註冊即表示您同意我們的服務條款和隱私政策
           </p>
         </div>

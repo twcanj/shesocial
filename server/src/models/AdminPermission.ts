@@ -758,11 +758,18 @@ export const DEFAULT_ADMIN_ROLES: Omit<AdminRole, '_id' | 'createdAt' | 'updated
       'events:showcase',
       'events:export',
       // 一般用戶查看（不包含編輯和狀態管理）
-      'users:view'
-      // 註：預約時段和面試官管理移至客戶管理
+      'users:view',
+      // 預約系統基本權限（用於創建測試數據）
+      'appointments:view',
+      'appointments:create',
+      'appointments:edit',
+      // 面試官基本權限（用於創建測試數據）
+      'interviewers:view',
+      'interviewers:create',
+      'interviewers:edit'
     ],
     isCustom: false,
-    description: '日常營運：內容營運、活動管理，不觸及客戶和面試相關管理',
+    description: '日常營運：內容營運、活動管理，包含預約系統和面試官基本管理權限',
     isActive: true,
     version: '1.0'
   },

@@ -103,11 +103,11 @@ export const PermissionManagement: React.FC = () => {
   if (!hasPermission('admin:permissions')) {
     return (
       <div className="text-center py-12">
-        <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="mx-auto h-12 w-12 text-luxury-platinum/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
         </svg>
-        <h3 className="mt-2 text-sm font-medium text-gray-900">存取被拒</h3>
-        <p className="mt-1 text-sm text-gray-500">您沒有權限管理的存取權限</p>
+        <h3 className="mt-2 text-sm font-medium text-luxury-gold">存取被拒</h3>
+        <p className="mt-1 text-sm text-luxury-platinum/60">您沒有權限管理的存取權限</p>
       </div>
     )
   }
@@ -116,15 +116,15 @@ export const PermissionManagement: React.FC = () => {
     return (
       <div className="space-y-6">
         <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-1/4 mb-6"></div>
+          <div className="h-8 bg-luxury-platinum/20 rounded w-1/4 mb-6"></div>
           <div className="grid grid-cols-4 gap-4 mb-6">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="h-10 bg-gray-200 rounded"></div>
+              <div key={i} className="h-10 bg-luxury-platinum/20 rounded"></div>
             ))}
           </div>
           <div className="space-y-4">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="h-20 bg-gray-200 rounded"></div>
+              <div key={i} className="h-20 bg-luxury-platinum/20 rounded"></div>
             ))}
           </div>
         </div>
@@ -140,12 +140,12 @@ export const PermissionManagement: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">權限管理</h2>
-          <p className="text-gray-600 mt-1">管理系統權限原子和驗證規則</p>
+          <h2 className="text-2xl font-bold text-luxury-gold">權限管理</h2>
+          <p className="text-luxury-platinum/80 mt-1">管理系統權限原子和驗證規則</p>
         </div>
         <button
           onClick={() => setShowCreateModal(true)}
-          className="btn-luxury"
+          className="luxury-button"
         >
           <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -155,7 +155,7 @@ export const PermissionManagement: React.FC = () => {
       </div>
 
       {/* Permission Groups Tabs */}
-      <div className="border-b border-gray-200">
+      <div className="border-b border-luxury-gold/20">
         <nav className="-mb-px flex space-x-8">
           {groups.map((group) => (
             <button
@@ -164,11 +164,11 @@ export const PermissionManagement: React.FC = () => {
               className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
                 activeGroup === group
                   ? 'border-luxury-gold text-luxury-gold'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  : 'border-transparent text-luxury-platinum/60 hover:text-luxury-gold hover:border-luxury-gold/30'
               }`}
             >
               {group.toUpperCase()}
-              <span className="ml-2 bg-gray-100 text-gray-600 py-1 px-2 rounded-full text-xs">
+              <span className="ml-2 bg-luxury-gold/20 text-luxury-gold py-1 px-2 rounded-full text-xs">
                 {groupedPermissions[group]?.length || 0}
               </span>
             </button>
@@ -180,7 +180,7 @@ export const PermissionManagement: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Permissions List */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-900">
+          <h3 className="text-lg font-semibold text-luxury-gold">
             {activeGroup.toUpperCase()} 權限清單
           </h3>
           
@@ -188,12 +188,12 @@ export const PermissionManagement: React.FC = () => {
             {activePermissions.map((permission) => (
               <div
                 key={permission.atomId}
-                className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                className="luxury-card-outline p-4 hover:shadow-lg transition-shadow"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center space-x-3 mb-2">
-                      <code className="text-sm font-mono bg-gray-100 px-2 py-1 rounded">
+                      <code className="text-sm font-mono bg-luxury-gold/20 text-luxury-gold px-2 py-1 rounded">
                         {permission.atomId}
                       </code>
                       <span className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium ${getRiskLevelColor(permission.riskLevel)}`}>
@@ -202,18 +202,18 @@ export const PermissionManagement: React.FC = () => {
                       </span>
                     </div>
                     
-                    <h4 className="font-medium text-gray-900 mb-1">{permission.name}</h4>
-                    <p className="text-sm text-gray-600 mb-3">{permission.description}</p>
+                    <h4 className="font-medium text-luxury-gold mb-1">{permission.name}</h4>
+                    <p className="text-sm text-luxury-platinum/80 mb-3">{permission.description}</p>
                     
                     {/* Dependencies and Conflicts */}
                     {(permission.requiresAll || permission.conflictsWith) && (
                       <div className="space-y-2">
                         {permission.requiresAll && (
                           <div className="text-xs">
-                            <span className="text-gray-500">依賴:</span>
+                            <span className="text-luxury-platinum/60">依賴:</span>
                             <div className="flex flex-wrap gap-1 mt-1">
                               {permission.requiresAll.map((dep) => (
-                                <code key={dep} className="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs">
+                                <code key={dep} className="bg-blue-500/20 text-blue-400 px-1 py-0.5 rounded text-xs">
                                   {dep}
                                 </code>
                               ))}
@@ -223,10 +223,10 @@ export const PermissionManagement: React.FC = () => {
                         
                         {permission.conflictsWith && (
                           <div className="text-xs">
-                            <span className="text-gray-500">衝突:</span>
+                            <span className="text-luxury-platinum/60">衝突:</span>
                             <div className="flex flex-wrap gap-1 mt-1">
                               {permission.conflictsWith.map((conflict) => (
-                                <code key={conflict} className="bg-red-50 text-red-700 px-1 py-0.5 rounded text-xs">
+                                <code key={conflict} className="bg-red-500/20 text-red-400 px-1 py-0.5 rounded text-xs">
                                   {conflict}
                                 </code>
                               ))}
@@ -243,7 +243,7 @@ export const PermissionManagement: React.FC = () => {
                         setTestPermissions([...testPermissions, permission.atomId])
                       }
                     }}
-                    className="ml-4 p-2 text-gray-400 hover:text-luxury-gold transition-colors"
+                    className="ml-4 p-2 text-luxury-platinum/40 hover:text-luxury-gold transition-colors"
                     title="加入測試清單"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -258,10 +258,10 @@ export const PermissionManagement: React.FC = () => {
 
         {/* Permission Validator */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-900">權限驗證器</h3>
+          <h3 className="text-lg font-semibold text-luxury-gold">權限驗證器</h3>
           
-          <div className="bg-white border border-gray-200 rounded-lg p-4">
-            <h4 className="font-medium text-gray-900 mb-3">測試權限組合</h4>
+          <div className="luxury-card-selected p-4">
+            <h4 className="font-medium text-luxury-midnight-black mb-3">測試權限組合</h4>
             
             {/* Selected Permissions */}
             <div className="mb-4">
@@ -288,7 +288,7 @@ export const PermissionManagement: React.FC = () => {
                 <button
                   onClick={() => validatePermissions(testPermissions)}
                   disabled={testPermissions.length === 0}
-                  className="btn-luxury-outline"
+                  className="luxury-button-outline"
                 >
                   驗證權限
                 </button>

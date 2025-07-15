@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Zodiac-inspired mystical luxury palette
+        // Enhanced luxury palette inspired by hesocial
         primary: {
           50: '#faf8ff',
           100: '#f0ecff',
@@ -32,6 +32,29 @@ export default {
           800: '#92400e',
           900: '#1a1a1a', // Dark charcoal for excellent contrast
         },
+        // Enhanced luxury colors from hesocial
+        luxury: {
+          // Core luxury palette
+          'gold': '#D4AF37',           // Premium gold (hesocial)
+          'gold-dark': '#B8860B',      // Darker gold for text
+          'deep-blue': '#1B2951',      // Elegant navy (hesocial)
+          'platinum': '#E5E4E2',       // Sophisticated silver (hesocial)
+          'champagne': '#F7E7CE',      // Warm cream (hesocial)
+          'midnight-black': '#0C0C0C', // Deep black (hesocial)
+          
+          // Additional luxury tones
+          'imperial': '#663399',       // Original imperial purple
+          'imperial-dark': '#4a2470',  // Darker purple for text
+          'crimson': '#e73c28',        // Traditional red
+          'deep-blue-dark': '#1e3a8a', // Darker blue for text
+          'ivory': '#fffef7',          // Background
+          'purple-light': '#d1b2ff',   // Light purple
+          'purple-glow': '#8b5bff',    // Glowing purple
+          
+          // Mystical gradients
+          'mystic-start': '#663399',
+          'mystic-end': '#D4AF37',
+        },
         // Text colors for optimal readability
         text: {
           primary: '#1a1a1a',      // Dark charcoal - primary text
@@ -39,23 +62,7 @@ export default {
           muted: '#6b7280',        // Light gray - muted text
           accent: '#663399',       // Imperial purple - accent text
           inverse: '#ffffff',      // White - for dark backgrounds
-        },
-        luxury: {
-          // Zodiac mystical colors with better contrast
-          'imperial': '#663399',    // Main brand color
-          'imperial-dark': '#4a2470', // Darker purple for text
-          'gold': '#b8860b',       // Dark Gold (readable)
-          'gold-dark': '#b8860b',  // Darker gold for text
-          'crimson': '#e73c28',    // Traditional red
-          'crimson-dark': '#b91c1c', // Darker red for text
-          'deep-blue': '#2465A8',  // Interactive elements
-          'deep-blue-dark': '#1e3a8a', // Darker blue for text
-          'ivory': '#fffef7',      // Background
-          'purple-light': '#d1b2ff', // Light purple
-          'purple-glow': '#8b5bff', // Glowing purple
-          // Mystical gradients base colors
-          'mystic-start': '#663399',
-          'mystic-end': '#b8860b',
+          luxury: '#D4AF37',       // Luxury gold accent
         },
         // Zodiac sign inspired tier colors
         tier: {
@@ -81,6 +88,7 @@ export default {
         },
       },
       fontFamily: {
+        'luxury': ['Playfair Display', 'serif'],  // Luxury serif font for headings
         'sans': ['Inter', 'Noto Sans TC', 'system-ui', 'sans-serif'],
         'serif': ['Noto Serif TC', 'Georgia', 'serif'],
         'mono': ['JetBrains Mono', 'Menlo', 'Monaco', 'monospace'],
@@ -95,10 +103,11 @@ export default {
         '5xl': '3rem',
       },
       boxShadow: {
-        'luxury': '0 10px 25px -3px rgba(102, 51, 153, 0.15), 0 4px 6px -2px rgba(255, 215, 0, 0.1)',
+        'luxury': '0 10px 25px -3px rgba(102, 51, 153, 0.15), 0 4px 6px -2px rgba(212, 175, 55, 0.1)',
+        'luxury-gold': '0 10px 25px -3px rgba(212, 175, 55, 0.15), 0 4px 6px -2px rgba(212, 175, 55, 0.1)',
         'inner-luxury': 'inset 0 2px 4px 0 rgba(102, 51, 153, 0.08)',
-        'mystical': '0 0 20px rgba(102, 51, 153, 0.3), 0 0 40px rgba(255, 215, 0, 0.2)',
-        'mystical-glow': '0 0 8px rgba(255, 215, 0, 0.6)',
+        'mystical': '0 0 20px rgba(102, 51, 153, 0.3), 0 0 40px rgba(212, 175, 55, 0.2)',
+        'mystical-glow': '0 0 8px rgba(212, 175, 55, 0.6)',
         'card-depth': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
       },
       animation: {
@@ -107,6 +116,10 @@ export default {
         'pulse-luxury': 'pulseLuxury 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'mystical-glow': 'mysticalGlow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'card-flip': 'cardFlip 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
+        // Sophisticated hesocial animations
+        'luxury-fade': 'luxuryFade 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+        'luxury-slide': 'luxurySlide 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+        'luxury-scale': 'luxuryScale 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
       },
       keyframes: {
         fadeIn: {
@@ -139,6 +152,22 @@ export default {
           '0%': { transform: 'rotateY(0deg)' },
           '100%': { transform: 'rotateY(180deg)' },
         },
+        // Sophisticated hesocial keyframes
+        luxuryFade: {
+          '0%': { opacity: '0', transform: 'translateY(10px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        luxurySlide: {
+          '0%': { transform: 'translateX(-20px)', opacity: '0' },
+          '100%': { transform: 'translateX(0)', opacity: '1' },
+        },
+        luxuryScale: {
+          '0%': { transform: 'scale(0.95)', opacity: '0' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
+        },
+      },
+      backdropBlur: {
+        'luxury': '20px',
       },
     },
   },
