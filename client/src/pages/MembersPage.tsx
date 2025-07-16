@@ -1,8 +1,10 @@
 // Members Page - Membership information and management
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 
 export const MembersPage: React.FC = () => {
+  const navigate = useNavigate()
   const { openRegister } = useAuth()
   return (
     <>
@@ -213,7 +215,7 @@ export const MembersPage: React.FC = () => {
                 立即註冊
               </button>
               <button 
-                onClick={() => onPageChange?.('pricing')}
+                onClick={() => navigate('/pricing')}
                 className="w-full sm:w-auto px-4 py-2 font-medium rounded-lg transition-all duration-300 border-2 border-luxury-midnight-black bg-transparent text-luxury-midnight-black hover:bg-luxury-midnight-black hover:text-luxury-gold"
               >
                 了解更多

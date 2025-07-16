@@ -1,5 +1,6 @@
 // Member Profile Management Page
 import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import MediaUpload from '../components/media/MediaUpload'
 import MediaGallery from '../components/media/MediaGallery'
@@ -10,6 +11,7 @@ import OnboardingProgress from '../components/onboarding/OnboardingProgress'
 type TabType = 'profile' | 'media' | 'interview' | 'settings'
 
 export const ProfilePage: React.FC = () => {
+  const navigate = useNavigate()
   const { user } = useAuth()
   const [activeTab, setActiveTab] = useState<TabType>('profile')
   const [uploadingCategory, setUploadingCategory] = useState<string | null>(null)
@@ -36,9 +38,7 @@ export const ProfilePage: React.FC = () => {
         // Only redirect if payment is explicitly required for paid memberships
         if (paymentStatus === 'pending' && (user.membership?.type === 'vip' || user.membership?.type === 'vvip')) {
           // Navigate to payment page only for paid memberships with pending payment
-          if (onNavigate) {
-            onNavigate('pricing')
-          }
+          navigate('/pricing')
           return
         }
         
@@ -55,7 +55,7 @@ export const ProfilePage: React.FC = () => {
       // Fallback to profile tab
       setActiveTab('profile')
     }
-  }, [user, onNavigate])
+  }, [user, navigate])
 
   if (!user) {
     return (

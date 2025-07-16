@@ -152,7 +152,13 @@ export const useAdminAuthStore = create<AdminAuthState>()(
         accessToken: state.accessToken,
         refreshToken: state.refreshToken,
         isAuthenticated: state.isAuthenticated
-      })
+      }),
+      onRehydrateStorage: () => (state) => {
+        // Ensure loading is false after hydration
+        if (state) {
+          state.loading = false
+        }
+      }
     }
   )
 )

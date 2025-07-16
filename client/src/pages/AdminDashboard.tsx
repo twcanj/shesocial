@@ -12,12 +12,10 @@ type AdminSection = 'overview' | 'permissions' | 'roles' | 'users' | 'audit'
 
 export const AdminDashboard: React.FC = () => {
   const [activeSection, setActiveSection] = useState<AdminSection>('overview')
-  const { admin, isAuthenticated, loading, login, logout } = useAdminAuth()
+  const { admin, isAuthenticated, loading, logout } = useAdminAuth()
 
-  // Redirect to login if not authenticated
-  if (!isAuthenticated && !loading) {
-    return <AdminLogin onLogin={login} />
-  }
+  // Note: Authentication is now handled by React Router guard
+  // This component should only render when user is authenticated
 
   if (loading) {
     return (
@@ -109,98 +107,3 @@ const getSectionTitle = (section: AdminSection): string => {
   return titles[section]
 }
 
-// Simple admin login component
-const AdminLogin: React.FC<{ onLogin: (username: string, password: string) => Promise<void> }> = ({ onLogin }) => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setError('')
-
-    try {
-      await onLogin(username, password)
-    } catch (error: any) {
-      setError(error.message || '登入失敗')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  return (
-    <div className="min-h-screen bg-luxury-midnight-black flex items-center justify-center">
-      <div className="max-w-md w-full space-y-8 p-8">
-        <div className="luxury-card-selected p-8 text-center">
-          <img className="mx-auto h-16 w-16 rounded-full" src="/logo.jpeg" alt="InfinityMatch" />
-          <h2 className="mt-6 text-3xl font-bold text-luxury-midnight-black">管理員登入</h2>
-          <p className="mt-2 text-sm text-luxury-midnight-black/80">
-            InfinityMatch 管理系統
-          </p>
-        </div>
-        
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="username" className="block text-sm font-medium text-luxury-platinum">
-                管理員帳號
-              </label>
-              <input
-                id="username"
-                name="username"
-                type="text"
-                required
-                className="input-luxury w-full"
-                placeholder="輸入管理員帳號"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-            </div>
-            
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-luxury-platinum">
-                密碼
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                className="input-luxury w-full"
-                placeholder="輸入密碼"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-          </div>
-
-          {error && (
-            <div className="luxury-card-outline p-3 border-red-500/50 bg-red-500/10">
-              <p className="text-sm text-red-400">{error}</p>
-            </div>
-          )}
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="luxury-button w-full"
-          >
-            {loading ? (
-              <>
-                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-luxury-midnight-black" fill="none" viewBox="0 0 24 24">
-                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" className="opacity-25"></circle>
-                  <path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" className="opacity-75"></path>
-                </svg>
-                登入中...
-              </>
-            ) : (
-              '登入管理系統'
-            )}
-          </button>
-        </form>
-      </div>
-    </div>
-  )
-}

@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext'
 import { useAuthStore } from './store/authStore'
 import { NavigationHeaderRouter } from './components/common/NavigationHeaderRouter'
@@ -40,11 +40,21 @@ function AuthInitializer() {
 
 // Admin Route Guard Component
 function AdminRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated } = useAdminAuth()
-  const location = useLocation()
+  const { isAuthenticated, loading } = useAdminAuth()
 
-  if (!isAuthenticated && location.pathname !== '/admin_login') {
-    return <AdminLoginPage />
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-luxury-midnight-black flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-luxury-gold mx-auto mb-4"></div>
+          <p className="text-luxury-platinum">驗證管理員權限...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/admin_login" replace />
   }
 
   return <>{children}</>
@@ -58,7 +68,8 @@ function AppLayout() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-luxury-pearl to-luxury-champagne">
-      <AuthInitializer />
+      {/* Only initialize regular auth for non-admin routes */}
+      {!isAdminRoute && !isAdminLoginPage && <AuthInitializer />}
       
       {/* Show navigation header for regular pages only */}
       {!isAdminRoute && !isAdminLoginPage && <NavigationHeaderRouter />}
@@ -102,13 +113,25 @@ function AppLayout() {
   )
 }
 
+// Auth Wrapper Component - only wrap non-admin routes
+function AuthWrapper({ children }: { children: React.ReactNode }) {
+  const location = useLocation()
+  const isAdminRoute = location.pathname.startsWith('/admin')
+  
+  if (isAdminRoute) {
+    return <>{children}</>
+  }
+  
+  return <AuthProvider>{children}</AuthProvider>
+}
+
 // Main App Component
 function App() {
   return (
     <Router>
-      <AuthProvider>
+      <AuthWrapper>
         <AppLayout />
-      </AuthProvider>
+      </AuthWrapper>
     </Router>
   )
 }
