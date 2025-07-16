@@ -1,5 +1,5 @@
 // Role Management - Visual role editor with drag-and-drop permissions
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useAdminAuth } from '../../hooks/useAdminAuth'
 
 interface AdminRole {
@@ -38,6 +38,38 @@ export const RoleManagement: React.FC = () => {
   
 
     const { apiCall } = useAdminAuth()
+
+  useEffect(() => {
+    const loadInitialData = async () => {
+      try {
+        setLoading(true)
+        const [rolesResponse, permissionsResponse] = await Promise.all([
+          apiCall('/roles'),
+          apiCall('/permissions/atoms/grouped')
+        ])
+
+        const rolesData = await rolesResponse.json()
+        const permissionsData = await permissionsResponse.json()
+
+        if (rolesData.success) {
+          setRoles(rolesData.data)
+          if (rolesData.data.length > 0) {
+            handleRoleSelect(rolesData.data[0])
+          }
+        }
+
+        if (permissionsData.success) {
+          setPermissions(permissionsData.data)
+        }
+      } catch (error) {
+        console.error('Failed to load initial data:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadInitialData()
+  }, [apiCall])
 
   const loadRoleCapabilities = async (roleId: string) => {
     try {
@@ -122,12 +154,12 @@ export const RoleManagement: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">角色管理</h2>
-          <p className="text-gray-600 mt-1">管理管理員角色和權限配置</p>
+          <h2 className="text-2xl font-bold text-luxury-gold">角色管理</h2>
+          <p className="text-luxury-platinum/80 mt-1">管理管理員角色和權限配置</p>
         </div>
         <button
                     onClick={() => {}}
-          className="btn-luxury"
+          className="luxury-button"
         >
           <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -139,7 +171,7 @@ export const RoleManagement: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Roles List */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-900">角色清單</h3>
+          <h3 className="text-lg font-semibold text-luxury-gold">角色清單</h3>
           
           <div className="space-y-3">
             {roles.map((role) => (
@@ -148,21 +180,21 @@ export const RoleManagement: React.FC = () => {
                 onClick={() => handleRoleSelect(role)}
                 className={`cursor-pointer p-4 rounded-lg border transition-all ${
                   selectedRole?.roleId === role.roleId
-                    ? 'border-luxury-gold bg-luxury-gold/5 shadow-md'
-                    : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm'
+                    ? 'border-luxury-gold bg-luxury-gold/10 shadow-md'
+                    : 'border-luxury-platinum/20 bg-luxury-midnight-black/20 hover:border-luxury-gold/30 hover:shadow-sm'
                 }`}
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center space-x-2 mb-2">
-                      <h4 className="font-medium text-gray-900">{role.name}</h4>
+                      <h4 className="font-medium text-luxury-gold">{role.name}</h4>
                       {!role.isCustom && (
-                        <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
+                        <span className="bg-blue-500/20 text-blue-400 text-xs px-2 py-1 rounded-full">
                           系統預設
                         </span>
                       )}
                       {!role.isActive && (
-                        <span className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full">
+                        <span className="bg-gray-500/20 text-gray-400 text-xs px-2 py-1 rounded-full">
                           停用
                         </span>
                       )}
@@ -172,9 +204,9 @@ export const RoleManagement: React.FC = () => {
                       {getDepartmentName(role.department)}
                     </div>
                     
-                    <p className="text-sm text-gray-600 mb-2">{role.description}</p>
+                    <p className="text-sm text-luxury-platinum/80 mb-2">{role.description}</p>
                     
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs text-luxury-platinum/60">
                       {role.permissions.includes('*') ? '所有權限' : `${role.permissions.length} 個權限`}
                     </div>
                   </div>
@@ -183,7 +215,7 @@ export const RoleManagement: React.FC = () => {
                                         onClick={(e) => {
                       e.stopPropagation()
                     }}
-                    className="p-2 text-gray-400 hover:text-luxury-gold transition-colors"
+                    className="p-2 text-luxury-platinum/60 hover:text-luxury-gold transition-colors"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -200,12 +232,12 @@ export const RoleManagement: React.FC = () => {
           {selectedRole ? (
             <>
               {/* Role Header */}
-              <div className={`bg-gradient-to-r ${getDepartmentColor(selectedRole.department)} p-6 rounded-lg text-white`}>
+              <div className={`luxury-card-selected p-6 rounded-lg text-luxury-midnight-black shadow-lg`}>
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-xl font-bold">{selectedRole.name}</h3>
-                    <p className="text-white/80 mt-1">{selectedRole.description}</p>
-                    <div className="flex items-center space-x-4 mt-3 text-sm">
+                    <h3 className="text-xl font-bold text-luxury-midnight-black">{selectedRole.name}</h3>
+                    <p className="text-luxury-midnight-black/80 mt-1">業務最高決策權，擁有所有權限</p>
+                    <div className="flex items-center space-x-4 mt-3 text-sm text-luxury-midnight-black/80">
                       <span>部門: {getDepartmentName(selectedRole.department)}</span>
                       <span>版本: {selectedRole.version}</span>
                       <span>狀態: {selectedRole.isActive ? '啟用' : '停用'}</span>
@@ -213,59 +245,59 @@ export const RoleManagement: React.FC = () => {
                   </div>
                   
                   <div className="text-right">
-                    <div className="text-2xl font-bold">
+                    <div className="text-2xl font-bold text-luxury-midnight-black">
                       {selectedRole.permissions.includes('*') ? '∞' : selectedRole.permissions.length}
                     </div>
-                    <div className="text-white/80 text-sm">權限數</div>
+                    <div className="text-luxury-midnight-black/80 text-sm">權限數</div>
                   </div>
                 </div>
               </div>
 
               {/* Role Capabilities */}
               {roleCapabilities && (
-                <div className="bg-white p-6 rounded-lg border border-gray-200">
-                  <h4 className="text-lg font-semibold text-gray-900 mb-4">角色能力分析</h4>
+                <div className="luxury-card-outline p-6">
+                  <h4 className="text-lg font-semibold text-luxury-gold mb-4">角色能力分析</h4>
                   
                   <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                    <div className="text-center p-3 bg-blue-50 rounded-lg">
-                      <div className="text-2xl font-bold text-blue-600">{roleCapabilities.totalPermissions}</div>
-                      <div className="text-sm text-blue-800">總權限數</div>
+                    <div className="text-center p-3 bg-blue-500/10 rounded-lg">
+                      <div className="text-2xl font-bold text-blue-400">{roleCapabilities.totalPermissions}</div>
+                      <div className="text-sm text-blue-300">總權限數</div>
                     </div>
                     
-                    <div className="text-center p-3 bg-green-50 rounded-lg">
-                      <div className="text-2xl font-bold text-green-600">{roleCapabilities.canAccessGroups.length}</div>
-                      <div className="text-sm text-green-800">可存取群組</div>
+                    <div className="text-center p-3 bg-green-500/10 rounded-lg">
+                      <div className="text-2xl font-bold text-green-400">{roleCapabilities.canAccessGroups.length}</div>
+                      <div className="text-sm text-green-300">可存取群組</div>
                     </div>
                     
-                    <div className="text-center p-3 bg-orange-50 rounded-lg">
-                      <div className="text-2xl font-bold text-orange-600">
+                    <div className="text-center p-3 bg-orange-500/10 rounded-lg">
+                      <div className="text-2xl font-bold text-orange-400">
                         {roleCapabilities.riskLevels.high || 0}
                       </div>
-                      <div className="text-sm text-orange-800">高風險權限</div>
+                      <div className="text-sm text-orange-300">高風險權限</div>
                     </div>
                     
-                    <div className="text-center p-3 bg-red-50 rounded-lg">
-                      <div className="text-2xl font-bold text-red-600">
+                    <div className="text-center p-3 bg-red-500/10 rounded-lg">
+                      <div className="text-2xl font-bold text-red-400">
                         {roleCapabilities.riskLevels.critical || 0}
                       </div>
-                      <div className="text-sm text-red-800">關鍵權限</div>
+                      <div className="text-sm text-red-300">關鍵權限</div>
                     </div>
                   </div>
 
                   {/* Permission Groups Breakdown */}
                   <div className="space-y-3">
-                    <h5 className="font-medium text-gray-900">權限群組分佈</h5>
+                    <h5 className="font-medium text-luxury-gold">權限群組分佈</h5>
                     {Object.entries(roleCapabilities.permissionsByGroup).map(([group, count]) => (
                       <div key={group} className="flex items-center justify-between py-2">
-                        <span className="text-sm font-medium text-gray-700">{group.toUpperCase()}</span>
+                        <span className="text-sm font-medium text-luxury-platinum">{group.toUpperCase()}</span>
                         <div className="flex items-center space-x-2">
-                          <div className="w-24 bg-gray-200 rounded-full h-2">
+                          <div className="w-24 bg-luxury-platinum/20 rounded-full h-2">
                             <div 
                               className="bg-luxury-gold h-2 rounded-full"
                               style={{ width: `${(count / roleCapabilities.totalPermissions) * 100}%` }}
                             ></div>
                           </div>
-                          <span className="text-sm text-gray-600 w-8 text-right">{count}</span>
+                          <span className="text-sm text-luxury-platinum/80 w-8 text-right">{count}</span>
                         </div>
                       </div>
                     ))}
@@ -274,16 +306,16 @@ export const RoleManagement: React.FC = () => {
               )}
 
               {/* Permissions List */}
-              <div className="bg-white p-6 rounded-lg border border-gray-200">
-                <h4 className="text-lg font-semibold text-gray-900 mb-4">角色權限清單</h4>
+              <div className="luxury-card-outline p-6">
+                <h4 className="text-lg font-semibold text-luxury-gold mb-4">角色權限清單</h4>
                 
                 {selectedRole.permissions.includes('*') ? (
                   <div className="text-center py-8">
                     <svg className="mx-auto h-12 w-12 text-luxury-gold mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                     </svg>
-                    <h5 className="text-lg font-medium text-gray-900 mb-2">超級管理員</h5>
-                    <p className="text-gray-600">此角色擁有系統所有權限</p>
+                    <h5 className="text-lg font-medium text-luxury-gold mb-2">超級管理員</h5>
+                    <p className="text-luxury-platinum/80">此角色擁有系統所有權限</p>
                   </div>
                 ) : (
                   <div className="space-y-4">
@@ -295,10 +327,10 @@ export const RoleManagement: React.FC = () => {
                       if (roleGroupPermissions.length === 0) return null
                       
                       return (
-                        <div key={group} className="border border-gray-200 rounded-lg p-4">
-                          <h6 className="font-medium text-gray-900 mb-3 flex items-center justify-between">
+                        <div key={group} className="luxury-card-outline p-4">
+                          <h6 className="font-medium text-luxury-gold mb-3 flex items-center justify-between">
                             <span>{group.toUpperCase()}</span>
-                            <span className="text-sm text-gray-500">
+                            <span className="text-sm text-luxury-platinum/60">
                               {roleGroupPermissions.length} / {groupPermissions.length}
                             </span>
                           </h6>
@@ -307,11 +339,11 @@ export const RoleManagement: React.FC = () => {
                             {roleGroupPermissions.map((permission) => (
                               <div
                                 key={permission.atomId}
-                                className="flex items-center justify-between p-2 bg-gray-50 rounded"
+                                className="flex items-center justify-between p-2 bg-luxury-midnight-black/20 rounded"
                               >
                                 <div className="flex-1">
-                                  <code className="text-xs font-mono text-gray-800">{permission.atomId}</code>
-                                  <p className="text-xs text-gray-600 mt-1">{permission.name}</p>
+                                  <code className="text-xs font-mono text-luxury-platinum">{permission.atomId}</code>
+                                  <p className="text-xs text-luxury-platinum/80 mt-1">{permission.name}</p>
                                 </div>
                                 <span className={`text-xs px-2 py-1 rounded-full ${getRiskLevelColor(permission.riskLevel)}`}>
                                   {permission.riskLevel}
