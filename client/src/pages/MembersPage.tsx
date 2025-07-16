@@ -2,11 +2,7 @@
 import React from 'react'
 import { useAuth } from '../contexts/AuthContext'
 
-interface MembersPageProps {
-  onPageChange?: (page: 'home' | 'events' | 'members' | 'about' | 'pricing') => void
-}
-
-export const MembersPage: React.FC<MembersPageProps> = ({ onPageChange }) => {
+export const MembersPage: React.FC = () => {
   const { openRegister } = useAuth()
   return (
     <>

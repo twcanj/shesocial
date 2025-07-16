@@ -9,11 +9,7 @@ import OnboardingProgress from '../components/onboarding/OnboardingProgress'
 
 type TabType = 'profile' | 'media' | 'interview' | 'settings'
 
-interface ProfilePageProps {
-  onNavigate?: (page: 'home' | 'events' | 'members' | 'about' | 'pricing' | 'profile' | 'admin') => void
-}
-
-export const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
+export const ProfilePage: React.FC = () => {
   const { user } = useAuth()
   const [activeTab, setActiveTab] = useState<TabType>('profile')
   const [uploadingCategory, setUploadingCategory] = useState<string | null>(null)

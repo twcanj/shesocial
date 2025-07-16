@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { API_CONFIG } from '../config/api'
 
 interface AdminProfile {
   adminId: string
@@ -33,7 +34,7 @@ interface AdminAuthState {
   hasPermission: (permission: string) => boolean
 }
 
-const API_BASE_URL = 'http://localhost:3001/api/admin'
+const API_BASE_URL = API_CONFIG.ADMIN_BASE_URL
 
 export const useAdminAuthStore = create<AdminAuthState>()(
   persist(

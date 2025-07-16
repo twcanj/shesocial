@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from 'react'
 import type { EventData, BookingData } from '../shared-types'
 import { useOfflineDB } from './useOfflineDB'
 import { useAuthStore } from '../store/authStore'
+import { API_CONFIG } from '../config/api'
 
 interface UseEventsOptions {
   autoFetch?: boolean
@@ -57,7 +58,7 @@ export const useEvents = (options: UseEventsOptions = {}): UseEventsReturn => {
   const { events: dbEvents, addEvent, updateEvent: updateEventDB, deleteEvent: deleteEventDB } = useOfflineDB()
   const { user, isAuthenticated, token } = useAuthStore()
 
-  const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+  const API_BASE = API_CONFIG.BASE_URL
 
   // Filter events based on options
   const filterEvents = useCallback((eventList: EventData[]) => {

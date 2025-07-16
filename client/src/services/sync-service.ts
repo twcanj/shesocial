@@ -3,12 +3,13 @@
 
 import { offlineDB } from '../db/offline-db'
 import { useAuthStore } from '../store/authStore'
+import { API_CONFIG } from '../config/api'
 import type { SyncQueueItem, ApiResponse, SyncResponse, ConflictItem } from '../shared-types'
 
 export class SyncService {
   private syncInProgress = false
   private syncInterval: NodeJS.Timeout | null = null
-  private readonly API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+  private readonly API_BASE_URL = API_CONFIG.BASE_URL
 
   constructor() {
     // Listen for online/offline events
