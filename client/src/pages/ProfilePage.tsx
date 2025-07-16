@@ -524,7 +524,7 @@ export const ProfilePage: React.FC = () => {
               
               <div className="space-y-8">
                 <div className="luxury-card-outline p-6 bg-gradient-to-br from-luxury-pearl/10 to-luxury-champagne/5">
-                  <h4 className="text-xl font-bold text-luxury-midnight-black mb-6 flex items-center">
+                  <h4 className="text-xl font-bold text-luxury-gold mb-6 flex items-center">
                     <span className="w-2 h-2 bg-luxury-rose rounded-full mr-3"></span>
                     隱私設定
                   </h4>
