@@ -36,11 +36,13 @@ const adminAuth = async (req: AdminRequest, res: Response, next: NextFunction) =
 
     const decoded = jwt.verify(token, ADMIN_JWT_SECRET) as any
 
-    // Check if user has permission for this endpoint
-    const hasPermission = await adminPermissionService.userHasPermission(decoded.adminId, req.requiredPermission)
+        // Check if user has permission for this endpoint if a permission is required
+    if (req.requiredPermission) {
+      const hasPermission = await adminPermissionService.userHasPermission(decoded.adminId, req.requiredPermission)
 
-    if (!hasPermission) {
-      return res.status(403).json({ error: 'Access denied. Insufficient permissions.' })
+      if (!hasPermission) {
+        return res.status(403).json({ error: 'Access denied. Insufficient permissions.' })
+      }
     }
 
     req.admin = decoded
@@ -95,7 +97,7 @@ router.post('/auth/login', async (req, res) => {
       }
 
       // Register the test admin user in the permission service if not already registered
-      const existingPermissions = await adminPermissionService.getUserPermissions(adminUser.adminId)
+            const existingPermissions = await adminPermissionService.getUserPermissions(adminUser.adminId)
       if (existingPermissions.length === 0) {
         adminUser.customPermissions = ['*'];
         await adminPermissionService.createAdminUser(adminUser)
@@ -192,7 +194,7 @@ router.post('/auth/refresh', async (req, res) => {
   }
 })
 
-router.post('/auth/logout', adminAuth, (req: AdminRequest, res: Response) => {
+router.post('/auth/logout', (req: AdminRequest, res: Response) => {
   // In a real implementation, you would invalidate the token
   res.json({ success: true, message: 'Logged out successfully' })
 })
@@ -367,6 +369,100 @@ router.get('/audit/logs', requirePermission('admin:audit'), adminAuth, async (re
     res.json({ success: true, data: logs })
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch audit logs' })
+  }
+})
+
+// Events Management Routes (Admin-specific)
+router.get('/events', requirePermission('admin:audit'), adminAuth, async (req, res) => {
+  try {
+    // Import event model here to avoid circular dependencies
+    const { EventModel } = await import('../models/Event')
+    const NeDBSetup = (await import('../db/nedb-setup')).default
+    const databases = NeDBSetup.getInstance().getDatabases()
+    const eventModel = new EventModel(databases.events)
+
+    const { status, limit, offset } = req.query
+    const filters: any = {}
+    
+    if (status) filters.status = status
+    
+    const page = offset ? Math.floor(parseInt(offset as string) / (limit ? parseInt(limit as string) : 10)) + 1 : 1
+    const pageLimit = limit ? parseInt(limit as string) : 10
+    const eventsResult = await eventModel.findAll(page, pageLimit)
+
+    if (!eventsResult.success) {
+      return res.status(500).json({ error: eventsResult.error })
+    }
+
+    res.json({ success: true, data: eventsResult.data })
+  } catch (error) {
+    console.error('Admin events fetch error:', error)
+    res.status(500).json({ error: 'Failed to fetch events' })
+  }
+})
+
+router.get('/events/:id', requirePermission('admin:audit'), adminAuth, async (req, res) => {
+  try {
+    const { EventModel } = await import('../models/Event')
+    const NeDBSetup = (await import('../db/nedb-setup')).default
+    const databases = NeDBSetup.getInstance().getDatabases()
+    const eventModel = new EventModel(databases.events)
+
+    const eventResult = await eventModel.findById(req.params.id)
+    if (!eventResult.success || !eventResult.data) {
+      return res.status(404).json({ error: 'Event not found' })
+    }
+
+    res.json({ success: true, data: eventResult.data })
+  } catch (error) {
+    console.error('Admin event fetch error:', error)
+    res.status(500).json({ error: 'Failed to fetch event' })
+  }
+})
+
+router.put('/events/:id/status', requirePermission('admin:edit'), adminAuth, async (req: AdminRequest, res: Response) => {
+  try {
+    const { EventModel } = await import('../models/Event')
+    const NeDBSetup = (await import('../db/nedb-setup')).default
+    const databases = NeDBSetup.getInstance().getDatabases()
+    const eventModel = new EventModel(databases.events)
+
+    const { status, reason } = req.body
+    const validStatuses = ['draft', 'published', 'cancelled', 'completed']
+    
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ error: 'Invalid status' })
+    }
+
+    const eventResult = await eventModel.updateStatus(req.params.id, status)
+
+    if (!eventResult.success || !eventResult.data) {
+      return res.status(404).json({ error: 'Event not found' })
+    }
+
+    res.json({ success: true, data: eventResult.data })
+  } catch (error) {
+    console.error('Admin event status update error:', error)
+    res.status(500).json({ error: 'Failed to update event status' })
+  }
+})
+
+router.delete('/events/:id', requirePermission('admin:delete'), adminAuth, async (req: AdminRequest, res: Response) => {
+  try {
+    const { EventModel } = await import('../models/Event')
+    const NeDBSetup = (await import('../db/nedb-setup')).default
+    const databases = NeDBSetup.getInstance().getDatabases()
+    const eventModel = new EventModel(databases.events)
+
+    const success = await eventModel.delete(req.params.id)
+    if (!success) {
+      return res.status(404).json({ error: 'Event not found' })
+    }
+
+    res.json({ success: true, message: 'Event deleted successfully' })
+  } catch (error) {
+    console.error('Admin event delete error:', error)
+    res.status(500).json({ error: 'Failed to delete event' })
   }
 })
 

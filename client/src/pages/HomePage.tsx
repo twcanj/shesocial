@@ -127,8 +127,8 @@ export const HomePage = () => {
                 </div>
               </div>
               <p className="text-luxury-platinum/80 italic">
-                "原本對網路交友很害怕，但天造地設人成對的視訊面試讓我很安心。
-                在第二場活動就遇到現在的老公，1+1真的等於無限！"
+                                &quot;原本對網路交友很害怕，但天造地設人成對的視訊面試讓我很安心。
+                在第二場活動就遇到現在的老公，1+1真的等於無限！&quot;
               </p>
             </div>
             
@@ -143,8 +143,8 @@ export const HomePage = () => {
                 </div>
               </div>
               <p className="text-luxury-platinum/80 italic">
-                "工作太忙沒時間交朋友，天造地設人成對的活動品質很高，
-                都是真心想找伴侶的人。小班制讓每個人都有機會深入了解。"
+                                &quot;工作太忙沒時間交朋友，天造地設人成對的活動品質很高，
+                都是真心想找伴侶的人。小班制讓每個人都有機會深入了解。&quot;
               </p>
             </div>
           </div>

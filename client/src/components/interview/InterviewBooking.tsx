@@ -17,8 +17,7 @@ interface InterviewSlot {
   meetingUrl?: string
 }
 
-// Alias for compatibility
-type AppointmentSlot = InterviewSlot
+
 
 interface InterviewBookingProps {
   onBookingComplete?: (sessionId: string) => void
@@ -242,7 +241,7 @@ export const InterviewBooking: React.FC<InterviewBookingProps> = ({
               value={applicationData.membershipType}
               onChange={(e) => setApplicationData(prev => ({
                 ...prev,
-                membershipType: e.target.value as any
+                                membershipType: e.target.value as 'regular' | 'vip' | 'premium_1300' | 'premium_2500'
               }))}
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-luxury-gold focus:border-transparent"
             >

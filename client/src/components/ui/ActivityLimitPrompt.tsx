@@ -15,8 +15,7 @@ export const ActivityLimitPrompt: React.FC<ActivityLimitPromptProps> = ({
   viewableActivities,
   membershipType
 }) => {
-  const { openRegister } = useAuth()
-  const { isAuthenticated } = useAuthStore()
+    const { openRegister } = useAuth()
   
   // Don't show if user can see all activities
   if (viewableActivities >= totalActivities) {

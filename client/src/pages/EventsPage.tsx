@@ -1,5 +1,5 @@
 // Events Page - Main interface for event management
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { EventList } from '../components/events/EventList'
 import { EventDetail } from '../components/events/EventDetail'
 import { EventForm } from '../components/events/EventForm'
@@ -67,10 +67,7 @@ export const EventsPage: React.FC = () => {
     setViewMode('edit')
   }
 
-  const handleBookEvent = async (eventId: string) => {
-    // This will be handled by the EventDetail component
-    handleViewDetails(eventId)
-  }
+    const handleBookEvent = async (eventId: string) => {
 
   const handleEventSaved = (event: EventData) => {
     setViewMode('list')
@@ -189,7 +186,7 @@ export const EventsPage: React.FC = () => {
             {tabs.map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
+                                onClick={() => setActiveTab(tab.id as 'all' | 'upcoming' | 'my-events')}
                 className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
                   activeTab === tab.id
                     ? 'bg-luxury-gold text-luxury-midnight-black shadow-lg'

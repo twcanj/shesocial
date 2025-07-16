@@ -13,9 +13,9 @@ interface AuthContextType {
   authMode: 'login' | 'register' | 'enhanced_register'
   // Auth store data
   isAuthenticated: boolean
-  user: any
-  login: (email: string, password: string) => Promise<any>
-  register: (userData: any) => Promise<any>
+    user: Record<string, unknown> | null
+  login: (email: string, password: string) => Promise<Record<string, unknown>>
+  register: (userData: Record<string, unknown>) => Promise<Record<string, unknown>>
   logout: () => void
 }
 

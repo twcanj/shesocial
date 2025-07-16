@@ -1,5 +1,5 @@
 // Admin Dashboard - Main interface for admin permission management
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { AdminSidebar } from '../components/admin/AdminSidebar'
 import { PermissionManagement } from '../components/admin/PermissionManagement'
 import { RoleManagement } from '../components/admin/RoleManagement'
@@ -24,7 +24,7 @@ type AdminSection = 'overview' | 'permissions' | 'roles' | 'users' | 'audit' | '
 
 export const AdminDashboard: React.FC = () => {
   const [activeSection, setActiveSection] = useState<AdminSection>('overview')
-  const { admin, isAuthenticated, loading, logout } = useAdminAuth()
+    const { admin, loading, logout } = useAdminAuth()
 
   // Note: Authentication is now handled by React Router guard
   // This component should only render when user is authenticated

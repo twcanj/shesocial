@@ -281,7 +281,7 @@ export const ProfilePage: React.FC = () => {
                     個人簡介
                   </h3>
                   <p className="text-luxury-midnight-black leading-relaxed italic">
-                    "{user.profile.bio}"
+                                        &quot;{user.profile.bio}&quot;
                   </p>
                 </div>
               )}
@@ -440,7 +440,7 @@ export const ProfilePage: React.FC = () => {
                     
                     return (
                       <MediaUpload
-                        category={category.id as any}
+                                                category={category.id as 'profile_photo' | 'introduction_video' | 'interview_video' | 'lifestyle_photo' | 'activity_photo'}
                         acceptedTypes={category.acceptedTypes}
                         maxSize={category.maxSize}
                         maxDuration={category.maxDuration}
@@ -502,7 +502,7 @@ export const ProfilePage: React.FC = () => {
                   預約面試
                 </h3>
                 <InterviewBooking 
-                  onBookingComplete={(sessionId) => {
+                                    onBookingComplete={() => {
                     alert('面試預約成功！')
                     // Refresh user data or redirect
                   }}

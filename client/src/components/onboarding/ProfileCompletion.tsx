@@ -96,8 +96,8 @@ export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({
       const [parent, child] = field.split('.')
       setFormData(prev => ({
         ...prev,
-        [parent]: {
-          ...prev[parent as keyof typeof prev] as any,
+                [parent]: {
+          ...(prev[parent as keyof typeof prev] as Record<string, string>),
           [child]: value
         }
       }))

@@ -1,6 +1,6 @@
 // Event Management - Admin interface for managing events
 import React, { useState, useEffect, useCallback } from 'react'
-import { useAdminAuth, createAdminAPI } from '../../hooks/useAdminAuth'
+import { useAdminAuth } from '../../hooks/useAdminAuth'
 import type { EventData } from '../../shared-types'
 
 interface EventStats {
@@ -18,13 +18,12 @@ export const EventManagement: React.FC = () => {
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [filter, setFilter] = useState<'all' | 'upcoming' | 'completed' | 'cancelled'>('all')
 
-  const { apiCall, hasPermission } = useAdminAuth()
-  const adminAPI = createAdminAPI(apiCall)
+    const { apiCall, hasPermission } = useAdminAuth()
 
   const loadEvents = useCallback(async () => {
     try {
       setLoading(true)
-      const response = await apiCall('/events')
+                  const response = await apiCall('/events')
       const data = await response.json()
       
       if (data.success) {
@@ -49,15 +48,15 @@ export const EventManagement: React.FC = () => {
     } finally {
       setLoading(false)
     }
-  }, [apiCall])
+    }, [apiCall])
 
-  useEffect(() => {
+    useEffect(() => {
     loadEvents()
   }, [loadEvents])
 
   const handleEventAction = async (eventId: string, action: 'cancel' | 'complete') => {
     try {
-      await apiCall(`/events/${eventId}`, {
+                  await apiCall(`/events/${eventId}`, {
         method: 'PUT',
         body: JSON.stringify({ status: action === 'cancel' ? 'cancelled' : 'completed' })
       })

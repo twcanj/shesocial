@@ -31,37 +31,37 @@ export class SheSocialOfflineDB extends Dexie {
     this.registerServiceWorkerListener()
 
     // Hooks for automatic timestamps
-    this.users.hook('creating', (_primKey, obj, _trans) => {
-      (obj as any).createdAt = new Date()
-      ;(obj as any).updatedAt = new Date()
-      ;(obj as any).lastSync = null
+        this.users.hook('creating', (_primKey, obj, _trans) => {
+      (obj as UserProfile).createdAt = new Date()
+      ;(obj as UserProfile).updatedAt = new Date()
+      ;(obj as UserProfile).lastSync = null
     })
 
-    this.users.hook('updating', (modifications, _primKey, _obj, _trans) => {
-      (modifications as any).updatedAt = new Date()
-      ;(modifications as any).lastSync = null
+        this.users.hook('updating', (modifications, _primKey, _obj, _trans) => {
+      (modifications as Partial<UserProfile>).updatedAt = new Date()
+      ;(modifications as Partial<UserProfile>).lastSync = null
     })
 
-    this.events.hook('creating', (_primKey, obj, _trans) => {
-      (obj as any).createdAt = new Date()
-      ;(obj as any).updatedAt = new Date()
-      ;(obj as any).lastSync = null
+        this.events.hook('creating', (_primKey, obj, _trans) => {
+      (obj as EventData).createdAt = new Date()
+      ;(obj as EventData).updatedAt = new Date()
+      ;(obj as EventData).lastSync = null
     })
 
-    this.events.hook('updating', (modifications, _primKey, _obj, _trans) => {
-      (modifications as any).updatedAt = new Date()
-      ;(modifications as any).lastSync = null
+        this.events.hook('updating', (modifications, _primKey, _obj, _trans) => {
+      (modifications as Partial<EventData>).updatedAt = new Date()
+      ;(modifications as Partial<EventData>).lastSync = null
     })
 
-    this.bookings.hook('creating', (_primKey, obj, _trans) => {
-      (obj as any).createdAt = new Date()
-      ;(obj as any).updatedAt = new Date()
-      ;(obj as any).lastSync = null
+        this.bookings.hook('creating', (_primKey, obj, _trans) => {
+      (obj as BookingData).createdAt = new Date()
+      ;(obj as BookingData).updatedAt = new Date()
+      ;(obj as BookingData).lastSync = null
     })
 
-    this.bookings.hook('updating', (modifications, _primKey, _obj, _trans) => {
-      (modifications as any).updatedAt = new Date()
-      ;(modifications as any).lastSync = null
+        this.bookings.hook('updating', (modifications, _primKey, _obj, _trans) => {
+      (modifications as Partial<BookingData>).updatedAt = new Date()
+      ;(modifications as Partial<BookingData>).lastSync = null
     })
   }
 
@@ -128,9 +128,9 @@ export class SheSocialOfflineDB extends Dexie {
 
   // Sync queue management
   async queueSync(
-    collection: 'users' | 'events' | 'bookings', 
+        collection: 'users' | 'events' | 'bookings', 
     operation: 'insert' | 'update' | 'delete', 
-    data: any,
+    data: UserProfile | EventData | BookingData,
     priority: 'high' | 'medium' | 'low' = 'medium'
   ): Promise<void> {
     await this.syncQueue.add({
@@ -147,10 +147,10 @@ export class SheSocialOfflineDB extends Dexie {
   }
 
   // Background sync trigger
-  private triggerBackgroundSync(): void {
-    if ('serviceWorker' in navigator && 'sync' in (window as any).ServiceWorkerRegistration.prototype) {
+    private triggerBackgroundSync(): void {
+    if ('serviceWorker' in navigator && 'sync' in (window as Window).ServiceWorkerRegistration.prototype) {
       navigator.serviceWorker.ready.then(registration => {
-        return (registration as any).sync.register('sync-shesocial-data')
+        return (registration as ServiceWorkerRegistration).sync.register('sync-shesocial-data')
       }).catch(err => {
         console.warn('Background sync registration failed:', err)
         // Fallback to immediate sync
@@ -167,9 +167,9 @@ export class SheSocialOfflineDB extends Dexie {
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.addEventListener('message', (event) => {
         if (event.data) {
-          switch (event.data.type) {
+                    switch (event.data.type) {
             case 'SYNC_COMPLETE':
-              console.log(`✅ Background sync completed: ${event.data.processed} items`)
+              console.log(`✅ Background sync completed: ${(event.data as { processed: number }).processed} items`)
               break
             case 'APP_INSTALLED':
               console.log('📱 PWA installed successfully')
@@ -228,11 +228,11 @@ export class SheSocialOfflineDB extends Dexie {
       .sortBy('createdAt')
   }
 
-  async getEventParticipants(eventId: string): Promise<BookingData[]> {
+    async getEventParticipants(eventId: string): Promise<BookingData[]> {
     return await this.bookings
       .where('eventId')
       .equals(eventId)
-      .and(booking => booking.status === 'confirmed')
+      .and((booking: BookingData) => booking.status === 'confirmed')
       .toArray()
   }
 
@@ -240,12 +240,12 @@ export class SheSocialOfflineDB extends Dexie {
   async searchEvents(query: string): Promise<EventData[]> {
     const lowerQuery = query.toLowerCase()
     return await this.events
-      .filter(event => 
+      .filter((event: EventData) => 
         event.name.toLowerCase().includes(lowerQuery) ||
         event.metadata.location.toLowerCase().includes(lowerQuery) ||
         event.metadata.category.toLowerCase().includes(lowerQuery)
       )
-      .and(event => event.status === 'published')
+      .and((event: EventData) => event.status === 'published')
       .toArray()
   }
 
@@ -257,8 +257,8 @@ export class SheSocialOfflineDB extends Dexie {
     }
 
     const lowerQuery = query.toLowerCase()
-    return await this.users
-      .filter(user => 
+        return await this.users
+      .filter((user: UserProfile) => 
         user.profile.name.toLowerCase().includes(lowerQuery) ||
         user.profile.location.toLowerCase().includes(lowerQuery) ||
         user.profile.interests.some(interest => 
@@ -273,9 +273,9 @@ export class SheSocialOfflineDB extends Dexie {
     // Remove successfully synced items older than 7 days
     const weekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000)
     await this.syncQueue
-      .where('timestamp')
+            .where('timestamp')
       .below(weekAgo)
-      .and(item => item.retries === 0)
+      .and((item: SyncQueueItem) => item.retries === 0)
       .delete()
   }
 

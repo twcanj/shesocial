@@ -1,6 +1,6 @@
 // Permission Management - Manage atomic permissions and validation
 import React, { useState, useEffect, useCallback } from 'react'
-import { useAdminAuth, createAdminAPI } from '../../hooks/useAdminAuth'
+import { useAdminAuth } from '../../hooks/useAdminAuth'
 
 interface PermissionAtom {
   atomId: string
@@ -14,29 +14,26 @@ interface PermissionAtom {
   version: string
 }
 
-interface GroupedPermissions {
-  [group: string]: PermissionAtom[]
+interface ValidationResult {
+  isValid: boolean;
+  errors?: string[];
 }
 
 export const PermissionManagement: React.FC = () => {
   const { hasPermission } = useAdminAuth()
-  const [permissions, setPermissions] = useState<PermissionAtom[]>([]);
   const [groupedPermissions, setGroupedPermissions] = useState<Record<string, PermissionAtom[]>>({});
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [validationResult, setValidationResult] = useState<any>(null)
+  const [validationResult, setValidationResult] = useState<ValidationResult | null>(null)
   const [testPermissions, setTestPermissions] = useState<string[]>([])
 
   const [activeGroup, setActiveGroup] = useState<string>('');
-  const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
 
-  const { apiCall } = useAdminAuth()
-  const adminAPI = createAdminAPI(apiCall)
+    const { apiCall } = useAdminAuth()
 
   const loadPermissions = useCallback(async () => {
     try {
       setLoading(true)
-      const response = await adminAPI.getGroupedPermissions()
+            const response = await apiCall('/permissions/atoms/grouped')
       const data = await response.json()
       
       if (data.success) {
@@ -51,7 +48,7 @@ export const PermissionManagement: React.FC = () => {
     } finally {
       setLoading(false)
     }
-  }, [activeGroup, adminAPI]);
+    }, [activeGroup]);
 
   useEffect(() => {
     loadPermissions();
@@ -59,7 +56,10 @@ export const PermissionManagement: React.FC = () => {
 
   const validatePermissions = async (permissions: string[]) => {
     try {
-      const response = await adminAPI.validatePermissions(permissions)
+            const response = await apiCall('/permissions/validate', {
+        method: 'POST',
+        body: JSON.stringify({ permissions })
+      })
       const data = await response.json()
       
       if (data.success) {

@@ -119,7 +119,7 @@ export const EnhancedRegistration: React.FC<EnhancedRegistrationProps> = ({
         email: formData.email,
         password: formData.password,
         name: formData.name,
-        membership: formData.membershipInterest as any
+                membership: formData.membershipInterest
       }
       const result = await register(userData)
       

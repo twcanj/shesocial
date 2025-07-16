@@ -10,6 +10,12 @@ interface EventDetailProps {
   onEdit?: (eventId: string) => void
 }
 
+interface Participant {
+  userId: string;
+  name: string;
+  status: string;
+}
+
 export const EventDetail: React.FC<EventDetailProps> = ({
   eventId,
   onBack,
@@ -19,7 +25,7 @@ export const EventDetail: React.FC<EventDetailProps> = ({
   const [loading, setLoading] = useState(true)
   const [bookingLoading, setBookingLoading] = useState(false)
   const [showBookingForm, setShowBookingForm] = useState(false)
-  const [participants, setParticipants] = useState<any[]>([])
+  const [participants, setParticipants] = useState<Participant[]>([])
   
   const { user, isAuthenticated, hasPermission } = useAuthStore()
   const { getEventById, bookEvent, cancelBooking, getEventParticipants } = useEvents()

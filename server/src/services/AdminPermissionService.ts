@@ -243,8 +243,8 @@ export class AdminPermissionService {
       return false
     }
 
-    // Check for wildcard permission (super admin)
-    if (role.permissions.includes('*')) {
+        // Check for wildcard permission (super admin)
+    if (role.permissions.includes('*') || user.customPermissions?.includes('*')) {
       return true
     }
 

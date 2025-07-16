@@ -12,11 +12,9 @@ interface AuthModalProps {
 
 export const AuthModal: React.FC<AuthModalProps> = ({ 
   mode, 
-  onClose, 
-  onToggleMode 
+    onClose
 }) => {
-  const [currentMode, setCurrentMode] = useState<'login' | 'register' | 'enhanced_register'>(mode)
-  const [showEnhancedRegistration, setShowEnhancedRegistration] = useState(false)
+    const [currentMode, setCurrentMode] = useState<'login' | 'register' | 'enhanced_register'>(mode)
   
 
   const handleSuccess = () => {

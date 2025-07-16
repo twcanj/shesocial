@@ -9,7 +9,7 @@ import type { UserProfile, EventData, BookingData } from '../shared-types'
 export const useOfflineDB = () => {
   const [isInitialized, setIsInitialized] = useState(false)
   // TEMPORARILY DISABLED: const [syncStatus, setSyncStatus] = useState(syncService.getSyncStatus())
-  const [syncStatus, setSyncStatus] = useState({
+    const [syncStatus] = useState({
     inProgress: false,
     isOnline: navigator.onLine,
     networkQuality: 'good' as const,
@@ -54,14 +54,14 @@ export const useOfflineDB = () => {
     events: {
       getAll: async () => await offlineDB.events.toArray(),
       get: async (id: string) => await offlineDB.events.get(id),
-      add: async (event: any) => await offlineDB.events.add(event),
-      update: async (id: string, changes: any) => await offlineDB.events.update(id, changes),
+                  add: async (event: EventData) => await offlineDB.events.add(event),
+      update: async (id: string, changes: Partial<EventData>) => await offlineDB.events.update(id, changes),
       delete: async (id: string) => await offlineDB.events.delete(id)
     },
-    addEvent: async (event: any) => {
+        addEvent: async (event: EventData) => {
       return await offlineDB.events.add(event)
     },
-    updateEvent: async (id: string, changes: any) => {
+    updateEvent: async (id: string, changes: Partial<EventData>) => {
       return await offlineDB.events.update(id, changes)
     },
     deleteEvent: async (id: string) => {

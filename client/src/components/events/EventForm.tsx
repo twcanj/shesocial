@@ -16,13 +16,10 @@ export const EventForm: React.FC<EventFormProps> = ({
 }) => {
   const [loading, setLoading] = useState(false)
   const [submitLoading, setSubmitLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  
-  
-  const { getEventById, createEvent, updateEvent } = useEvents()
+    const { getEventById, createEvent, updateEvent } = useEvents()
 
   // Check permissions using user membership
-  const hasPermission = (permission: string) => {
+    const hasPermission = () => {
     // For now, assume VIP+ can create events
     return true // TODO: Implement proper permission checking
   }
@@ -166,7 +163,7 @@ export const EventForm: React.FC<EventFormProps> = ({
     setFormData(prev => {
       const newData = { ...prev }
       const keys = path.split('.')
-      let current: Record<string, any> = newData
+            let current: Record<string, unknown> = newData
       
       for (let i = 0; i < keys.length - 1; i++) {
         if (!current[keys[i]]) {

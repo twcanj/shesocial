@@ -31,7 +31,7 @@ interface UseEventsReturn {
   cancelBooking: (eventId: string) => Promise<boolean>
   
   // Participant management
-  getEventParticipants: (eventId: string) => Promise<any[]>
+    getEventParticipants: (eventId: string) => Promise<BookingData[]>
   
   // Data management
   refreshEvents: () => Promise<void>
@@ -381,7 +381,7 @@ export const useEvents = (options: UseEventsOptions = {}): UseEventsReturn => {
   }, [isAuthenticated, user, getEventById, updateEvent])
 
   // Get event participants (premium only)
-  const getEventParticipants = useCallback(async (eventId: string): Promise<any[]> => {
+    const getEventParticipants = useCallback(async (eventId: string): Promise<BookingData[]> => {
     if (!isAuthenticated || !token) return []
 
     try {
@@ -421,7 +421,7 @@ export const useEvents = (options: UseEventsOptions = {}): UseEventsReturn => {
     const total = events.length
     const upcoming = getUpcomingEvents().length
     const participated = getUserBookedEvents().length
-    const created = user ? events.filter(event => 
+    const created = user ? events.filter(() => 
       // Assuming events have a createdBy field (not in current schema)
       false // TODO: Add createdBy field to EventData schema
     ).length : 0

@@ -105,7 +105,7 @@ export const MediaUpload: React.FC<MediaUploadProps> = ({
     return result
   }
 
-  const saveMediaToDatabase = async (cloudinaryResult: any) => {
+    const saveMediaToDatabase = async (cloudinaryResult: Record<string, string | number>) => {
     if (!user) throw new Error('用戶未登入')
 
     const mediaData = {

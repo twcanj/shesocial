@@ -1,9 +1,9 @@
 // Admin Authentication Hook
 // Manages admin authentication state separate from user authentication
-import { useState, useEffect } from 'react'
+import { useEffect, useCallback } from 'react'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { API_CONFIG } from '../config/api'
+import { API_CONFIG, API_ENDPOINTS } from '../config/api'
 
 export interface AdminProfile {
   adminId: string
@@ -49,7 +49,7 @@ export const useAdminAuthStore = create<AdminAuthState>()(
         set({ loading: true })
         
         try {
-          const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                    const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.ADMIN.AUTH.LOGIN}`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -80,7 +80,7 @@ export const useAdminAuthStore = create<AdminAuthState>()(
           } else {
             throw new Error(data.error || '登入失敗')
           }
-        } catch (error: any) {
+                } catch (error: unknown) {
           set({ loading: false })
           throw error
         }
@@ -90,7 +90,7 @@ export const useAdminAuthStore = create<AdminAuthState>()(
         // Call logout endpoint to invalidate token on server
         const { accessToken } = get()
         if (accessToken) {
-          fetch(`${API_BASE_URL}/auth/logout`, {
+                    fetch(`${API_BASE_URL}${API_ENDPOINTS.ADMIN.AUTH.LOGOUT}`, {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${accessToken}`,
@@ -114,7 +114,7 @@ export const useAdminAuthStore = create<AdminAuthState>()(
         if (!refreshToken) return false
 
         try {
-          const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
+                    const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.ADMIN.AUTH.REFRESH}`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -202,23 +202,8 @@ export const useAdminAuth = () => {
     hasPermission
   } = useAdminAuthStore()
 
-  // Auto-refresh token on mount and periodically
-  useEffect(() => {
-    if (accessToken && !loading) {
-      // Try to refresh token on mount
-      refreshAccessToken()
-
-      // Set up periodic token refresh (every 7 hours)
-      const interval = setInterval(() => {
-        refreshAccessToken()
-      }, 7 * 60 * 60 * 1000) // 7 hours
-
-      return () => clearInterval(interval)
-    }
-  }, [accessToken, loading, refreshAccessToken])
-
-  // API helper for authenticated requests
-  const apiCall = async (endpoint: string, options: RequestInit = {}) => {
+  // API helper for authenticated requests - moved before useEffect to maintain hook order
+  const apiCall = useCallback(async (endpoint: string, options: RequestInit = {}) => {
     const token = useAdminAuthStore.getState().accessToken
     
     if (!token) {
@@ -260,7 +245,22 @@ export const useAdminAuth = () => {
     }
 
     return response
-  }
+  }, [refreshAccessToken, logout])
+
+  // Auto-refresh token on mount and periodically
+  useEffect(() => {
+    if (accessToken && !loading) {
+      // Try to refresh token on mount
+      refreshAccessToken()
+
+      // Set up periodic token refresh (every 7 hours)
+      const interval = setInterval(() => {
+        refreshAccessToken()
+      }, 7 * 60 * 60 * 1000) // 7 hours
+
+      return () => clearInterval(interval)
+    }
+  }, [accessToken, loading, refreshAccessToken])
 
   return {
     admin,
@@ -274,7 +274,7 @@ export const useAdminAuth = () => {
 }
 
 // Admin API service helpers - to be used within components that have access to useAdminAuth
-export const createAdminAPI = (apiCall: (url: string, options?: any) => Promise<any>) => ({
+export const createAdminAPI = (apiCall: (url: string, options?: Record<string, unknown>) => Promise<Response>) => ({
   // Permission atoms
   getPermissionAtoms: () => 
     apiCall('/permissions/atoms'),
@@ -282,7 +282,7 @@ export const createAdminAPI = (apiCall: (url: string, options?: any) => Promise<
   getGroupedPermissions: () => 
     apiCall('/permissions/atoms/grouped'),
   
-  createPermissionAtom: (atomData: any) => 
+  createPermissionAtom: (atomData: Record<string, unknown>) => 
     apiCall('/permissions/atoms', {
       method: 'POST',
       body: JSON.stringify(atomData)
@@ -292,13 +292,13 @@ export const createAdminAPI = (apiCall: (url: string, options?: any) => Promise<
   getRoles: (department?: string) => 
     apiCall(`/roles${department ? `?department=${department}` : ''}`),
   
-  createRole: (roleData: any) => 
+  createRole: (roleData: Record<string, unknown>) => 
     apiCall('/roles', {
       method: 'POST',
       body: JSON.stringify(roleData)
     }),
   
-  updateRole: (roleId: string, updates: any) => 
+  updateRole: (roleId: string, updates: Record<string, unknown>) => 
     apiCall(`/roles/${roleId}`, {
       method: 'PUT',
       body: JSON.stringify(updates)
@@ -315,20 +315,20 @@ export const createAdminAPI = (apiCall: (url: string, options?: any) => Promise<
     }),
 
   // Users
-  createAdminUser: (userData: any) => 
+  createAdminUser: (userData: Record<string, unknown>) => 
     apiCall('/users', {
       method: 'POST',
       body: JSON.stringify(userData)
     }),
   
-  updateAdminUser: (adminId: string, updates: any) => 
+  updateAdminUser: (adminId: string, updates: Record<string, unknown>) => 
     apiCall(`/users/${adminId}`, {
       method: 'PUT',
       body: JSON.stringify(updates)
     }),
 
   // Audit logs
-  getAuditLogs: (filters?: any) => {
+    getAuditLogs: (filters?: Record<string, string>) => {
     const params = new URLSearchParams(filters || {})
     return apiCall(`/audit/logs?${params}`)
   }

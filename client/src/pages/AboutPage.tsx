@@ -1,7 +1,6 @@
 // About Page - Platform information and company details
 import React from 'react'
 import { useAuth } from '../contexts/AuthContext'
-import { CTASection } from '../components/ui/CTASection'
 import { ModalTrigger } from '../components/ui/ModalTrigger'
 import { ConsultationModalContent } from '../components/modals/ConsultationModal'
 

@@ -776,19 +776,19 @@ export const initializeSyncService = (): void => {
       const { data } = event
       
       switch (data?.type) {
-        case 'BACKGROUND_SYNC':
+        case 'BACKGROUND_SYNC': {
           console.log('📱 Background sync triggered by Service Worker')
           syncService.syncToServer()
           break
-          
-        case 'NETWORK_CHANGED':
+        }
+        case 'NETWORK_CHANGED': {
           console.log(`🌐 Network status changed: ${data.isOnline ? 'online' : 'offline'}`)
           if (data.isOnline) {
             syncService.syncToServer()
           }
           break
-          
-        case 'SYNC_REQUEST':
+        }
+        case 'SYNC_REQUEST': {
           console.log(`🔄 Manual sync requested: ${data.collection || 'all'}`)
           if (data.collection) {
             syncService.syncSpecificCollection(data.collection)
@@ -796,6 +796,7 @@ export const initializeSyncService = (): void => {
             syncService.syncToServer()
           }
           break
+        }
       }
     })
 

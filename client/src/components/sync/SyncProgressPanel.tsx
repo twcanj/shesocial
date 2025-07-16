@@ -1,6 +1,7 @@
 // Sync Progress Panel Component for detailed sync management
 import React, { useState, useEffect } from 'react'
 import { syncService } from '../../services/sync-service'
+import type { SyncQueueItem } from '../../shared-types'
 
 interface SyncStatistics {
   totalSynced: number
@@ -82,7 +83,7 @@ export const SyncProgressPanel: React.FC = () => {
           ].map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
+                            onClick={() => setActiveTab(tab.id as 'overview' | 'collections' | 'queue')}
               className={`px-3 py-1 text-sm rounded transition-colors ${
                 activeTab === tab.id
                   ? 'bg-white text-gray-800'
@@ -152,7 +153,7 @@ export const SyncProgressPanel: React.FC = () => {
                          collection === 'events' ? '活動' : '預訂'}
                       </h4>
                       <button
-                        onClick={() => handleCollectionSync(collection as any)}
+                                                onClick={() => handleCollectionSync(collection as 'users' | 'events' | 'bookings')}
                         className="text-sm px-2 py-1 bg-blue-100 text-blue-600 rounded hover:bg-blue-200 transition-colors"
                       >
                         同步
@@ -196,7 +197,7 @@ export const SyncProgressPanel: React.FC = () => {
 
 // Component to view sync queue items
 const SyncQueueViewer: React.FC = () => {
-  const [queueItems, setQueueItems] = useState<any[]>([])
+  const [queueItems, setQueueItems] = useState<SyncQueueItem[]>([])
 
   useEffect(() => {
     const loadQueueItems = async () => {

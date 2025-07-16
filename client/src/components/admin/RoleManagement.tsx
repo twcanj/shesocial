@@ -1,6 +1,6 @@
 // Role Management - Visual role editor with drag-and-drop permissions
-import React, { useState, useEffect } from 'react'
-import { useAdminAuth, createAdminAPI } from '../../hooks/useAdminAuth'
+import React, { useState } from 'react'
+import { useAdminAuth } from '../../hooks/useAdminAuth'
 
 interface AdminRole {
   roleId: string
@@ -34,46 +34,14 @@ export const RoleManagement: React.FC = () => {
   const [permissions, setPermissions] = useState<Record<string, PermissionAtom[]>>({})
   const [selectedRole, setSelectedRole] = useState<AdminRole | null>(null)
   const [roleCapabilities, setRoleCapabilities] = useState<RoleCapabilities | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [showCreateModal, setShowCreateModal] = useState(false)
-  const [editingRole, setEditingRole] = useState<AdminRole | null>(null)
+    const [loading, setLoading] = useState(true)
   
 
-  const { apiCall } = useAdminAuth()
-  const adminAPI = createAdminAPI(apiCall)
-
-  const loadData = async () => {
-    try {
-      setLoading(true)
-      const [rolesResponse, permissionsResponse] = await Promise.all([
-        adminAPI.getRoles(),
-        adminAPI.getGroupedPermissions()
-      ])
-
-      const rolesData = await rolesResponse.json()
-      const permissionsData = await permissionsResponse.json()
-
-      if (rolesData.success) {
-        setRoles(rolesData.data)
-        if (rolesData.data.length > 0) {
-          setSelectedRole(rolesData.data[0])
-          loadRoleCapabilities(rolesData.data[0].roleId)
-        }
-      }
-
-      if (permissionsData.success) {
-        setPermissions(permissionsData.data)
-      }
-    } catch (error) {
-      console.error('Failed to load data:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
+    const { apiCall } = useAdminAuth()
 
   const loadRoleCapabilities = async (roleId: string) => {
     try {
-      const response = await adminAPI.getRoleCapabilities(roleId)
+            const response = await apiCall(`/roles/${roleId}/capabilities`)
       const data = await response.json()
       
       if (data.success) {
@@ -158,7 +126,7 @@ export const RoleManagement: React.FC = () => {
           <p className="text-gray-600 mt-1">管理管理員角色和權限配置</p>
         </div>
         <button
-          onClick={() => setShowCreateModal(true)}
+                    onClick={() => {}}
           className="btn-luxury"
         >
           <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -212,9 +180,8 @@ export const RoleManagement: React.FC = () => {
                   </div>
                   
                   <button
-                    onClick={(e) => {
+                                        onClick={(e) => {
                       e.stopPropagation()
-                      setEditingRole(role)
                     }}
                     className="p-2 text-gray-400 hover:text-luxury-gold transition-colors"
                   >
