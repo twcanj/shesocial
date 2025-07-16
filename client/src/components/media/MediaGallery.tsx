@@ -141,8 +141,8 @@ export const MediaGallery: React.FC = () => {
     <div className="space-y-8">
       {/* Category Filter */}
       <div className="luxury-card-outline p-6 bg-gradient-to-br from-luxury-pearl/10 to-luxury-champagne/5">
-        <h4 className="text-lg font-bold text-luxury-midnight-black mb-4 flex items-center">
-          <span className="w-2 h-2 bg-luxury-champagne rounded-full mr-3"></span>
+        <h4 className="text-lg font-bold text-luxury-gold mb-4 flex items-center">
+          <span className="w-2 h-2 bg-luxury-gold rounded-full mr-3 shadow-lg animate-pulse-luxury"></span>
           媒體分類
         </h4>
         <div className="flex flex-wrap gap-3">
@@ -199,7 +199,7 @@ export const MediaGallery: React.FC = () => {
             </svg>
           </div>
           <h3 className="text-2xl font-bold text-gradient-luxury mb-4">還沒有媒體檔案</h3>
-          <p className="text-lg text-luxury-midnight-black/70 mb-8 max-w-md mx-auto leading-relaxed">
+          <p className="text-lg text-luxury-gold mb-8 max-w-md mx-auto leading-relaxed font-medium">
             {selectedCategory === 'all' 
               ? '開始上傳您的照片和影片來豐富個人檔案'
               : `還沒有${getCategoryDisplayName(selectedCategory)}`

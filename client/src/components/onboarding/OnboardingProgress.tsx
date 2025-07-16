@@ -228,8 +228,11 @@ export const OnboardingProgress: React.FC = () => {
               </svg>
             </div>
             <div>
-              <div className="font-bold text-lg text-luxury-gold mb-1">下一步行動</div>
-              <div className="text-luxury-midnight-black/80 text-sm">
+              <div className="font-bold text-xl text-luxury-gold mb-2 flex items-center">
+                <span className="w-2 h-2 bg-luxury-gold rounded-full mr-3 animate-pulse-luxury"></span>
+                下一步行動
+              </div>
+              <div className="text-luxury-gold text-sm font-medium leading-relaxed">
                 {user.membership?.paymentStatus !== 'completed' && '請先完成付費以開始您的SheSocial之旅'}
                 {user.membership?.paymentStatus === 'completed' && user.membership?.status === 'profile_incomplete' && '付費成功！請完善個人資料'}
                 {user.membership?.status === 'interview_scheduled' && '資料完成！請準時參加您的面試'}

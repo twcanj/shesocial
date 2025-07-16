@@ -127,7 +127,7 @@ export const InterviewBooking: React.FC<InterviewBookingProps> = ({
           </svg>
         </div>
         <h3 className="text-3xl font-bold text-gradient-luxury mb-6">請先完成付費</h3>
-        <p className="text-lg text-luxury-midnight-black mb-8 leading-relaxed max-w-md mx-auto">
+        <p className="text-lg text-luxury-gold mb-8 leading-relaxed max-w-md mx-auto font-medium">
           您需要先完成會員費用繳交，才能預約面試
         </p>
         <button 

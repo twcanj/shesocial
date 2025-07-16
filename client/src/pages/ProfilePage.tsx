@@ -566,8 +566,8 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
                 </div>
 
                 <div className="luxury-card-outline p-6 bg-gradient-to-br from-luxury-champagne/10 to-luxury-gold/5">
-                  <h4 className="text-xl font-bold text-luxury-midnight-black mb-6 flex items-center">
-                    <span className="w-2 h-2 bg-luxury-champagne rounded-full mr-3"></span>
+                  <h4 className="text-xl font-bold text-luxury-gold mb-6 flex items-center">
+                    <span className="w-2 h-2 bg-luxury-gold rounded-full mr-3 animate-pulse-luxury"></span>
                     帳號安全
                   </h4>
                   <div className="space-y-4">

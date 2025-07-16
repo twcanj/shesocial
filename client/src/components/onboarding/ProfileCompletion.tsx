@@ -121,7 +121,7 @@ export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({
             </svg>
           </div>
           <h2 className="text-3xl font-bold text-gradient-luxury mb-6">請先完成付費</h2>
-          <p className="text-lg text-luxury-midnight-black/80 mb-8 leading-relaxed">
+          <p className="text-lg text-luxury-gold mb-8 leading-relaxed font-medium">
             您需要先完成會員費用繳交，才能繼續完善個人資料
           </p>
           <button 
