@@ -273,56 +273,56 @@ export const useAdminAuth = () => {
   }
 }
 
-// Admin API service helpers
-export const adminAPI = {
+// Admin API service helpers - to be used within components that have access to useAdminAuth
+export const createAdminAPI = (apiCall: (url: string, options?: any) => Promise<any>) => ({
   // Permission atoms
   getPermissionAtoms: () => 
-    useAdminAuth().apiCall('/permissions/atoms'),
+    apiCall('/permissions/atoms'),
   
   getGroupedPermissions: () => 
-    useAdminAuth().apiCall('/permissions/atoms/grouped'),
+    apiCall('/permissions/atoms/grouped'),
   
   createPermissionAtom: (atomData: any) => 
-    useAdminAuth().apiCall('/permissions/atoms', {
+    apiCall('/permissions/atoms', {
       method: 'POST',
       body: JSON.stringify(atomData)
     }),
 
   // Roles
   getRoles: (department?: string) => 
-    useAdminAuth().apiCall(`/roles${department ? `?department=${department}` : ''}`),
+    apiCall(`/roles${department ? `?department=${department}` : ''}`),
   
   createRole: (roleData: any) => 
-    useAdminAuth().apiCall('/roles', {
+    apiCall('/roles', {
       method: 'POST',
       body: JSON.stringify(roleData)
     }),
   
   updateRole: (roleId: string, updates: any) => 
-    useAdminAuth().apiCall(`/roles/${roleId}`, {
+    apiCall(`/roles/${roleId}`, {
       method: 'PUT',
       body: JSON.stringify(updates)
     }),
   
   getRoleCapabilities: (roleId: string) => 
-    useAdminAuth().apiCall(`/roles/${roleId}/capabilities`),
+    apiCall(`/roles/${roleId}/capabilities`),
 
   // Permission validation
   validatePermissions: (permissions: string[]) => 
-    useAdminAuth().apiCall('/permissions/validate', {
+    apiCall('/permissions/validate', {
       method: 'POST',
       body: JSON.stringify({ permissions })
     }),
 
   // Users
   createAdminUser: (userData: any) => 
-    useAdminAuth().apiCall('/users', {
+    apiCall('/users', {
       method: 'POST',
       body: JSON.stringify(userData)
     }),
   
   updateAdminUser: (adminId: string, updates: any) => 
-    useAdminAuth().apiCall(`/users/${adminId}`, {
+    apiCall(`/users/${adminId}`, {
       method: 'PUT',
       body: JSON.stringify(updates)
     }),
@@ -330,6 +330,11 @@ export const adminAPI = {
   // Audit logs
   getAuditLogs: (filters?: any) => {
     const params = new URLSearchParams(filters || {})
-    return useAdminAuth().apiCall(`/audit/logs?${params}`)
+    return apiCall(`/audit/logs?${params}`)
   }
-}
+})
+
+// Deprecated: Use createAdminAPI inside components instead
+export const adminAPI = createAdminAPI(() => { 
+  throw new Error('adminAPI is deprecated. Use createAdminAPI(apiCall) inside components with useAdminAuth hook.')
+})

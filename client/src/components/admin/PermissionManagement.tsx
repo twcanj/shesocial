@@ -1,6 +1,6 @@
 // Permission Management - Manage atomic permissions and validation
 import React, { useState, useEffect, useCallback } from 'react'
-import { useAdminAuth, adminAPI } from '../../hooks/useAdminAuth'
+import { useAdminAuth, createAdminAPI } from '../../hooks/useAdminAuth'
 
 interface PermissionAtom {
   atomId: string
@@ -30,6 +30,9 @@ export const PermissionManagement: React.FC = () => {
   const [activeGroup, setActiveGroup] = useState<string>('');
   const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
 
+  const { apiCall } = useAdminAuth()
+  const adminAPI = createAdminAPI(apiCall)
+
   const loadPermissions = useCallback(async () => {
     try {
       setLoading(true)
@@ -48,7 +51,7 @@ export const PermissionManagement: React.FC = () => {
     } finally {
       setLoading(false)
     }
-  }, [activeGroup]);
+  }, [activeGroup, adminAPI]);
 
   useEffect(() => {
     loadPermissions();

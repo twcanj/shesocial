@@ -1,6 +1,6 @@
 // Role Management - Visual role editor with drag-and-drop permissions
 import React, { useState, useEffect } from 'react'
-import { useAdminAuth, adminAPI } from '../../hooks/useAdminAuth'
+import { useAdminAuth, createAdminAPI } from '../../hooks/useAdminAuth'
 
 interface AdminRole {
   roleId: string
@@ -38,6 +38,9 @@ export const RoleManagement: React.FC = () => {
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [editingRole, setEditingRole] = useState<AdminRole | null>(null)
   
+
+  const { apiCall } = useAdminAuth()
+  const adminAPI = createAdminAPI(apiCall)
 
   const loadData = async () => {
     try {
