@@ -16,6 +16,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 }) => {
   const [loading, setLoading] = useState(false)
   const [submitLoading, setSubmitLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null);
     const { getEventById, createEvent, updateEvent } = useEvents()
 
   // Check permissions using user membership
@@ -63,7 +64,7 @@ export const EventForm: React.FC<EventFormProps> = ({
   })
 
   const isEditMode = !!eventId
-  const canSubmit = hasPermission('priorityBooking')
+  const canSubmit = hasPermission()
 
   // Taiwan cities
   const taiwanCities = [
@@ -167,9 +168,9 @@ export const EventForm: React.FC<EventFormProps> = ({
       
       for (let i = 0; i < keys.length - 1; i++) {
         if (!current[keys[i]]) {
-          current[keys[i]] = {}
+          current[keys[i]] = {} as any
         }
-        current = current[keys[i]]
+        current = current[keys[i]] as Record<string, unknown>
       }
       
       current[keys[keys.length - 1]] = value

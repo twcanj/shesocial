@@ -22,7 +22,7 @@ export const PricingPage: React.FC = () => {
       </div>
 
       {/* Personalized Recommendation for authenticated users with completed profiles */}
-      {isAuthenticated && user?.membership?.status === 'profile_completed' && (
+      {isAuthenticated && (user as any)?.membership?.status === 'profile_completed' && (
         <div className="mb-16">
           <PersonalizedRecommendation />
         </div>
@@ -63,7 +63,7 @@ export const PricingPage: React.FC = () => {
             onClick={openRegister}
             className="luxury-card-button-outline"
           >
-            {isAuthenticated && user?.membership?.status === 'profile_completed' ? '選擇此方案' : '選擇方案'}
+            {isAuthenticated && (user as any)?.membership?.status === 'profile_completed' ? '選擇此方案' : '選擇方案'}
           </button>
         </div>
 
@@ -99,7 +99,7 @@ export const PricingPage: React.FC = () => {
             onClick={openRegister}
             className="luxury-card-button-outline"
           >
-            {isAuthenticated && user?.membership?.status === 'profile_completed' ? '選擇此方案' : '選擇方案'}
+            {isAuthenticated && (user as any)?.membership?.status === 'profile_completed' ? '選擇此方案' : '選擇方案'}
           </button>
         </div>
 
@@ -143,7 +143,7 @@ export const PricingPage: React.FC = () => {
             onClick={openRegister}
             className="luxury-card-button-selected"
           >
-            {isAuthenticated && user?.membership?.status === 'profile_completed' ? '選擇此方案' : '選擇方案'}
+            {isAuthenticated && (user as any)?.membership?.status === 'profile_completed' ? '選擇此方案' : '選擇方案'}
           </button>
         </div>
 
@@ -187,7 +187,7 @@ export const PricingPage: React.FC = () => {
             onClick={openRegister}
             className="luxury-card-button-outline"
           >
-            {isAuthenticated && user?.membership?.status === 'profile_completed' ? '選擇此方案' : '選擇方案'}
+            {isAuthenticated && (user as any)?.membership?.status === 'profile_completed' ? '選擇此方案' : '選擇方案'}
           </button>
         </div>
       </div>
@@ -540,12 +540,12 @@ export const PricingPage: React.FC = () => {
       <div className="text-center">
         <div className="luxury-card-selected p-8 max-w-2xl mx-auto">
           <h2 className="luxury-card-title mb-4">
-            {isAuthenticated && user?.membership?.status === 'profile_completed' 
+            {isAuthenticated && (user as any)?.membership?.status === 'profile_completed' 
               ? '立即選擇您的方案' 
               : '立即開始您的社交之旅'}
           </h2>
           <p className="text-luxury-midnight-black/80 mb-6">
-            {isAuthenticated && user?.membership?.status === 'profile_completed'
+            {isAuthenticated && (user as any)?.membership?.status === 'profile_completed'
               ? '根據您的個人資料，我們已為您推薦最適合的方案'
               : '選擇適合的會員方案，加入台灣頂級社交圈'}
           </p>
@@ -554,7 +554,7 @@ export const PricingPage: React.FC = () => {
               onClick={openRegister}
               className="luxury-card-button-selected px-8 py-3 text-lg"
             >
-              {isAuthenticated && user?.membership?.status === 'profile_completed'
+              {isAuthenticated && (user as any)?.membership?.status === 'profile_completed'
                 ? '前往付款頁面'
                 : '立即註冊會員'}
             </button>

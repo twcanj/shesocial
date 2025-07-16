@@ -24,6 +24,7 @@ export const PermissionManagement: React.FC = () => {
   const [groupedPermissions, setGroupedPermissions] = useState<Record<string, PermissionAtom[]>>({});
   const [loading, setLoading] = useState(true);
   const [validationResult, setValidationResult] = useState<ValidationResult | null>(null)
+  const [showCreateModal, setShowCreateModal] = useState(false);
   const [testPermissions, setTestPermissions] = useState<string[]>([])
 
   const [activeGroup, setActiveGroup] = useState<string>('');

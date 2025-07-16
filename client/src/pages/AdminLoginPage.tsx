@@ -24,7 +24,7 @@ export const AdminLoginPage = () => {
       await login(credentials.username, credentials.password)
       navigate('/admin/dashboard')
         } catch (err: unknown) {
-      setError(err.message || '登入失敗')
+      setError((err as any).message || '登入失敗')
     } finally {
       setLoading(false)
     }

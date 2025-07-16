@@ -29,7 +29,7 @@ export const PersonalizedRecommendation: React.FC = () => {
     setLoading(true)
     try {
       // Call recommendation API or generate locally
-      const rec = generateLocalRecommendation(user)
+      const rec = generateLocalRecommendation(user as any)
       setRecommendation(rec)
     } catch (error) {
       console.error('Failed to generate recommendation:', error)

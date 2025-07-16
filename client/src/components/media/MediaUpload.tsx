@@ -154,13 +154,13 @@ export const MediaUpload: React.FC<MediaUploadProps> = ({
     }
 
     // Check if user has completed the interview
-    if (user.membership?.status !== 'interview_completed' && user.membership?.status !== 'active') {
+    if ((user as any).membership?.status !== 'interview_completed' && (user as any).membership?.status !== 'active') {
       onUploadError?.('請先完成面試才能上傳媒體')
       return
     }
 
     // Check upload permissions
-    if (!user.membership?.permissions?.uploadMedia) {
+    if (!(user as any).membership?.permissions?.uploadMedia) {
       onUploadError?.('您目前沒有媒體上傳權限')
       return
     }

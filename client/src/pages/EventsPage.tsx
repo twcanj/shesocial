@@ -62,12 +62,15 @@ export const EventsPage: React.FC = () => {
     setViewMode('create')
   }
 
-  const handleEditEvent = (eventId: string) => {
+    const handleEditEvent = (eventId: string) => {
     setSelectedEventId(eventId)
     setViewMode('edit')
   }
 
-    const handleBookEvent = async (eventId: string) => {
+  const handleBookEvent = (eventId: string) => {
+    // This is a placeholder, the actual booking is handled in EventDetail
+    handleViewDetails(eventId);
+  };
 
   const handleEventSaved = (event: EventData) => {
     setViewMode('list')

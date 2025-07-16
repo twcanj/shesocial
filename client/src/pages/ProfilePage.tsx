@@ -30,13 +30,13 @@ export const ProfilePage: React.FC = () => {
         setActiveTab(tabParam as TabType)
       } else {
         // Auto-redirect based on membership status
-        const status = user.membership?.status
-        const paymentStatus = user.membership?.paymentStatus
+        const status = (user as any).membership?.status
+        const paymentStatus = (user as any).membership?.paymentStatus
         
         console.log('ProfilePage - User status:', status, 'Payment status:', paymentStatus) // Debug log
         
         // Only redirect if payment is explicitly required for paid memberships
-        if (paymentStatus === 'pending' && (user.membership?.type === 'vip' || user.membership?.type === 'vvip')) {
+        if (paymentStatus === 'pending' && ((user as any).membership?.type === 'vip' || (user as any).membership?.type === 'vvip')) {
           // Navigate to payment page only for paid memberships with pending payment
           navigate('/pricing')
           return
@@ -122,7 +122,7 @@ export const ProfilePage: React.FC = () => {
     switch (activeTab) {
       case 'profile':
         // Show onboarding progress and profile completion for incomplete profiles
-        if (user.membership?.status === 'paid' || user.membership?.status === 'profile_incomplete') {
+        if ((user as any).membership?.status === 'paid' || (user as any).membership?.status === 'profile_incomplete') {
           return (
             <div className="space-y-6">
               <OnboardingProgress />
@@ -146,15 +146,15 @@ export const ProfilePage: React.FC = () => {
               <div className="flex items-center space-x-8 mb-8">
                 <div className="relative">
                   <div className="w-28 h-28 luxury-card-outline rounded-full flex items-center justify-center bg-gradient-to-br from-luxury-champagne/30 to-luxury-pearl/30">
-                    {user.profile?.avatar ? (
+                    {(user as any).profile?.avatar ? (
                       <img 
-                        src={user.profile.avatar} 
-                        alt={user.profile.name}
+                        src={(user as any).profile.avatar} 
+                        alt={(user as any).profile.name}
                         className="w-full h-full rounded-full object-cover"
                       />
                     ) : (
                       <span className="text-3xl text-luxury-gold font-serif">
-                        {user.profile?.name?.charAt(0) || user.email.charAt(0)}
+                        {(user as any).profile?.name?.charAt(0) || (user as any).email.charAt(0)}
                       </span>
                     )}
                   </div>
@@ -166,20 +166,20 @@ export const ProfilePage: React.FC = () => {
                 </div>
                 <div className="flex-1">
                   <h2 className="text-3xl font-bold text-luxury-midnight-black mb-2">
-                    {user.profile?.name || '未設定姓名'}
+                    {(user as any).profile?.name || '未設定姓名'}
                   </h2>
-                  <p className="text-luxury-platinum/80 mb-3">{user.email}</p>
+                  <p className="text-luxury-platinum/80 mb-3">{(user as any).email}</p>
                   <div className="flex items-center space-x-3">
                     <span className={`px-4 py-2 rounded-full text-sm font-medium ${
-                      user.membership?.type === 'vvip' ? 'bg-gradient-to-r from-luxury-gold to-luxury-rose text-white' :
-                      user.membership?.type === 'vip' ? 'bg-luxury-gold text-white' :
-                      user.membership?.type === 'registered' ? 'bg-luxury-champagne text-luxury-midnight-black' :
+                      (user as any).membership?.type === 'vvip' ? 'bg-gradient-to-r from-luxury-gold to-luxury-rose text-white' :
+                      (user as any).membership?.type === 'vip' ? 'bg-luxury-gold text-white' :
+                      (user as any).membership?.type === 'registered' ? 'bg-luxury-champagne text-luxury-midnight-black' :
                       'bg-luxury-pearl/30 text-luxury-platinum'
                     }`}>
-                      {user.membership?.type === 'visitor' && '✨ 訪客'}
-                      {user.membership?.type === 'registered' && '💎 註冊會員'}
-                      {user.membership?.type === 'vip' && '👑 VIP會員'}
-                      {user.membership?.type === 'vvip' && '💫 VVIP會員'}
+                      {(user as any).membership?.type === 'visitor' && '✨ 訪客'}
+                      {(user as any).membership?.type === 'registered' && '💎 註冊會員'}
+                      {(user as any).membership?.type === 'vip' && '👑 VIP會員'}
+                      {(user as any).membership?.type === 'vvip' && '💫 VVIP會員'}
                     </span>
                   </div>
                 </div>
@@ -196,20 +196,20 @@ export const ProfilePage: React.FC = () => {
                     <div className="flex justify-between items-center py-2 border-b border-luxury-pearl/30">
                       <span className="text-luxury-platinum">年齡</span>
                       <span className="font-medium text-luxury-midnight-black">
-                        {user.profile?.age || '未設定'} 歲
+                        {(user as any).profile?.age || '未設定'} 歲
                       </span>
                     </div>
                     <div className="flex justify-between items-center py-2 border-b border-luxury-pearl/30">
                       <span className="text-luxury-platinum">所在地</span>
                       <span className="font-medium text-luxury-midnight-black">
-                        {user.profile?.location || '未設定'}
+                        {(user as any).profile?.location || '未設定'}
                       </span>
                     </div>
                     <div className="flex justify-between items-center py-2">
                       <span className="text-luxury-platinum">加入日期</span>
                       <span className="font-medium text-luxury-midnight-black">
-                        {user.membership?.joinDate 
-                          ? new Date(user.membership.joinDate).toLocaleDateString('zh-TW')
+                        {(user as any).membership?.joinDate 
+                          ? new Date((user as any).membership.joinDate).toLocaleDateString('zh-TW')
                           : '未知'
                         }
                       </span>
@@ -226,11 +226,11 @@ export const ProfilePage: React.FC = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
                         <div className={`w-4 h-4 rounded-full mr-3 flex items-center justify-center ${
-                          user.membership?.permissions?.viewParticipants 
+                          (user as any).membership?.permissions?.viewParticipants 
                             ? 'bg-luxury-gold' 
                             : 'bg-luxury-pearl/30'
                         }`}>
-                          {user.membership?.permissions?.viewParticipants && (
+                          {(user as any).membership?.permissions?.viewParticipants && (
                             <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                             </svg>
@@ -239,21 +239,21 @@ export const ProfilePage: React.FC = () => {
                         <span className="text-luxury-midnight-black">查看活動參與者</span>
                       </div>
                       <span className={`text-xs px-2 py-1 rounded-full ${
-                        user.membership?.permissions?.viewParticipants 
+                        (user as any).membership?.permissions?.viewParticipants 
                           ? 'bg-luxury-gold/20 text-luxury-gold' 
                           : 'bg-luxury-pearl/20 text-luxury-platinum'
                       }`}>
-                        {user.membership?.permissions?.viewParticipants ? '已啟用' : '未啟用'}
+                        {(user as any).membership?.permissions?.viewParticipants ? '已啟用' : '未啟用'}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
                         <div className={`w-4 h-4 rounded-full mr-3 flex items-center justify-center ${
-                          user.membership?.permissions?.priorityBooking 
+                          (user as any).membership?.permissions?.priorityBooking 
                             ? 'bg-luxury-gold' 
                             : 'bg-luxury-pearl/30'
                         }`}>
-                          {user.membership?.permissions?.priorityBooking && (
+                          {(user as any).membership?.permissions?.priorityBooking && (
                             <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                             </svg>
@@ -262,11 +262,11 @@ export const ProfilePage: React.FC = () => {
                         <span className="text-luxury-midnight-black">優先預訂活動</span>
                       </div>
                       <span className={`text-xs px-2 py-1 rounded-full ${
-                        user.membership?.permissions?.priorityBooking 
+                        (user as any).membership?.permissions?.priorityBooking 
                           ? 'bg-luxury-gold/20 text-luxury-gold' 
                           : 'bg-luxury-pearl/20 text-luxury-platinum'
                       }`}>
-                        {user.membership?.permissions?.priorityBooking ? '已啟用' : '未啟用'}
+                        {(user as any).membership?.permissions?.priorityBooking ? '已啟用' : '未啟用'}
                       </span>
                     </div>
                   </div>
@@ -274,27 +274,27 @@ export const ProfilePage: React.FC = () => {
               </div>
 
               {/* Bio Section */}
-              {user.profile?.bio && (
+              {(user as any).profile?.bio && (
                 <div className="mt-8 luxury-card-outline p-6 bg-gradient-to-br from-luxury-pearl/5 to-luxury-champagne/10">
                   <h3 className="font-bold text-luxury-midnight-black mb-4 flex items-center">
                     <span className="w-2 h-2 bg-luxury-rose rounded-full mr-3"></span>
                     個人簡介
                   </h3>
                   <p className="text-luxury-midnight-black leading-relaxed italic">
-                                        &quot;{user.profile.bio}&quot;
+                                        &quot;{(user as any).profile.bio}&quot;
                   </p>
                 </div>
               )}
 
               {/* Interests */}
-              {user.profile?.interests && user.profile.interests.length > 0 && (
+              {(user as any).profile?.interests && (user as any).profile.interests.length > 0 && (
                 <div className="mt-8 luxury-card-outline p-6 bg-gradient-to-br from-luxury-gold/5 to-luxury-champagne/10">
                   <h3 className="font-bold text-luxury-midnight-black mb-4 flex items-center">
                     <span className="w-2 h-2 bg-luxury-gold rounded-full mr-3"></span>
                     興趣愛好
                   </h3>
                   <div className="flex flex-wrap gap-3">
-                    {user.profile.interests.map((interest, index) => (
+                    {(user as any).profile.interests.map((interest, index) => (
                       <span 
                         key={index}
                         className="px-4 py-2 luxury-card-outline bg-gradient-to-r from-luxury-champagne/30 to-luxury-pearl/20 text-luxury-midnight-black rounded-full text-sm font-medium hover:from-luxury-gold/20 hover:to-luxury-rose/20 transition-all duration-300"
@@ -313,7 +313,7 @@ export const ProfilePage: React.FC = () => {
                 <span className="w-2 h-2 bg-luxury-gold rounded-full mr-3"></span>
                 面試狀態
               </h3>
-              {user.profile?.interviewStatus?.completed ? (
+              {(user as any).profile?.interviewStatus?.completed ? (
                 <div className="luxury-card-outline p-6 bg-gradient-to-r from-emerald-50 to-teal-50">
                   <div className="flex items-center">
                     <div className="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center mr-4">
@@ -324,11 +324,11 @@ export const ProfilePage: React.FC = () => {
                     <div className="flex-1">
                       <div className="font-bold text-emerald-800 text-lg">面試已完成 ✨</div>
                       <div className="text-emerald-600 mt-1">
-                        面試時間：{user.profile.interviewStatus.duration} 分鐘
+                        面試時間：{(user as any).profile.interviewStatus.duration} 分鐘
                       </div>
-                      {user.profile.interviewStatus.scheduledAt && (
+                      {(user as any).profile.interviewStatus.scheduledAt && (
                         <div className="text-emerald-600">
-                          完成日期：{new Date(user.profile.interviewStatus.scheduledAt).toLocaleDateString('zh-TW')}
+                          完成日期：{new Date((user as any).profile.interviewStatus.scheduledAt).toLocaleDateString('zh-TW')}
                         </div>
                       )}
                     </div>
@@ -469,7 +469,7 @@ export const ProfilePage: React.FC = () => {
       case 'interview':
         return (
           <div>
-            {user.profile?.interviewStatus?.completed ? (
+            {(user as any).profile?.interviewStatus?.completed ? (
               <div className="luxury-card-gradient p-12 text-center">
                 <div className="w-24 h-24 mx-auto mb-8 bg-gradient-to-r from-emerald-400 to-emerald-500 rounded-full flex items-center justify-center shadow-2xl luxury-glow">
                   <svg className="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 20 20">

@@ -60,6 +60,19 @@ async function showDatabaseStatus() {
     console.log('   3. Implement file download in restoreFromR2()')
     console.log('   4. Add scheduled backup functionality')
     
+    console.log('\n👥 Users in Database:')
+    try {
+      const users = await new Promise((resolve, reject) => {
+        db.users.find({}, (err, docs) => {
+          if (err) reject(err)
+          else resolve(docs)
+        })
+      })
+      console.log(users)
+    } catch (error) {
+      console.log(`   users: error - ${error.message}`)
+    }
+
   } catch (error) {
     console.error('❌ Error checking database status:', error)
   }

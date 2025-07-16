@@ -14,13 +14,13 @@ const API_BASE = `${BASE_URL}/api`;
 const testData = {
   // Test admin login
   admin: {
-    username: 'superadmin',
+    username: 'admin@infinitymatch.com',
     password: 'admin123'
   },
   // Test user login
   user: {
-    email: 'member1@infinitymatch.tw', 
-    password: 'Member2025!'
+    email: 'admin@infinitymatch.tw', 
+    password: 'InfinityAdmin2025!'
   },
   // Test appointment booking
   appointmentBooking: {
@@ -116,12 +116,12 @@ const testAdminAuth = async () => {
   try {
     const response = await apiCall('POST', '/admin/auth/login', testData.admin);
     
-    if (response.success && response.token) {
-      adminToken = response.token;
+    if (response.success && response.data.accessToken) {
+      adminToken = response.data.accessToken;
       log.success('Admin authentication successful');
-      log.info(`Admin: ${response.admin.profile.name} (${response.admin.profile.role})`);
-      log.info(`Department: ${response.admin.profile.department}`);
-      log.info(`Permissions: ${response.admin.permissions.length} permissions`);
+      log.info(`Admin: ${response.data.admin.profile.realName} (${response.data.admin.roleId})`);
+      log.info(`Department: ${response.data.admin.profile.department}`);
+      log.info(`Permissions: ${response.data.admin.permissions.length} permissions`);
     } else {
       throw new Error('Admin authentication failed - no token received');
     }
@@ -137,12 +137,12 @@ const testUserAuth = async () => {
   try {
     const response = await apiCall('POST', '/auth/login', testData.user);
     
-    if (response.success && response.token) {
-      userToken = response.token;
+    if (response.success && response.data.accessToken) {
+      userToken = response.data.accessToken;
       log.success('User authentication successful');
-      log.info(`User: ${response.user.profile.name}`);
-      log.info(`Membership: ${response.user.membership.type}`);
-      log.info(`Status: ${response.user.membership.status}`);
+      log.info(`User: ${response.data.user.profile.name}`);
+      log.info(`Membership: ${response.data.user.membership.type}`);
+      log.info(`Status: ${response.data.user.membership.status}`);
     } else {
       throw new Error('User authentication failed - no token received');
     }

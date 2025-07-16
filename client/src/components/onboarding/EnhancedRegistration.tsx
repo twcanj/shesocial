@@ -155,7 +155,7 @@ export const EnhancedRegistration: React.FC<EnhancedRegistrationProps> = ({
 
       if (response.ok) {
         alert('註冊成功！現在請選擇適合的會員方案。')
-        onRegistrationComplete?.(result.data?.user?._id || 'new-user')
+        onRegistrationComplete?.((result as any).data?.user?._id || 'new-user')
       } else {
         alert('註冊失敗，請稍後再試')
       }

@@ -110,7 +110,7 @@ export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({
   }
 
   // Show payment status check first
-  if (user?.membership?.paymentStatus !== 'completed') {
+  if ((user as any)?.membership?.paymentStatus !== 'completed') {
     return (
       <div className="container-luxury section-luxury">
         <div className="luxury-card-gradient p-12 text-center max-w-2xl mx-auto">

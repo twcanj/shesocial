@@ -119,7 +119,7 @@ export const InterviewBooking: React.FC<InterviewBookingProps> = ({
   }
 
   // Check payment and profile completion status
-  if (user?.membership?.paymentStatus !== 'completed') {
+  if ((user as any)?.membership?.paymentStatus !== 'completed') {
     return (
       <div className="luxury-card-gradient p-12 text-center">
         <div className="w-20 h-20 mx-auto mb-8 bg-gradient-to-r from-luxury-gold to-luxury-rose rounded-full flex items-center justify-center shadow-2xl luxury-glow">
@@ -161,7 +161,7 @@ export const InterviewBooking: React.FC<InterviewBookingProps> = ({
     )
   }
 
-  if (user?.membership?.status === 'paid' || user?.membership?.status === 'profile_incomplete') {
+  if ((user as any)?.membership?.status === 'paid' || (user as any)?.membership?.status === 'profile_incomplete') {
     return (
       <div className="luxury-card-gradient p-12 text-center">
         <div className="w-20 h-20 mx-auto mb-8 bg-gradient-to-r from-luxury-champagne to-luxury-pearl rounded-full flex items-center justify-center shadow-2xl luxury-glow">
@@ -241,7 +241,7 @@ export const InterviewBooking: React.FC<InterviewBookingProps> = ({
               value={applicationData.membershipType}
               onChange={(e) => setApplicationData(prev => ({
                 ...prev,
-                                membershipType: e.target.value as 'regular' | 'vip' | 'premium_1300' | 'premium_2500'
+                                membershipType: e.target.value as any
               }))}
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-luxury-gold focus:border-transparent"
             >

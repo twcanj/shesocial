@@ -8,8 +8,8 @@ export const OnboardingProgress: React.FC = () => {
   if (!user) return null
 
   const getStepStatus = (step: number) => {
-    const status = user.membership?.status
-    const paymentStatus = user.membership?.paymentStatus
+    const status = (user as any).membership?.status
+    const paymentStatus = (user as any).membership?.paymentStatus
 
     switch (step) {
       case 1: // Payment
@@ -208,7 +208,7 @@ export const OnboardingProgress: React.FC = () => {
       
       {/* Overall Status Message */}
       <div className="mt-8 luxury-card-outline p-6 bg-gradient-to-br from-luxury-pearl/10 to-luxury-champagne/5">
-        {user.membership?.status === 'active' ? (
+        {(user as any).membership?.status === 'active' ? (
           <div className="flex items-center text-emerald-700">
             <div className="w-8 h-8 bg-gradient-to-r from-emerald-400 to-emerald-500 rounded-full flex items-center justify-center mr-4 shadow-lg">
               <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -233,10 +233,10 @@ export const OnboardingProgress: React.FC = () => {
                 下一步行動
               </div>
               <div className="text-luxury-gold text-sm font-medium leading-relaxed">
-                {user.membership?.paymentStatus !== 'completed' && '請先完成付費以開始您的SheSocial之旅'}
-                {user.membership?.paymentStatus === 'completed' && user.membership?.status === 'profile_incomplete' && '付費成功！請完善個人資料'}
-                {user.membership?.status === 'interview_scheduled' && '資料完成！請準時參加您的面試'}
-                {user.membership?.status === 'interview_completed' && '面試通過！現在可以上傳個人媒體了'}
+                {(user as any).membership?.paymentStatus !== 'completed' && '請先完成付費以開始您的SheSocial之旅'}
+                {(user as any).membership?.paymentStatus === 'completed' && (user as any).membership?.status === 'profile_incomplete' && '付費成功！請完善個人資料'}
+                {(user as any).membership?.status === 'interview_scheduled' && '資料完成！請準時參加您的面試'}
+                {(user as any).membership?.status === 'interview_completed' && '面試通過！現在可以上傳個人媒體了'}
               </div>
             </div>
           </div>

@@ -148,9 +148,9 @@ export class SheSocialOfflineDB extends Dexie {
 
   // Background sync trigger
     private triggerBackgroundSync(): void {
-    if ('serviceWorker' in navigator && 'sync' in (window as Window).ServiceWorkerRegistration.prototype) {
+    if ('serviceWorker' in navigator && 'sync' in (window as any).ServiceWorkerRegistration.prototype) {
       navigator.serviceWorker.ready.then(registration => {
-        return (registration as ServiceWorkerRegistration).sync.register('sync-shesocial-data')
+        return (registration as any).sync.register('sync-shesocial-data')
       }).catch(err => {
         console.warn('Background sync registration failed:', err)
         // Fallback to immediate sync

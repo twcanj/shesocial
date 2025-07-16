@@ -34,7 +34,7 @@ export const ParticipantManagement: React.FC<ParticipantManagementProps> = ({
   event,
   onUpdate
 }) => {
-  const [participants, setParticipants] = useState<ParticipantDetail[]>([])
+  const [participants, setParticipants] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [actionLoading, setActionLoading] = useState<string | null>(null)
   const [selectedParticipant, setSelectedParticipant] = useState<ParticipantDetail | null>(null)

@@ -12,7 +12,7 @@ interface EventDetailProps {
 
 interface Participant {
   userId: string;
-  name: string;
+  name?: string;
   status: string;
 }
 
