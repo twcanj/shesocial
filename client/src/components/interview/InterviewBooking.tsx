@@ -7,10 +7,13 @@ interface InterviewSlot {
   interviewerId: string
   interviewerName: string
   date: string
-  time: string
+  startTime: string
+  endTime: string
   duration: number
-  type: 'video_call' | 'phone_call' | 'in_person'
+  interviewType: 'video_call' | 'phone_call' | 'in_person'
   isAvailable: boolean
+  capacity: number
+  bookedCount: number
   meetingUrl?: string
 }
 
@@ -39,10 +42,13 @@ export const InterviewBooking: React.FC<InterviewBookingProps> = ({
 
   const fetchAvailableSlots = async () => {
     try {
-      const response = await fetch('/api/interviews/available-slots')
+      const startDate = new Date().toISOString().split('T')[0]
+      const endDate = new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] // 60 days from now
+      
+      const response = await fetch(`/api/appointments/slots/available?type=member_interview&startDate=${startDate}&endDate=${endDate}`)
       if (response.ok) {
         const data = await response.json()
-        setAvailableSlots(data.data || [])
+        setAvailableSlots(data.slots || [])
       }
     } catch (error) {
       console.error('Failed to fetch available slots:', error)
@@ -58,11 +64,16 @@ export const InterviewBooking: React.FC<InterviewBookingProps> = ({
     try {
       const bookingData = {
         slotId: selectedSlot._id,
-        applicantId: user._id,
-        applicationData
+        type: 'member_interview',
+        notes: applicationData.motivation,
+        additionalInfo: {
+          membershipType: applicationData.membershipType,
+          referralSource: applicationData.referralSource,
+          expectations: applicationData.expectations
+        }
       }
 
-      const response = await fetch('/api/interviews/book', {
+      const response = await fetch('/api/appointments/bookings', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -74,10 +85,10 @@ export const InterviewBooking: React.FC<InterviewBookingProps> = ({
       if (response.ok) {
         const result = await response.json()
         alert('面試預約成功！您將收到確認電子郵件。')
-        onBookingComplete?.(result.data.sessionId)
+        onBookingComplete?.(result.booking?._id)
       } else {
         const error = await response.json()
-        alert(error.message || '預約失敗，請稍後再試')
+        alert(error.error || '預約失敗，請稍後再試')
       }
     } catch (error) {
       console.error('Booking error:', error)
@@ -108,46 +119,84 @@ export const InterviewBooking: React.FC<InterviewBookingProps> = ({
   // Check payment and profile completion status
   if (user?.membership?.paymentStatus !== 'completed') {
     return (
-      <div className="card-luxury p-8 text-center">
-        <div className="w-16 h-16 mx-auto text-yellow-600 mb-4">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="luxury-card-gradient p-12 text-center">
+        <div className="w-20 h-20 mx-auto mb-8 bg-gradient-to-r from-luxury-gold to-luxury-rose rounded-full flex items-center justify-center shadow-2xl luxury-glow">
+          <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
                   d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
           </svg>
         </div>
-        <h3 className="text-xl font-semibold text-secondary-800 mb-4">請先完成付費</h3>
-        <p className="text-secondary-600 mb-6">
+        <h3 className="text-3xl font-bold text-gradient-luxury mb-6">請先完成付費</h3>
+        <p className="text-lg text-luxury-midnight-black mb-8 leading-relaxed max-w-md mx-auto">
           您需要先完成會員費用繳交，才能預約面試
         </p>
         <button 
           onClick={() => window.location.href = '/pricing'}
-          className="btn-luxury"
+          className="luxury-button px-8 py-4 text-lg transform hover:scale-105 transition-all duration-300"
         >
-          前往付費頁面
+          <span className="flex items-center">
+            前往付費頁面
+            <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </span>
         </button>
+        <div className="mt-8 flex items-center justify-center space-x-8 text-sm text-luxury-platinum">
+          <div className="flex items-center">
+            <div className="w-2 h-2 bg-luxury-gold rounded-full mr-2"></div>
+            安全付費
+          </div>
+          <div className="flex items-center">
+            <div className="w-2 h-2 bg-luxury-rose rounded-full mr-2"></div>
+            即時開通
+          </div>
+          <div className="flex items-center">
+            <div className="w-2 h-2 bg-luxury-champagne rounded-full mr-2"></div>
+            專業面試
+          </div>
+        </div>
       </div>
     )
   }
 
   if (user?.membership?.status === 'paid' || user?.membership?.status === 'profile_incomplete') {
     return (
-      <div className="card-luxury p-8 text-center">
-        <div className="w-16 h-16 mx-auto text-blue-600 mb-4">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="luxury-card-gradient p-12 text-center">
+        <div className="w-20 h-20 mx-auto mb-8 bg-gradient-to-r from-luxury-champagne to-luxury-pearl rounded-full flex items-center justify-center shadow-2xl luxury-glow">
+          <svg className="w-10 h-10 text-luxury-midnight-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
                   d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
           </svg>
         </div>
-        <h3 className="text-xl font-semibold text-secondary-800 mb-4">請先完善個人資料</h3>
-        <p className="text-secondary-600 mb-6">
+        <h3 className="text-3xl font-bold text-gradient-luxury mb-6">請先完善個人資料</h3>
+        <p className="text-lg text-luxury-midnight-black mb-8 leading-relaxed max-w-md mx-auto">
           付費成功！請先完善基本個人資料，然後才能預約面試
         </p>
         <button 
           onClick={() => window.location.href = '/profile'}
-          className="btn-luxury"
+          className="luxury-button px-8 py-4 text-lg transform hover:scale-105 transition-all duration-300"
         >
-          前往完善資料
+          <span className="flex items-center">
+            前往完善資料
+            <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </span>
         </button>
+        <div className="mt-8 flex items-center justify-center space-x-8 text-sm text-luxury-platinum">
+          <div className="flex items-center">
+            <div className="w-2 h-2 bg-emerald-400 rounded-full mr-2"></div>
+            付費完成
+          </div>
+          <div className="flex items-center">
+            <div className="w-2 h-2 bg-luxury-gold rounded-full mr-2"></div>
+            資料完善
+          </div>
+          <div className="flex items-center">
+            <div className="w-2 h-2 bg-luxury-rose rounded-full mr-2"></div>
+            面試預約
+          </div>
+        </div>
       </div>
     )
   }
@@ -285,13 +334,13 @@ export const InterviewBooking: React.FC<InterviewBookingProps> = ({
                     {formatDate(slot.date)}
                   </div>
                   <div className="text-secondary-600">
-                    時間：{slot.time}
+                    時間：{slot.startTime} - {slot.endTime}
                   </div>
                   <div className="text-secondary-600">
                     時長：{slot.duration} 分鐘
                   </div>
                   <div className="text-secondary-600">
-                    方式：{getTypeDisplayName(slot.type)}
+                    方式：{getTypeDisplayName(slot.interviewType)}
                   </div>
                   <div className="text-sm text-secondary-500">
                     面試官：{slot.interviewerName}
@@ -310,8 +359,8 @@ export const InterviewBooking: React.FC<InterviewBookingProps> = ({
             <h4 className="font-semibold text-secondary-800 mb-2">確認預約資訊</h4>
             <div className="text-sm text-secondary-600 space-y-1">
               <div>日期：{formatDate(selectedSlot.date)}</div>
-              <div>時間：{selectedSlot.time}</div>
-              <div>方式：{getTypeDisplayName(selectedSlot.type)}</div>
+              <div>時間：{selectedSlot.startTime} - {selectedSlot.endTime}</div>
+              <div>方式：{getTypeDisplayName(selectedSlot.interviewType)}</div>
               <div>面試官：{selectedSlot.interviewerName}</div>
             </div>
           </div>

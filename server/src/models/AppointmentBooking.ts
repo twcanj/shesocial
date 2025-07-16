@@ -5,7 +5,7 @@ import { AppointmentBooking, AppointmentStatus, AppointmentType } from '../types
 
 export class AppointmentBookingModel {
   private db: any
-  
+
   constructor(db: any) {
     this.db = db
   }
@@ -51,11 +51,11 @@ export class AppointmentBookingModel {
   // 獲取用戶的預約
   async getByUser(userId: string, status?: AppointmentStatus[]): Promise<AppointmentBooking[]> {
     const query: any = { userId }
-    
+
     if (status && status.length > 0) {
       query.status = { $in: status }
     }
-    
+
     return new Promise((resolve, reject) => {
       this.db.appointment_bookings.find(query)
         .sort({ scheduledDate: -1, scheduledTime: -1 })
@@ -72,11 +72,11 @@ export class AppointmentBookingModel {
   // 獲取訪客預約（通過email）
   async getByGuestEmail(email: string, status?: AppointmentStatus[]): Promise<AppointmentBooking[]> {
     const query: any = { 'guestInfo.email': email }
-    
+
     if (status && status.length > 0) {
       query.status = { $in: status }
     }
-    
+
     return new Promise((resolve, reject) => {
       this.db.appointment_bookings.find(query)
         .sort({ scheduledDate: -1, scheduledTime: -1 })
@@ -93,11 +93,11 @@ export class AppointmentBookingModel {
   // 獲取時段的所有預約
   async getBySlot(slotId: string, status?: AppointmentStatus[]): Promise<AppointmentBooking[]> {
     const query: any = { slotId }
-    
+
     if (status && status.length > 0) {
       query.status = { $in: status }
     }
-    
+
     return new Promise((resolve, reject) => {
       this.db.appointment_bookings.find(query)
         .sort({ bookedAt: 1 })
@@ -123,9 +123,9 @@ export class AppointmentBookingModel {
     if (!userId && !guestEmail) {
       return false
     }
-    
+
     const endTime = this.calculateEndTime(scheduledTime, duration)
-    
+
     const query: any = {
       scheduledDate,
       status: { $in: ['booked', 'confirmed'] },
@@ -133,7 +133,7 @@ export class AppointmentBookingModel {
         {
           $and: [
             { scheduledTime: { $lt: endTime } },
-            { 
+            {
               $expr: {
                 $lt: [
                   { $dateFromString: { dateString: { $concat: ['1970-01-01T', '$scheduledTime', ':00Z'] } } },
@@ -145,22 +145,22 @@ export class AppointmentBookingModel {
         }
       ]
     }
-    
+
     // 添加用戶或訪客條件
     if (userId) {
       query.$and = query.$and || []
       query.$and.push({ userId })
     }
-    
+
     if (guestEmail) {
       query.$and = query.$and || []
       query.$and.push({ 'guestInfo.email': guestEmail })
     }
-    
+
     if (excludeBookingId) {
       query._id = { $ne: excludeBookingId }
     }
-    
+
     return new Promise((resolve, reject) => {
       this.db.appointment_bookings.findOne(query, (err: any, doc: AppointmentBooking) => {
         if (err) {
@@ -174,7 +174,7 @@ export class AppointmentBookingModel {
 
   // 更新預約狀態
   async updateStatus(
-    bookingId: string, 
+    bookingId: string,
     status: AppointmentStatus,
     additionalUpdates?: Partial<AppointmentBooking>
   ): Promise<AppointmentBooking | null> {
@@ -183,21 +183,21 @@ export class AppointmentBookingModel {
       updatedAt: new Date(),
       ...additionalUpdates
     }
-    
+
     // 根據狀態設置特定時間戳
     switch (status) {
-      case 'confirmed':
-        updateData.confirmedAt = new Date()
-        break
-      case 'completed':
-        updateData.completed = true
-        updateData.completedAt = new Date()
-        break
-      case 'cancelled':
-        updateData.cancelledAt = new Date()
-        break
+    case 'confirmed':
+      updateData.confirmedAt = new Date()
+      break
+    case 'completed':
+      updateData.completed = true
+      updateData.completedAt = new Date()
+      break
+    case 'cancelled':
+      updateData.cancelledAt = new Date()
+      break
     }
-    
+
     return new Promise((resolve, reject) => {
       this.db.appointment_bookings.update(
         { _id: bookingId },
@@ -208,12 +208,12 @@ export class AppointmentBookingModel {
             reject(new Error(`更新預約狀態失敗: ${err.message}`))
             return
           }
-          
+
           if (numReplaced === 0) {
             resolve(null)
             return
           }
-          
+
           this.getById(bookingId).then(resolve).catch(reject)
         }
       )
@@ -226,7 +226,7 @@ export class AppointmentBookingModel {
       ...updates,
       updatedAt: new Date()
     }
-    
+
     return new Promise((resolve, reject) => {
       this.db.appointment_bookings.update(
         { _id: bookingId },
@@ -237,12 +237,12 @@ export class AppointmentBookingModel {
             reject(new Error(`更新預約失敗: ${err.message}`))
             return
           }
-          
+
           if (numReplaced === 0) {
             resolve(null)
             return
           }
-          
+
           this.getById(bookingId).then(resolve).catch(reject)
         }
       )
@@ -266,11 +266,11 @@ export class AppointmentBookingModel {
       cancellationReason: reason,
       updatedAt: new Date()
     }
-    
+
     return new Promise((resolve, reject) => {
       this.db.appointment_bookings.update(
         { _id: bookingId },
-        { 
+        {
           $set: updateData,
           $inc: { rescheduleCount: 1 }
         },
@@ -280,12 +280,12 @@ export class AppointmentBookingModel {
             reject(new Error(`重新安排預約失敗: ${err.message}`))
             return
           }
-          
+
           if (numReplaced === 0) {
             resolve(null)
             return
           }
-          
+
           this.getById(bookingId).then(resolve).catch(reject)
         }
       )
@@ -307,27 +307,27 @@ export class AppointmentBookingModel {
     type?: AppointmentType
   ): Promise<any> {
     const query: any = {}
-    
+
     if (startDate) {
       query.scheduledDate = { $gte: startDate }
     }
-    
+
     if (endDate) {
       query.scheduledDate = query.scheduledDate || {}
       query.scheduledDate.$lte = endDate
     }
-    
+
     if (type) {
       query.type = type
     }
-    
+
     return new Promise((resolve, reject) => {
       this.db.appointment_bookings.find(query, (err: any, docs: AppointmentBooking[]) => {
         if (err) {
           reject(new Error(`獲取統計數據失敗: ${err.message}`))
           return
         }
-        
+
         const stats = {
           total: docs.length,
           byStatus: {
@@ -341,15 +341,15 @@ export class AppointmentBookingModel {
             consultation: docs.filter(b => b.type === 'consultation').length,
             member_interview: docs.filter(b => b.type === 'member_interview').length
           },
-          completionRate: docs.length > 0 ? 
+          completionRate: docs.length > 0 ?
             docs.filter(b => b.status === 'completed').length / docs.length : 0,
-          noShowRate: docs.length > 0 ? 
+          noShowRate: docs.length > 0 ?
             docs.filter(b => b.status === 'no_show').length / docs.length : 0,
           averageRating: this.calculateAverageRating(docs),
-          rescheduleRate: docs.length > 0 ? 
+          rescheduleRate: docs.length > 0 ?
             docs.filter(b => b.rescheduleCount > 0).length / docs.length : 0
         }
-        
+
         resolve(stats)
       })
     })
@@ -358,9 +358,9 @@ export class AppointmentBookingModel {
   // 獲取今日預約
   async getTodaysBookings(): Promise<AppointmentBooking[]> {
     const today = new Date().toISOString().split('T')[0]
-    
+
     return new Promise((resolve, reject) => {
-      this.db.appointment_bookings.find({ 
+      this.db.appointment_bookings.find({
         scheduledDate: today,
         status: { $in: ['booked', 'confirmed'] }
       })
@@ -380,7 +380,7 @@ export class AppointmentBookingModel {
     const now = new Date()
     const reminderTime = new Date(now.getTime() + (hoursBeforeAppointment * 60 * 60 * 1000))
     const reminderDate = reminderTime.toISOString().split('T')[0]
-    
+
     return new Promise((resolve, reject) => {
       this.db.appointment_bookings.find({
         scheduledDate: reminderDate,
@@ -405,7 +405,7 @@ export class AppointmentBookingModel {
     const endMinutes = startMinutes + duration
     const endHours = Math.floor(endMinutes / 60)
     const endMins = endMinutes % 60
-    
+
     return `${endHours.toString().padStart(2, '0')}:${endMins.toString().padStart(2, '0')}`
   }
 
@@ -413,7 +413,7 @@ export class AppointmentBookingModel {
   private calculateAverageRating(bookings: AppointmentBooking[]): number {
     const ratingsBookings = bookings.filter(b => b.rating && b.rating > 0)
     if (ratingsBookings.length === 0) return 0
-    
+
     const totalRating = ratingsBookings.reduce((sum, b) => sum + (b.rating || 0), 0)
     return totalRating / ratingsBookings.length
   }

@@ -111,7 +111,7 @@ export class AuthController {
         // Update permissions based on current status
         const updatedUser = { ...result.data }
         updatedUser.membership.permissions = AuthController.updatePermissions(updatedUser)
-        
+
         // Update user with correct permissions
         await this.userModel.update(updatedUser._id!, {
           membership: {
@@ -248,7 +248,7 @@ export class AuthController {
 
       // Verify refresh token
       const decoded = verifyRefreshToken(refreshToken)
-      
+
       // Get user data
       const userResult = await this.userModel.findById(decoded.userId)
       if (!userResult.success || !userResult.data) {
@@ -287,7 +287,7 @@ export class AuthController {
     try {
       // In a production app, you might want to blacklist the token
       // For now, we'll just return success since JWT is stateless
-      
+
       res.json({
         success: true,
         message: '登出成功',
@@ -436,52 +436,52 @@ export class AuthController {
       bookInterview: false     // All members when payment completed
     }
   }
-  
+
   // Method to update permissions based on membership status
   public static updatePermissions(user: UserProfile): UserProfile['membership']['permissions'] {
     const { type, status } = user.membership
-    
+
     // Base permissions (all false initially)
-    let permissions: UserProfile['membership']['permissions'] = {
+    const permissions: UserProfile['membership']['permissions'] = {
       viewParticipants: false,
       priorityBooking: false,
       uploadMedia: false,
       bookInterview: false
     }
-    
+
     // Enable permissions based on status progression
     switch (status) {
-      case 'active':
-        // Full permissions based on membership type
-        permissions.uploadMedia = true
-        permissions.viewParticipants = type === 'vvip'
-        permissions.priorityBooking = ['vip', 'vvip'].includes(type)
-        permissions.bookInterview = true
-        break
-        
-      case 'interview_completed':
-        permissions.uploadMedia = true
-        permissions.bookInterview = true
-        break
-        
-      case 'paid':
-      case 'interview_scheduled':
-        permissions.bookInterview = true
-        permissions.priorityBooking = ['vip', 'vvip'].includes(type)
-        break
-        
-      case 'profile_completed':
-      case 'pending_payment':
-        // Minimal permissions, can book interview after payment
-        break
-        
-      case 'profile_incomplete':
-      case 'suspended':
-      default:
-        // No permissions
-        break
+    case 'active':
+      // Full permissions based on membership type
+      permissions.uploadMedia = true
+      permissions.viewParticipants = type === 'vvip'
+      permissions.priorityBooking = ['vip', 'vvip'].includes(type)
+      permissions.bookInterview = true
+      break
+
+    case 'interview_completed':
+      permissions.uploadMedia = true
+      permissions.bookInterview = true
+      break
+
+    case 'paid':
+    case 'interview_scheduled':
+      permissions.bookInterview = true
+      permissions.priorityBooking = ['vip', 'vvip'].includes(type)
+      break
+
+    case 'profile_completed':
+    case 'pending_payment':
+      // Minimal permissions, can book interview after payment
+      break
+
+    case 'profile_incomplete':
+    case 'suspended':
+    default:
+      // No permissions
+      break
     }
-    
+
     return permissions
   }
 }

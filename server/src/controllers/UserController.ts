@@ -17,7 +17,7 @@ export class UserController {
       const limit = parseInt(req.query.limit as string) || 10
 
       const result = await this.userModel.findAll(page, limit)
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -37,7 +37,7 @@ export class UserController {
     try {
       const { id } = req.params
       const result = await this.userModel.findById(id)
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -57,7 +57,7 @@ export class UserController {
     try {
       const { email } = req.params
       const result = await this.userModel.findByEmail(email)
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -76,7 +76,7 @@ export class UserController {
   async createUser(req: Request, res: Response): Promise<void> {
     try {
       const userData = req.body
-      
+
       // Basic validation
       if (!userData.email || !userData.profile?.name) {
         res.status(400).json({
@@ -88,7 +88,7 @@ export class UserController {
       }
 
       const result = await this.userModel.create(userData)
-      
+
       if (result.success) {
         res.status(201).json(result)
       } else {
@@ -110,7 +110,7 @@ export class UserController {
       const updateData = req.body
 
       const result = await this.userModel.update(id, updateData)
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -130,7 +130,7 @@ export class UserController {
     try {
       const { id } = req.params
       const result = await this.userModel.delete(id)
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -153,7 +153,7 @@ export class UserController {
       const limit = parseInt(req.query.limit as string) || 10
 
       const result = await this.userModel.search(filters, page, limit)
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -175,7 +175,7 @@ export class UserController {
       const membershipData = req.body
 
       const result = await this.userModel.updateMembership(id, membershipData)
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -194,7 +194,7 @@ export class UserController {
   async getUserCount(req: Request, res: Response): Promise<void> {
     try {
       const result = await this.userModel.count()
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -213,7 +213,7 @@ export class UserController {
   async getModifiedUsers(req: Request, res: Response): Promise<void> {
     try {
       const timestamp = parseInt(req.params.timestamp)
-      
+
       if (isNaN(timestamp)) {
         res.status(400).json({
           success: false,
@@ -224,7 +224,7 @@ export class UserController {
       }
 
       const result = await this.userModel.getModifiedSince(timestamp)
-      
+
       if (result.success) {
         res.json(result)
       } else {

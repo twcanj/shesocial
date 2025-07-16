@@ -104,9 +104,7 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       accessToken: null,
       refreshToken: null,
-      get token() {
-        return get().accessToken
-      },
+      token: null, // Will be set to accessToken value
       isAuthenticated: false,
       isLoading: false,
 
@@ -130,6 +128,7 @@ export const useAuthStore = create<AuthState>()(
               user: result.data.user,
               accessToken: result.data.accessToken,
               refreshToken: result.data.refreshToken,
+              token: result.data.accessToken,
               isAuthenticated: true,
               isLoading: false,
             })
@@ -165,18 +164,17 @@ export const useAuthStore = create<AuthState>()(
           const result = await response.json()
 
           if (result.success && result.data) {
-            console.log('Setting auth state after registration:', result.data) // Debug log
             set({
               user: result.data.user,
               accessToken: result.data.accessToken,
               refreshToken: result.data.refreshToken,
+              token: result.data.accessToken,
               isAuthenticated: true,
               isLoading: false,
             })
             
             return result
           } else {
-            console.log('Registration failed:', result) // Debug log
             set({ isLoading: false })
             return result
           }
@@ -209,6 +207,7 @@ export const useAuthStore = create<AuthState>()(
           user: null,
           accessToken: null,
           refreshToken: null,
+          token: null,
           isAuthenticated: false,
           isLoading: false,
         })
@@ -236,6 +235,7 @@ export const useAuthStore = create<AuthState>()(
           if (result.success && result.data) {
             set({
               accessToken: result.data.accessToken,
+              token: result.data.accessToken,
             })
             return true
           } else {
@@ -339,18 +339,31 @@ export const useAuthStore = create<AuthState>()(
         user: state.user,
         accessToken: state.accessToken,
         refreshToken: state.refreshToken,
+        token: state.token,
         isAuthenticated: state.isAuthenticated,
       }),
+      onRehydrateStorage: () => (state) => {
+        // Ensure token is synced with accessToken after rehydration
+        if (state && state.accessToken) {
+          state.token = state.accessToken
+        }
+      },
     }
   )
 )
 
 // Auto-refresh token on store initialization
 if (typeof window !== 'undefined') {
-  const store = useAuthStore.getState()
-  if (store.refreshToken && store.isAuthenticated) {
-    store.getCurrentUser()
+  // Wait for store to be fully hydrated before checking auth state
+  const checkAuthState = () => {
+    const store = useAuthStore.getState()
+    if (store.refreshToken && store.isAuthenticated) {
+      store.getCurrentUser()
+    }
   }
+  
+  // Check after a short delay to ensure hydration is complete
+  setTimeout(checkAuthState, 100)
 }
 
 export default useAuthStore

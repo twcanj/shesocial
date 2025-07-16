@@ -30,10 +30,10 @@ class NeDBSetup {
   private constructor(dbPath?: string) {
     // Use absolute path relative to project root
     this.dbPath = dbPath || path.join(__dirname, '../../data')
-    
+
     // Ensure data directory exists
     this.ensureDataDirectory()
-    
+
     this.db = this.initializeDatabases()
   }
 
@@ -55,59 +55,59 @@ class NeDBSetup {
     // Use persistent file-based databases for production readiness
     // This enables future R2 storage integration
     const databases = {
-      users: new Datastore<UserProfile>({ 
+      users: new Datastore<UserProfile>({
         filename: path.join(this.dbPath, 'users.db'),
         autoload: true,
         timestampData: true
       }),
-      events: new Datastore<EventData>({ 
+      events: new Datastore<EventData>({
         filename: path.join(this.dbPath, 'events.db'),
         autoload: true,
         timestampData: true
       }),
-      bookings: new Datastore<BookingData>({ 
+      bookings: new Datastore<BookingData>({
         filename: path.join(this.dbPath, 'bookings.db'),
         autoload: true,
         timestampData: true
       }),
-      syncQueue: new Datastore<SyncQueueItem>({ 
+      syncQueue: new Datastore<SyncQueueItem>({
         filename: path.join(this.dbPath, 'sync-queue.db'),
         autoload: true,
         timestampData: true
       }),
       // New appointment system collections
-      appointments_slots: new Datastore<any>({ 
+      appointments_slots: new Datastore<any>({
         filename: path.join(this.dbPath, 'appointments-slots.db'),
         autoload: true,
         timestampData: true
       }),
-      appointment_bookings: new Datastore<any>({ 
+      appointment_bookings: new Datastore<any>({
         filename: path.join(this.dbPath, 'appointment-bookings.db'),
         autoload: true,
         timestampData: true
       }),
-      interviewers: new Datastore<any>({ 
+      interviewers: new Datastore<any>({
         filename: path.join(this.dbPath, 'interviewers.db'),
         autoload: true,
         timestampData: true
       }),
-      availability_overrides: new Datastore<any>({ 
+      availability_overrides: new Datastore<any>({
         filename: path.join(this.dbPath, 'availability-overrides.db'),
         autoload: true,
         timestampData: true
       }),
-      appointment_notifications: new Datastore<any>({ 
+      appointment_notifications: new Datastore<any>({
         filename: path.join(this.dbPath, 'appointment-notifications.db'),
         autoload: true,
         timestampData: true
       }),
       // Health monitoring collections
-      startup_records: new Datastore<StartupRecord>({ 
+      startup_records: new Datastore<StartupRecord>({
         filename: path.join(this.dbPath, 'startup-records.db'),
         autoload: true,
         timestampData: true
       }),
-      health_logs: new Datastore<HealthLog>({ 
+      health_logs: new Datastore<HealthLog>({
         filename: path.join(this.dbPath, 'health-logs.db'),
         autoload: true,
         timestampData: true
@@ -116,7 +116,7 @@ class NeDBSetup {
 
     // Set up indexes for better performance (with error handling)
     this.setupIndexes(databases)
-    
+
     console.log(`💾 NeDB databases initialized with persistent storage at: ${this.dbPath}`)
     return databases
   }
@@ -211,20 +211,20 @@ class NeDBSetup {
 
   public async compactDatabases(): Promise<void> {
     const collections = Object.values(this.db)
-    const compactPromises = collections.map(db => 
+    const compactPromises = collections.map(db =>
       new Promise<void>((resolve, reject) => {
         db.persistence.compactDatafile()
         db.once('compaction.done', () => resolve())
         db.once('error', reject)
       })
     )
-    
+
     await Promise.all(compactPromises)
   }
 
   public async getStats(): Promise<Record<string, number>> {
     const stats: Record<string, number> = {}
-    
+
     for (const [name, db] of Object.entries(this.db)) {
       stats[name] = await new Promise<number>((resolve, reject) => {
         db.count({}, (err, count) => {
@@ -233,17 +233,17 @@ class NeDBSetup {
         })
       })
     }
-    
+
     return stats
   }
 
   public async createBackup(): Promise<string> {
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
     const backupPath = path.join(this.dbPath, 'backups', timestamp)
-    
+
     // Compact before backup
     await this.compactDatabases()
-    
+
     // TODO: Implement backup logic using fs.copyFile
     console.log(`Backup created at: ${backupPath}`)
     return backupPath
@@ -364,7 +364,7 @@ class NeDBSetup {
   }
 
   public async restoreFromR2(): Promise<void> {
-    // TODO: Implement R2 download functionality  
+    // TODO: Implement R2 download functionality
     // This will download .db files from R2 to this.dbPath
     console.log('📥 R2 restore not yet implemented - will download files to:', this.dbPath)
   }

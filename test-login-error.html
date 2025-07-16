@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Login Error Handling</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .error { color: red; background: #fee; padding: 10px; margin: 10px 0; border: 1px solid red; }
+        .success { color: green; background: #efe; padding: 10px; margin: 10px 0; border: 1px solid green; }
+        input { padding: 8px; margin: 5px; width: 300px; }
+        button { padding: 10px 20px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>Test Login Error Handling</h1>
+    
+    <div>
+        <h3>Test Case 1: Non-existent User</h3>
+        <div id="result1"></div>
+        <button onclick="testNonExistentUser()">Test Non-existent User Login</button>
+    </div>
+    
+    <div>
+        <h3>Test Case 2: Wrong Password</h3>
+        <div id="result2"></div>
+        <button onclick="testWrongPassword()">Test Wrong Password</button>
+    </div>
+    
+    <div>
+        <h3>Test Case 3: Valid Login</h3>
+        <div id="result3"></div>
+        <button onclick="testValidLogin()">Test Valid Login</button>
+    </div>
+    
+    <div>
+        <h3>Manual Test</h3>
+        <form onsubmit="manualTest(event)">
+            <input type="email" id="email" placeholder="Email" required><br>
+            <input type="password" id="password" placeholder="Password" required><br>
+            <button type="submit">Test Login</button>
+        </form>
+        <div id="manualResult"></div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:10000/api';
+        
+        async function testLogin(email, password, resultId) {
+            const resultDiv = document.getElementById(resultId);
+            resultDiv.innerHTML = 'Testing...';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password }),
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    resultDiv.innerHTML = `<div class="success">✅ Login Success: ${result.message}</div>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ Login Failed: ${result.error || result.message}</div>`;
+                }
+                
+                // Show full response for debugging
+                resultDiv.innerHTML += `<pre>Full Response: ${JSON.stringify(result, null, 2)}</pre>`;
+                
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">🌐 Network Error: ${error.message}</div>`;
+            }
+        }
+        
+        function testNonExistentUser() {
+            testLogin('nonexistent@test.com', 'wrongpassword', 'result1');
+        }
+        
+        function testWrongPassword() {
+            testLogin('admin@infinitymatch.tw', 'wrongpassword', 'result2');
+        }
+        
+        function testValidLogin() {
+            testLogin('admin@infinitymatch.tw', 'InfinityAdmin2025!', 'result3');
+        }
+        
+        function manualTest(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            testLogin(email, password, 'manualResult');
+        }
+    </script>
+</body>
+</html>

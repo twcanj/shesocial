@@ -5,7 +5,7 @@ import { Interviewer, AppointmentType, InterviewType } from '../types/appointmen
 
 export class InterviewerModel {
   private db: any
-  
+
   constructor(db: any) {
     this.db = db
   }
@@ -78,15 +78,15 @@ export class InterviewerModel {
     interviewType?: InterviewType
   ): Promise<Interviewer[]> {
     const query: any = { isActive: true }
-    
+
     if (appointmentType) {
       query.appointmentTypes = appointmentType
     }
-    
+
     if (interviewType) {
       query.interviewTypes = interviewType
     }
-    
+
     return new Promise((resolve, reject) => {
       this.db.interviewers.find(query)
         .sort({ averageRating: -1, totalAppointments: -1 })
@@ -111,20 +111,20 @@ export class InterviewerModel {
     if (!interviewer || !interviewer.isActive) {
       return false
     }
-    
+
     // 檢查基本可用性設置
     const dayOfWeek = new Date(date).toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase()
     const dayAvailability = interviewer.defaultAvailability[dayOfWeek]
-    
+
     if (!dayAvailability || !dayAvailability.enabled) {
       return false
     }
-    
+
     // 檢查時間範圍
     if (startTime < dayAvailability.startTime || endTime > dayAvailability.endTime) {
       return false
     }
-    
+
     // 檢查休息時間
     if (dayAvailability.breakTimes) {
       for (const breakTime of dayAvailability.breakTimes) {
@@ -137,7 +137,7 @@ export class InterviewerModel {
         }
       }
     }
-    
+
     return true
   }
 
@@ -145,7 +145,7 @@ export class InterviewerModel {
   async getDailyAppointmentCount(interviewerId: string, date: string): Promise<number> {
     return new Promise((resolve, reject) => {
       this.db.appointments_slots.count(
-        { 
+        {
           interviewerId,
           date,
           bookedCount: { $gt: 0 }
@@ -167,7 +167,7 @@ export class InterviewerModel {
       ...updates,
       updatedAt: new Date()
     }
-    
+
     return new Promise((resolve, reject) => {
       this.db.interviewers.update(
         { _id: interviewerId },
@@ -178,12 +178,12 @@ export class InterviewerModel {
             reject(new Error(`更新面試官失敗: ${err.message}`))
             return
           }
-          
+
           if (numReplaced === 0) {
             resolve(null)
             return
           }
-          
+
           this.getById(interviewerId).then(resolve).catch(reject)
         }
       )
@@ -201,10 +201,10 @@ export class InterviewerModel {
     if (!interviewer) {
       return null
     }
-    
+
     const newTotalAppointments = interviewer.totalAppointments + incrementAppointments
     const newCompletedAppointments = interviewer.completedAppointments + incrementCompleted
-    
+
     let newAverageRating = interviewer.averageRating
     if (newRating && newRating > 0) {
       // 計算新的平均評分
@@ -212,7 +212,7 @@ export class InterviewerModel {
       const newTotalRatings = totalRatings + newRating
       newAverageRating = newTotalRatings / newCompletedAppointments
     }
-    
+
     return this.update(interviewerId, {
       totalAppointments: newTotalAppointments,
       completedAppointments: newCompletedAppointments,
@@ -238,7 +238,7 @@ export class InterviewerModel {
       [`defaultAvailability.${dayOfWeek}`]: availability,
       updatedAt: new Date()
     }
-    
+
     return new Promise((resolve, reject) => {
       this.db.interviewers.update(
         { _id: interviewerId },
@@ -249,12 +249,12 @@ export class InterviewerModel {
             reject(new Error(`設置面試官可用性失敗: ${err.message}`))
             return
           }
-          
+
           if (numReplaced === 0) {
             resolve(null)
             return
           }
-          
+
           this.getById(interviewerId).then(resolve).catch(reject)
         }
       )
@@ -290,39 +290,39 @@ export class InterviewerModel {
     if (!interviewer) {
       throw new Error('面試官不存在')
     }
-    
+
     // 獲取該面試官的預約統計
     const query: any = { interviewerId }
-    
+
     if (startDate) {
       query.scheduledDate = { $gte: startDate }
     }
-    
+
     if (endDate) {
       query.scheduledDate = query.scheduledDate || {}
       query.scheduledDate.$lte = endDate
     }
-    
+
     return new Promise((resolve, reject) => {
       this.db.appointment_bookings.find(query, (err: any, bookings: any[]) => {
         if (err) {
           reject(new Error(`獲取面試官績效統計失敗: ${err.message}`))
           return
         }
-        
+
         const stats = {
           totalBookings: bookings.length,
           completedBookings: bookings.filter(b => b.status === 'completed').length,
           cancelledBookings: bookings.filter(b => b.status === 'cancelled').length,
           noShowBookings: bookings.filter(b => b.status === 'no_show').length,
-          completionRate: bookings.length > 0 ? 
+          completionRate: bookings.length > 0 ?
             bookings.filter(b => b.status === 'completed').length / bookings.length : 0,
           averageRating: this.calculateAverageRating(bookings),
           ratingCount: bookings.filter(b => b.rating && b.rating > 0).length,
           consultationBookings: bookings.filter(b => b.type === 'consultation').length,
           interviewBookings: bookings.filter(b => b.type === 'member_interview').length
         }
-        
+
         resolve(stats)
       })
     })
@@ -331,13 +331,13 @@ export class InterviewerModel {
   // 獲取最佳面試官（基於評分和完成率）
   async getTopPerformers(limit: number = 5): Promise<Interviewer[]> {
     return new Promise((resolve, reject) => {
-      this.db.interviewers.find({ 
+      this.db.interviewers.find({
         isActive: true,
         completedAppointments: { $gt: 0 }
       })
-        .sort({ 
-          averageRating: -1, 
-          completedAppointments: -1 
+        .sort({
+          averageRating: -1,
+          completedAppointments: -1
         })
         .limit(limit)
         .exec((err: any, docs: Interviewer[]) => {
@@ -354,7 +354,7 @@ export class InterviewerModel {
   private calculateAverageRating(bookings: any[]): number {
     const ratingsBookings = bookings.filter(b => b.rating && b.rating > 0)
     if (ratingsBookings.length === 0) return 0
-    
+
     const totalRating = ratingsBookings.reduce((sum, b) => sum + (b.rating || 0), 0)
     return totalRating / ratingsBookings.length
   }

@@ -29,16 +29,16 @@ const ADMIN_REFRESH_EXPIRES_IN = '24h'
 const adminAuth = async (req: AdminRequest, res: Response, next: NextFunction) => {
   try {
     const token = req.header('Authorization')?.replace('Bearer ', '')
-    
+
     if (!token) {
       return res.status(401).json({ error: 'Access denied. No token provided.' })
     }
 
     const decoded = jwt.verify(token, ADMIN_JWT_SECRET) as any
-    
+
     // Check if user has permission for this endpoint
     const hasPermission = await adminPermissionService.userHasPermission(decoded.adminId, req.requiredPermission)
-    
+
     if (!hasPermission) {
       return res.status(403).json({ error: 'Access denied. Insufficient permissions.' })
     }
@@ -117,7 +117,7 @@ router.post('/auth/login', async (req, res) => {
 
     // Generate tokens
     const accessToken = jwt.sign(
-      { 
+      {
         adminId: adminUser.adminId,
         username: adminUser.username,
         roleId: adminUser.roleId,
@@ -171,8 +171,8 @@ router.post('/auth/refresh', async (req, res) => {
 
     // Generate new access token
     const accessToken = jwt.sign(
-      { 
-        adminId: decoded.adminId,
+      {
+        adminId: decoded.adminId
         // Would fetch additional data from database in real implementation
       },
       ADMIN_JWT_SECRET,
@@ -197,7 +197,7 @@ router.get('/auth/profile', adminAuth, async (req: AdminRequest, res: Response) 
   try {
     const admin = req.admin!
     const permissions = await adminPermissionService.getUserPermissions(admin.adminId)
-    
+
     res.json({
       success: true,
       data: {
@@ -243,11 +243,11 @@ router.post('/permissions/atoms', requirePermission('admin:permissions'), adminA
 router.get('/roles', requirePermission('admin:audit'), adminAuth, async (req, res) => {
   try {
     const { department } = req.query
-    
-    const roles = department 
+
+    const roles = department
       ? await adminPermissionService.getRolesByDepartment(department as any)
       : await adminPermissionService.getAllRoles()
-    
+
     res.json({ success: true, data: roles })
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch roles' })
@@ -289,7 +289,7 @@ router.get('/roles/:roleId/capabilities', requirePermission('admin:audit'), admi
 router.post('/permissions/validate', requirePermission('admin:audit'), adminAuth, async (req, res) => {
   try {
     const { permissions } = req.body
-    
+
     if (!Array.isArray(permissions)) {
       return res.status(400).json({ error: 'Permissions must be an array' })
     }
@@ -333,7 +333,7 @@ router.put('/users/:adminId', requirePermission('admin:edit'), adminAuth, async 
   try {
     const { adminId } = req.params
     const updates = { ...req.body }
-    
+
     // Hash password if provided
     if (updates.password) {
       updates.passwordHash = await bcrypt.hash(updates.password, 12)
@@ -351,7 +351,7 @@ router.put('/users/:adminId', requirePermission('admin:edit'), adminAuth, async 
 router.get('/audit/logs', requirePermission('admin:audit'), adminAuth, async (req, res) => {
   try {
     const { adminId, targetType, startDate, endDate, limit } = req.query
-    
+
     const filters: any = {}
     if (adminId) filters.adminId = adminId
     if (targetType) filters.targetType = targetType
@@ -368,8 +368,8 @@ router.get('/audit/logs', requirePermission('admin:audit'), adminAuth, async (re
 
 // Health Check
 router.get('/health', (req, res) => {
-  res.json({ 
-    success: true, 
+  res.json({
+    success: true,
     message: 'Admin API is healthy',
     timestamp: new Date().toISOString(),
     service: 'admin-permission-system'

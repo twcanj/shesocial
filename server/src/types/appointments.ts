@@ -3,7 +3,7 @@
 
 export type AppointmentType = 'consultation' | 'member_interview'
 
-export type AppointmentStatus = 
+export type AppointmentStatus =
   | 'available'     // 可預約
   | 'booked'        // 已預約
   | 'confirmed'     // 已確認
@@ -26,40 +26,40 @@ export interface RecurringPattern {
 export interface AppointmentSlot {
   _id: string
   type: AppointmentType
-  
+
   // Time Management
   date: string // YYYY-MM-DD format
   startTime: string // HH:MM format
   endTime: string // HH:MM format
   duration: number // minutes
   timezone: string // 'Asia/Taipei'
-  
+
   // Interviewer/Consultant Info
   interviewerId: string
   interviewerName: string
   interviewerTitle?: string
   interviewType: InterviewType
-  
+
   // Availability
   isAvailable: boolean
   capacity: number // how many people can book this slot
   bookedCount: number
-  
+
   // Recurring Appointments
   isRecurring: boolean
   recurringPattern?: RecurringPattern
   parentSlotId?: string // for recurring appointments
-  
+
   // Location/Meeting Info
   location?: string // for in-person
   meetingUrl?: string // for video calls
   meetingId?: string // Zoom/Teams ID
   phoneNumber?: string // for phone calls
-  
+
   // Business Logic
   requiresPreApproval: boolean
   cancellationDeadlineHours: number
-  
+
   // Metadata
   notes?: string
   createdAt: Date
@@ -72,7 +72,7 @@ export interface AppointmentSlot {
 export interface AppointmentBooking {
   _id: string
   slotId: string
-  
+
   // User Information
   userId?: string // for registered users
   guestInfo?: {
@@ -81,45 +81,45 @@ export interface AppointmentBooking {
     phone: string
     preferredContact: 'email' | 'phone' | 'line'
   }
-  
+
   // Appointment Details
   type: AppointmentType
   status: AppointmentStatus
-  
+
   // Scheduling
   scheduledDate: string
   scheduledTime: string
   duration: number
   timezone: string
-  
+
   // Interview/Consultation Specific
   purpose?: string
   questions?: string[]
   membershipInterest?: string[]
-  
+
   // Meeting Details
   meetingUrl?: string
   meetingId?: string
   dialInNumber?: string
   location?: string
-  
+
   // Communication
   confirmationSent: boolean
   remindersSent: number
-  
+
   // Follow-up
   completed: boolean
   outcome?: 'approved' | 'rejected' | 'pending_review'
   interviewNotes?: string
   rating?: number // 1-5 stars
   followUpRequired: boolean
-  
+
   // Timestamps
   bookedAt: Date
   confirmedAt?: Date
   completedAt?: Date
   cancelledAt?: Date
-  
+
   // Metadata
   cancellationReason?: string
   rescheduleCount: number
@@ -132,20 +132,20 @@ export interface AppointmentBooking {
 export interface Interviewer {
   _id: string
   userId: string // linked to User account
-  
+
   // Basic Info
   name: string
   title: string
   email: string
   phone?: string
   avatar?: string
-  
+
   // Specializations
   appointmentTypes: AppointmentType[]
   interviewTypes: InterviewType[]
   languages: string[]
   specialties: string[] // e.g., ['luxury_dating', 'relationship_coaching']
-  
+
   // Availability
   isActive: boolean
   defaultAvailability: {
@@ -159,18 +159,18 @@ export interface Interviewer {
       }>
     }
   }
-  
+
   // Settings
   maxDailyAppointments: number
   bufferTimeMinutes: number // time between appointments
   advanceBookingDays: number
   autoApproval: boolean
-  
+
   // Performance
   totalAppointments: number
   completedAppointments: number
   averageRating: number
-  
+
   // Metadata
   createdAt: Date
   updatedAt: Date

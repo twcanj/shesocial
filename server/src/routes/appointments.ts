@@ -34,66 +34,66 @@ export const createAppointmentRoutes = (db: any) => {
   const appointmentController = new AppointmentController(db)
 
   // ===== APPOINTMENT SLOTS ROUTES =====
-  
+
   // 創建預約時段 (需要 VIP+ 權限)
-  router.post('/slots', 
+  router.post('/slots',
     authMiddleware,
     validateMembership(['vip', 'vvip']),
     appointmentController.createSlot
   )
 
   // 獲取可用時段 (公開或需要登入)
-  router.get('/slots/available', 
+  router.get('/slots/available',
     optionalAuthMiddleware,
     appointmentController.getAvailableSlots
   )
 
   // 獲取時段詳情
-  router.get('/slots/:slotId', 
+  router.get('/slots/:slotId',
     optionalAuthMiddleware,
     appointmentController.getSlotById
   )
 
   // 更新時段 (需要 VIP+ 權限)
-  router.put('/slots/:slotId', 
+  router.put('/slots/:slotId',
     authMiddleware,
     validateMembership(['vip', 'vvip']),
     appointmentController.updateSlot
   )
 
   // 刪除時段 (需要 VIP+ 權限)
-  router.delete('/slots/:slotId', 
+  router.delete('/slots/:slotId',
     authMiddleware,
     validateMembership(['vip', 'vvip']),
     appointmentController.deleteSlot
   )
 
   // ===== APPOINTMENT BOOKING ROUTES =====
-  
+
   // 創建預約 (訪客也可以預約資詢)
-  router.post('/bookings', 
+  router.post('/bookings',
     optionalAuthMiddleware,
     appointmentController.createBooking
   )
 
   // 獲取用戶預約
-  router.get('/bookings', 
+  router.get('/bookings',
     optionalAuthMiddleware,
     appointmentController.getUserBookings
   )
 
   // 獲取預約詳情
-  router.get('/bookings/:bookingId', 
+  router.get('/bookings/:bookingId',
     optionalAuthMiddleware,
     async (req, res, next) => {
       // 檢查用戶是否有權限查看此預約
       const bookingId = req.params.bookingId
       const user = (req as any).user
-      
+
       try {
         const appointmentController = new AppointmentController(db)
         const booking = await (appointmentController as any).bookingModel.getById(bookingId)
-        
+
         if (!booking) {
           return res.status(404).json({ error: '預約不存在' })
         }
@@ -121,24 +121,24 @@ export const createAppointmentRoutes = (db: any) => {
   )
 
   // 更新預約狀態 (需要 VIP+ 權限)
-  router.put('/bookings/:bookingId/status', 
+  router.put('/bookings/:bookingId/status',
     authMiddleware,
     validateMembership(['vip', 'vvip']),
     appointmentController.updateBookingStatus
   )
 
   // 重新安排預約 (預約者本人或 VIP+)
-  router.put('/bookings/:bookingId/reschedule', 
+  router.put('/bookings/:bookingId/reschedule',
     optionalAuthMiddleware,
     async (req, res, next) => {
       // 檢查重新安排權限
       const bookingId = req.params.bookingId
       const user = (req as any).user
-      
+
       try {
         const appointmentController = new AppointmentController(db)
         const booking = await (appointmentController as any).bookingModel.getById(bookingId)
-        
+
         if (!booking) {
           return res.status(404).json({ error: '預約不存在' })
         }
@@ -160,17 +160,17 @@ export const createAppointmentRoutes = (db: any) => {
   )
 
   // 取消預約 (預約者本人或 VIP+)
-  router.put('/bookings/:bookingId/cancel', 
+  router.put('/bookings/:bookingId/cancel',
     optionalAuthMiddleware,
     async (req, res, next) => {
       // 檢查取消權限
       const bookingId = req.params.bookingId
       const user = (req as any).user
-      
+
       try {
         const appointmentController = new AppointmentController(db)
         const booking = await (appointmentController as any).bookingModel.getById(bookingId)
-        
+
         if (!booking) {
           return res.status(404).json({ error: '預約不存在' })
         }
@@ -192,16 +192,16 @@ export const createAppointmentRoutes = (db: any) => {
   )
 
   // ===== INTERVIEWER ROUTES =====
-  
+
   // 創建面試官 (需要 VVIP 權限)
-  router.post('/interviewers', 
+  router.post('/interviewers',
     authMiddleware,
     validateMembership(['vvip']),
     async (req, res) => {
       try {
         const appointmentController = new AppointmentController(db)
         const interviewerData = req.body
-        
+
         // 驗證必要字段
         if (!interviewerData.name || !interviewerData.email || !interviewerData.appointmentTypes) {
           return res.status(400).json({ error: '缺少必要字段' })
@@ -224,13 +224,13 @@ export const createAppointmentRoutes = (db: any) => {
   )
 
   // 獲取活躍面試官列表
-  router.get('/interviewers', 
+  router.get('/interviewers',
     optionalAuthMiddleware,
     async (req, res) => {
       try {
         const appointmentController = new AppointmentController(db)
         const { appointmentType, interviewType } = req.query
-        
+
         const interviewers = await (appointmentController as any).interviewerModel.getActiveInterviewers(
           appointmentType as any,
           interviewType as any
@@ -248,13 +248,13 @@ export const createAppointmentRoutes = (db: any) => {
   )
 
   // 獲取面試官詳情
-  router.get('/interviewers/:interviewerId', 
+  router.get('/interviewers/:interviewerId',
     optionalAuthMiddleware,
     async (req, res) => {
       try {
         const appointmentController = new AppointmentController(db)
         const { interviewerId } = req.params
-        
+
         const interviewer = await (appointmentController as any).interviewerModel.getById(interviewerId)
         if (!interviewer) {
           return res.status(404).json({ error: '面試官不存在' })
@@ -275,14 +275,14 @@ export const createAppointmentRoutes = (db: any) => {
   )
 
   // 更新面試官資料 (需要 VVIP 權限或本人)
-  router.put('/interviewers/:interviewerId', 
+  router.put('/interviewers/:interviewerId',
     authMiddleware,
     async (req, res) => {
       try {
         const appointmentController = new AppointmentController(db)
         const { interviewerId } = req.params
         const user = (req as any).user
-        
+
         const interviewer = await (appointmentController as any).interviewerModel.getById(interviewerId)
         if (!interviewer) {
           return res.status(404).json({ error: '面試官不存在' })
@@ -297,7 +297,7 @@ export const createAppointmentRoutes = (db: any) => {
         }
 
         const updatedInterviewer = await (appointmentController as any).interviewerModel.update(
-          interviewerId, 
+          interviewerId,
           req.body
         )
 
@@ -313,7 +313,7 @@ export const createAppointmentRoutes = (db: any) => {
   )
 
   // 設置面試官可用性
-  router.put('/interviewers/:interviewerId/availability', 
+  router.put('/interviewers/:interviewerId/availability',
     authMiddleware,
     async (req, res) => {
       try {
@@ -321,7 +321,7 @@ export const createAppointmentRoutes = (db: any) => {
         const { interviewerId } = req.params
         const { dayOfWeek, availability } = req.body
         const user = (req as any).user
-        
+
         const interviewer = await (appointmentController as any).interviewerModel.getById(interviewerId)
         if (!interviewer) {
           return res.status(404).json({ error: '面試官不存在' })
@@ -336,7 +336,7 @@ export const createAppointmentRoutes = (db: any) => {
         }
 
         const updatedInterviewer = await (appointmentController as any).interviewerModel.setAvailability(
-          interviewerId, 
+          interviewerId,
           dayOfWeek,
           availability
         )
@@ -353,36 +353,36 @@ export const createAppointmentRoutes = (db: any) => {
   )
 
   // ===== STATISTICS AND ADMIN ROUTES =====
-  
+
   // 獲取統計數據 (需要 VIP+ 權限)
-  router.get('/stats', 
+  router.get('/stats',
     authMiddleware,
     validateMembership(['vip', 'vvip']),
     appointmentController.getStats
   )
 
   // 獲取今日預約 (需要 VIP+ 權限)
-  router.get('/today', 
+  router.get('/today',
     authMiddleware,
     validateMembership(['vip', 'vvip']),
     appointmentController.getTodaysBookings
   )
 
   // 獲取需要提醒的預約 (系統內部使用)
-  router.get('/reminders', 
+  router.get('/reminders',
     authMiddleware,
     validateMembership(['vvip']),
     async (req, res) => {
       try {
         const appointmentController = new AppointmentController(db)
         const { hours = 24 } = req.query
-        
+
         const bookings = await (appointmentController as any).bookingModel.getBookingsNeedingReminder(
           parseInt(hours as string)
         )
 
         const bookingsWithDetails = await Promise.all(
-          bookings.map((booking: any) => 
+          bookings.map((booking: any) =>
             (appointmentController as any).getBookingWithDetails(booking._id)
           )
         )
@@ -399,14 +399,14 @@ export const createAppointmentRoutes = (db: any) => {
   )
 
   // 獲取最佳面試官 (需要 VIP+ 權限)
-  router.get('/interviewers/top-performers', 
+  router.get('/interviewers/top-performers',
     authMiddleware,
     validateMembership(['vip', 'vvip']),
     async (req, res) => {
       try {
         const appointmentController = new AppointmentController(db)
         const { limit = 5 } = req.query
-        
+
         const topPerformers = await (appointmentController as any).interviewerModel.getTopPerformers(
           parseInt(limit as string)
         )

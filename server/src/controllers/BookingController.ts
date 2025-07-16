@@ -16,7 +16,7 @@ export class BookingController {
       const limit = parseInt(req.query.limit as string) || 10
 
       const result = await this.bookingModel.findAll(page, limit)
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -36,7 +36,7 @@ export class BookingController {
     try {
       const { id } = req.params
       const result = await this.bookingModel.findById(id)
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -55,7 +55,7 @@ export class BookingController {
   async createBooking(req: Request, res: Response): Promise<void> {
     try {
       const bookingData = req.body
-      
+
       // Basic validation
       if (!bookingData.userId || !bookingData.eventId) {
         res.status(400).json({
@@ -68,7 +68,7 @@ export class BookingController {
 
       // Check if booking already exists
       const existingBooking = await this.bookingModel.findByUserAndEvent(
-        bookingData.userId, 
+        bookingData.userId,
         bookingData.eventId
       )
 
@@ -82,7 +82,7 @@ export class BookingController {
       }
 
       const result = await this.bookingModel.create(bookingData)
-      
+
       if (result.success) {
         res.status(201).json(result)
       } else {
@@ -104,7 +104,7 @@ export class BookingController {
       const updateData = req.body
 
       const result = await this.bookingModel.update(id, updateData)
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -124,7 +124,7 @@ export class BookingController {
     try {
       const { id } = req.params
       const result = await this.bookingModel.delete(id)
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -147,7 +147,7 @@ export class BookingController {
       const limit = parseInt(req.query.limit as string) || 10
 
       const result = await this.bookingModel.findByUserId(userId, page, limit)
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -170,7 +170,7 @@ export class BookingController {
       const limit = parseInt(req.query.limit as string) || 10
 
       const result = await this.bookingModel.findByEventId(eventId, page, limit)
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -191,7 +191,7 @@ export class BookingController {
       const { userId, eventId } = req.params
 
       const result = await this.bookingModel.findByUserAndEvent(userId, eventId)
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -222,7 +222,7 @@ export class BookingController {
       }
 
       const result = await this.bookingModel.updateStatus(id, status)
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -253,7 +253,7 @@ export class BookingController {
       }
 
       const result = await this.bookingModel.updatePaymentStatus(id, paymentStatus, paymentMethod)
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -274,7 +274,7 @@ export class BookingController {
       const { id } = req.params
 
       const result = await this.bookingModel.confirm(id)
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -295,7 +295,7 @@ export class BookingController {
       const { id } = req.params
 
       const result = await this.bookingModel.cancel(id)
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -316,7 +316,7 @@ export class BookingController {
       const { id } = req.params
 
       const result = await this.bookingModel.complete(id)
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -347,7 +347,7 @@ export class BookingController {
       }
 
       const result = await this.bookingModel.markPaid(id, paymentMethod)
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -370,7 +370,7 @@ export class BookingController {
       const limit = parseInt(req.query.limit as string) || 10
 
       const result = await this.bookingModel.findByStatus(status as any, page, limit)
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -393,7 +393,7 @@ export class BookingController {
       const limit = parseInt(req.query.limit as string) || 10
 
       const result = await this.bookingModel.findByPaymentStatus(paymentStatus as any, page, limit)
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -424,7 +424,7 @@ export class BookingController {
       }
 
       const result = await this.bookingModel.applyVoucher(id, voucherData)
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -443,7 +443,7 @@ export class BookingController {
   async getBookingCount(req: Request, res: Response): Promise<void> {
     try {
       const result = await this.bookingModel.count()
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -464,7 +464,7 @@ export class BookingController {
       const { status } = req.params
 
       const result = await this.bookingModel.countByStatus(status as any)
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -483,7 +483,7 @@ export class BookingController {
   async getRevenueStats(req: Request, res: Response): Promise<void> {
     try {
       const result = await this.bookingModel.getRevenueStats()
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -502,7 +502,7 @@ export class BookingController {
   async getModifiedBookings(req: Request, res: Response): Promise<void> {
     try {
       const timestamp = parseInt(req.params.timestamp)
-      
+
       if (isNaN(timestamp)) {
         res.status(400).json({
           success: false,
@@ -513,7 +513,7 @@ export class BookingController {
       }
 
       const result = await this.bookingModel.getModifiedSince(timestamp)
-      
+
       if (result.success) {
         res.json(result)
       } else {

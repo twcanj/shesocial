@@ -81,7 +81,7 @@ router.post('/users/complete-registration', authenticateToken, async (req: Authe
     }
 
     const result = await userModel.update(userId, profileUpdate)
-    
+
     if (result.success) {
       // Create sales lead record for tracking
       const leadData: Partial<SalesLead> = {
@@ -99,9 +99,9 @@ router.post('/users/complete-registration', authenticateToken, async (req: Authe
           `Expectations: ${salesLead?.expectations || 'none'}`,
           `Lead source: ${salesLead?.leadSource || 'website'}`
         ],
-        estimatedValue: salesLead?.membershipInterest === 'vvip' ? 2500 : 
-                       salesLead?.membershipInterest === 'vip' ? 1300 :
-                       salesLead?.membershipInterest === 'registered' ? 0 : 0,
+        estimatedValue: salesLead?.membershipInterest === 'vvip' ? 2500 :
+          salesLead?.membershipInterest === 'vip' ? 1300 :
+            salesLead?.membershipInterest === 'registered' ? 0 : 0,
         conversionProbability: 75, // High since they completed profile
         contactHistory: [],
         createdAt: new Date(),
@@ -135,7 +135,7 @@ router.get('/users/recommendation', authenticateToken, async (req: Authenticated
   try {
     const userId = req.userId!
     const userResult = await userModel.findById(userId)
-    
+
     if (!userResult.success || !userResult.data) {
       res.status(404).json({
         success: false,
@@ -146,10 +146,10 @@ router.get('/users/recommendation', authenticateToken, async (req: Authenticated
     }
 
     const user = userResult.data
-    
+
     // Generate recommendation based on user data
     const recommendation = generatePersonalizedRecommendation(user)
-    
+
     res.json({
       success: true,
       data: recommendation,
@@ -167,12 +167,12 @@ router.get('/users/recommendation', authenticateToken, async (req: Authenticated
 
 // Helper function to generate personalized recommendation
 function generatePersonalizedRecommendation(user: UserProfile) {
-  let score = {
+  const score = {
     registered: 0,
     vip: 0,
     vvip: 0
   }
-  
+
   const reasons: string[] = []
   const alternatives: { plan: string; reason: string }[] = []
 
@@ -201,7 +201,7 @@ function generatePersonalizedRecommendation(user: UserProfile) {
   }
 
   // Find the highest scoring plan
-  const topPlan = Object.entries(score).reduce((a, b) => 
+  const topPlan = Object.entries(score).reduce((a, b) =>
     score[a[0] as keyof typeof score] > score[b[0] as keyof typeof score] ? a : b
   )[0] as keyof typeof score
 
@@ -285,7 +285,7 @@ router.delete('/bookings/:id', authenticateToken, bookingController.deleteBookin
 router.post('/sync', async (req, res) => {
   try {
     const { collection, timestamp } = req.body
-    
+
     if (!collection || !timestamp) {
       res.status(400).json({
         success: false,
@@ -297,22 +297,22 @@ router.post('/sync', async (req, res) => {
 
     let result
     switch (collection) {
-      case 'users':
-        result = await userModel.getModifiedSince(timestamp)
-        break
-      case 'events':
-        result = await eventModel.getModifiedSince(timestamp)
-        break
-      case 'bookings':
-        result = await bookingModel.getModifiedSince(timestamp)
-        break
-      default:
-        res.status(400).json({
-          success: false,
-          error: 'Invalid collection name',
-          timestamp: Date.now()
-        })
-        return
+    case 'users':
+      result = await userModel.getModifiedSince(timestamp)
+      break
+    case 'events':
+      result = await eventModel.getModifiedSince(timestamp)
+      break
+    case 'bookings':
+      result = await bookingModel.getModifiedSince(timestamp)
+      break
+    default:
+      res.status(400).json({
+        success: false,
+        error: 'Invalid collection name',
+        timestamp: Date.now()
+      })
+      return
     }
 
     res.json(result)
@@ -329,7 +329,7 @@ router.post('/sync', async (req, res) => {
 router.post('/seed', async (req, res) => {
   try {
     await dbSetup.insertTestData()
-    
+
     res.json({
       success: true,
       message: 'Test data inserted successfully',
@@ -348,7 +348,7 @@ router.post('/seed', async (req, res) => {
 router.post('/compact', async (req, res) => {
   try {
     await dbSetup.compactDatabases()
-    
+
     res.json({
       success: true,
       message: 'Database compaction completed',
@@ -366,7 +366,7 @@ router.post('/compact', async (req, res) => {
 router.post('/backup', async (req, res) => {
   try {
     const backupPath = await dbSetup.createBackup()
-    
+
     res.json({
       success: true,
       message: 'Backup created successfully',

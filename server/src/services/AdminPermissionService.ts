@@ -1,9 +1,9 @@
 // Admin Permission Service
 // Handles atomic permission validation, role management, and conflict resolution
-import { 
-  PermissionAtom, 
-  AdminRole, 
-  AdminUser, 
+import {
+  PermissionAtom,
+  AdminRole,
+  AdminUser,
   PermissionAuditLog,
   DEFAULT_PERMISSION_ATOMS,
   DEFAULT_ADMIN_ROLES
@@ -80,7 +80,7 @@ export class AdminPermissionService {
     }
 
     this.permissionAtoms.set(atom.atomId, newAtom)
-    
+
     await this.auditLog({
       adminId: atom.createdBy,
       action: 'create_role',
@@ -119,7 +119,7 @@ export class AdminPermissionService {
     }
 
     this.adminRoles.set(role.roleId, newRole)
-    
+
     await this.auditLog({
       adminId: role.createdBy,
       action: 'create_role',
@@ -156,14 +156,14 @@ export class AdminPermissionService {
     }
 
     this.adminRoles.set(roleId, updatedRole)
-    
+
     await this.auditLog({
       adminId: updatedBy,
       action: 'modify',
       targetType: 'role',
       targetId: roleId,
-      changes: { 
-        before: existingRole, 
+      changes: {
+        before: existingRole,
         after: updatedRole,
         permissionsAdded: updates.permissions?.filter(p => !existingRole.permissions.includes(p)),
         permissionsRemoved: existingRole.permissions.filter(p => !updates.permissions?.includes(p))
@@ -250,7 +250,7 @@ export class AdminPermissionService {
 
     // Check role permissions
     const hasRolePermission = role.permissions.includes(permission)
-    
+
     // Check custom permissions
     const hasCustomPermission = user.customPermissions?.includes(permission) || false
 
@@ -305,7 +305,7 @@ export class AdminPermissionService {
     }
 
     this.adminUsers.set(user.adminId, newUser)
-    
+
     await this.auditLog({
       adminId: user.createdBy,
       action: 'create_role',
@@ -347,14 +347,14 @@ export class AdminPermissionService {
     }
 
     this.adminUsers.set(adminId, updatedUser)
-    
+
     await this.auditLog({
       adminId: updatedBy,
       action: 'modify',
       targetType: 'user',
       targetId: adminId,
-      changes: { 
-        before: existingUser, 
+      changes: {
+        before: existingUser,
         after: updatedUser,
         permissionsAdded: updates.customPermissions?.filter(p => !existingUser.customPermissions?.includes(p)),
         permissionsRemoved: existingUser.customPermissions?.filter(p => !updates.customPermissions?.includes(p))
@@ -374,9 +374,9 @@ export class AdminPermissionService {
       timestamp: new Date(),
       ...log
     }
-    
+
     this.auditLogs.push(auditEntry)
-    
+
     // Keep only last 10000 audit logs in memory
     if (this.auditLogs.length > 10000) {
       this.auditLogs = this.auditLogs.slice(-10000)
@@ -416,7 +416,7 @@ export class AdminPermissionService {
   // Utility Methods
   async getPermissionsByGroup(): Promise<Record<string, PermissionAtom[]>> {
     const groups: Record<string, PermissionAtom[]> = {}
-    
+
     for (const atom of this.permissionAtoms.values()) {
       if (!groups[atom.group]) {
         groups[atom.group] = []
@@ -442,7 +442,7 @@ export class AdminPermissionService {
       const allAtoms = Array.from(this.permissionAtoms.values())
       const groupCounts: Record<string, number> = {}
       const riskCounts: Record<string, number> = {}
-      
+
       allAtoms.forEach(atom => {
         groupCounts[atom.group] = (groupCounts[atom.group] || 0) + 1
         riskCounts[atom.riskLevel] = (riskCounts[atom.riskLevel] || 0) + 1

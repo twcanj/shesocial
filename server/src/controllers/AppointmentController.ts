@@ -27,7 +27,7 @@ export class AppointmentController {
   createSlot = async (req: Request, res: Response) => {
     try {
       const slotData = req.body
-      
+
       // 驗證必要字段
       if (!slotData.type || !slotData.date || !slotData.startTime || !slotData.endTime || !slotData.interviewerId) {
         return res.status(400).json({
@@ -102,11 +102,11 @@ export class AppointmentController {
   // 獲取可用時段
   getAvailableSlots = async (req: Request, res: Response) => {
     try {
-      const { 
-        type, 
-        startDate, 
-        endDate, 
-        interviewerId 
+      const {
+        type,
+        startDate,
+        endDate,
+        interviewerId
       } = req.query
 
       if (!type || !startDate) {
@@ -146,7 +146,7 @@ export class AppointmentController {
   getSlotById = async (req: Request, res: Response) => {
     try {
       const { slotId } = req.params
-      
+
       const slot = await this.slotModel.getById(slotId)
       if (!slot) {
         return res.status(404).json({ error: '預約時段不存在' })
@@ -221,7 +221,7 @@ export class AppointmentController {
       // 檢查是否有未完成的預約
       const activeBookings = await this.bookingModel.getBySlot(slotId, ['booked', 'confirmed'])
       if (activeBookings.length > 0) {
-        return res.status(400).json({ 
+        return res.status(400).json({
           error: '無法刪除時段，存在未完成的預約',
           activeBookings: activeBookings.length
         })
@@ -367,14 +367,14 @@ export class AppointmentController {
       }
 
       const additionalUpdates: any = {}
-      
+
       if (notes) additionalUpdates.interviewNotes = notes
       if (rating) additionalUpdates.rating = rating
       if (outcome) additionalUpdates.outcome = outcome
 
       const updatedBooking = await this.bookingModel.updateStatus(
-        bookingId, 
-        status as AppointmentStatus, 
+        bookingId,
+        status as AppointmentStatus,
         additionalUpdates
       )
 
@@ -497,8 +497,8 @@ export class AppointmentController {
         const hoursUntilAppointment = (appointmentTime.getTime() - now.getTime()) / (1000 * 60 * 60)
 
         if (hoursUntilAppointment < slot.cancellationDeadlineHours) {
-          return res.status(400).json({ 
-            error: `預約取消期限已過，需提前 ${slot.cancellationDeadlineHours} 小時取消` 
+          return res.status(400).json({
+            error: `預約取消期限已過，需提前 ${slot.cancellationDeadlineHours} 小時取消`
           })
         }
       }
@@ -545,7 +545,7 @@ export class AppointmentController {
   getTodaysBookings = async (req: Request, res: Response) => {
     try {
       const bookings = await this.bookingModel.getTodaysBookings()
-      
+
       const bookingsWithDetails = await Promise.all(
         bookings.map(booking => this.getBookingWithDetails(booking._id))
       )

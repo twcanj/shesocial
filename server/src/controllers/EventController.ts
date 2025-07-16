@@ -17,7 +17,7 @@ export class EventController {
       const limit = parseInt(req.query.limit as string) || 10
 
       const result = await this.eventModel.findAll(page, limit)
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -37,7 +37,7 @@ export class EventController {
     try {
       const { id } = req.params
       const result = await this.eventModel.findById(id)
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -56,7 +56,7 @@ export class EventController {
   async createEvent(req: Request, res: Response): Promise<void> {
     try {
       const eventData = req.body
-      
+
       // Basic validation
       if (!eventData.name || !eventData.metadata?.date) {
         res.status(400).json({
@@ -68,7 +68,7 @@ export class EventController {
       }
 
       const result = await this.eventModel.create(eventData)
-      
+
       if (result.success) {
         res.status(201).json(result)
       } else {
@@ -90,7 +90,7 @@ export class EventController {
       const updateData = req.body
 
       const result = await this.eventModel.update(id, updateData)
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -110,7 +110,7 @@ export class EventController {
     try {
       const { id } = req.params
       const result = await this.eventModel.delete(id)
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -133,7 +133,7 @@ export class EventController {
       const limit = parseInt(req.query.limit as string) || 10
 
       const result = await this.eventModel.search(filters, page, limit)
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -155,7 +155,7 @@ export class EventController {
       const limit = parseInt(req.query.limit as string) || 10
 
       const result = await this.eventModel.getUpcoming(page, limit)
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -186,7 +186,7 @@ export class EventController {
       }
 
       const result = await this.eventModel.addParticipant(id, userId)
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -207,7 +207,7 @@ export class EventController {
       const { id, userId } = req.params
 
       const result = await this.eventModel.removeParticipant(id, userId)
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -228,7 +228,7 @@ export class EventController {
       const { userId } = req.params
 
       const result = await this.eventModel.getByUser(userId)
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -259,7 +259,7 @@ export class EventController {
       }
 
       const result = await this.eventModel.updateStatus(id, status)
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -280,7 +280,7 @@ export class EventController {
       const { id } = req.params
 
       const result = await this.eventModel.publish(id)
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -301,7 +301,7 @@ export class EventController {
       const { id } = req.params
 
       const result = await this.eventModel.cancel(id)
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -320,7 +320,7 @@ export class EventController {
   async getEventCount(req: Request, res: Response): Promise<void> {
     try {
       const result = await this.eventModel.count()
-      
+
       if (result.success) {
         res.json(result)
       } else {
@@ -339,7 +339,7 @@ export class EventController {
   async getModifiedEvents(req: Request, res: Response): Promise<void> {
     try {
       const timestamp = parseInt(req.params.timestamp)
-      
+
       if (isNaN(timestamp)) {
         res.status(400).json({
           success: false,
@@ -350,7 +350,7 @@ export class EventController {
       }
 
       const result = await this.eventModel.getModifiedSince(timestamp)
-      
+
       if (result.success) {
         res.json(result)
       } else {

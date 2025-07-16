@@ -5,7 +5,7 @@ import { AppointmentSlot, AppointmentType, InterviewType, RecurringPattern } fro
 
 export class AppointmentSlotModel {
   private db: any
-  
+
   constructor(db: any) {
     this.db = db
   }
@@ -38,16 +38,16 @@ export class AppointmentSlotModel {
   ): Promise<AppointmentSlot[]> {
     const slots: AppointmentSlot[] = []
     const startDate = new Date(baseSlot.date)
-    
+
     const maxSlots = pattern.maxOccurrences || 52 // 默認一年
     let currentDate = new Date(startDate)
-    
+
     for (let i = 0; i < maxSlots; i++) {
       // 檢查結束日期
       if (pattern.endDate && currentDate > new Date(pattern.endDate)) {
         break
       }
-      
+
       // 檢查星期幾 (如果是週重複)
       if (pattern.type === 'weekly' && pattern.daysOfWeek) {
         if (!pattern.daysOfWeek.includes(currentDate.getDay())) {
@@ -55,7 +55,7 @@ export class AppointmentSlotModel {
           continue
         }
       }
-      
+
       const slotForDate = {
         ...baseSlot,
         // Don't set _id - let NeDB generate it automatically
@@ -65,17 +65,17 @@ export class AppointmentSlotModel {
         createdAt: new Date(),
         updatedAt: new Date()
       }
-      
+
       try {
         const createdSlot = await this.create(slotForDate)
         slots.push(createdSlot)
       } catch (error) {
         console.error(`創建重複時段失敗 ${currentDate.toISOString()}:`, error)
       }
-      
+
       currentDate = this.getNextDate(currentDate, pattern)
     }
-    
+
     return slots
   }
 
@@ -91,15 +91,15 @@ export class AppointmentSlotModel {
       isAvailable: true,
       date: { $gte: startDate }
     }
-    
+
     if (endDate) {
       query.date.$lte = endDate
     }
-    
+
     if (interviewerId) {
       query.interviewerId = interviewerId
     }
-    
+
     return new Promise((resolve, reject) => {
       this.db.appointments_slots.find(query)
         .sort({ date: 1, startTime: 1 })
@@ -108,7 +108,7 @@ export class AppointmentSlotModel {
             reject(new Error(`查詢可用時段失敗: ${err.message}`))
             return
           }
-          
+
           // 過濾掉已滿的時段
           const availableSlots = docs.filter(slot => slot.bookedCount < slot.capacity)
           resolve(availableSlots)
@@ -134,7 +134,7 @@ export class AppointmentSlotModel {
     return new Promise((resolve, reject) => {
       this.db.appointments_slots.update(
         { _id: slotId },
-        { 
+        {
           $inc: { bookedCount: increment },
           $set: { updatedAt: new Date() }
         },
@@ -144,12 +144,12 @@ export class AppointmentSlotModel {
             reject(new Error(`更新預約數量失敗: ${err.message}`))
             return
           }
-          
+
           if (numReplaced === 0) {
             resolve(null)
             return
           }
-          
+
           // 返回更新後的文檔
           this.getById(slotId).then(resolve).catch(reject)
         }
@@ -177,11 +177,11 @@ export class AppointmentSlotModel {
         }
       ]
     }
-    
+
     if (excludeSlotId) {
       query._id = { $ne: excludeSlotId }
     }
-    
+
     return new Promise((resolve, reject) => {
       this.db.appointments_slots.findOne(query, (err: any, doc: AppointmentSlot) => {
         if (err) {
@@ -199,7 +199,7 @@ export class AppointmentSlotModel {
       ...updates,
       updatedAt: new Date()
     }
-    
+
     return new Promise((resolve, reject) => {
       this.db.appointments_slots.update(
         { _id: slotId },
@@ -210,12 +210,12 @@ export class AppointmentSlotModel {
             reject(new Error(`更新預約時段失敗: ${err.message}`))
             return
           }
-          
+
           if (numReplaced === 0) {
             resolve(null)
             return
           }
-          
+
           this.getById(slotId).then(resolve).catch(reject)
         }
       )
@@ -242,16 +242,16 @@ export class AppointmentSlotModel {
     endDate?: string
   ): Promise<AppointmentSlot[]> {
     const query: any = { interviewerId }
-    
+
     if (startDate) {
       query.date = { $gte: startDate }
     }
-    
+
     if (endDate) {
       query.date = query.date || {}
       query.date.$lte = endDate
     }
-    
+
     return new Promise((resolve, reject) => {
       this.db.appointments_slots.find(query)
         .sort({ date: 1, startTime: 1 })
@@ -268,23 +268,23 @@ export class AppointmentSlotModel {
   // 獲取統計數據
   async getStats(startDate?: string, endDate?: string): Promise<any> {
     const query: any = {}
-    
+
     if (startDate) {
       query.date = { $gte: startDate }
     }
-    
+
     if (endDate) {
       query.date = query.date || {}
       query.date.$lte = endDate
     }
-    
+
     return new Promise((resolve, reject) => {
       this.db.appointments_slots.find(query, (err: any, docs: AppointmentSlot[]) => {
         if (err) {
           reject(new Error(`獲取統計數據失敗: ${err.message}`))
           return
         }
-        
+
         const stats = {
           totalSlots: docs.length,
           availableSlots: docs.filter(slot => slot.isAvailable && slot.bookedCount < slot.capacity).length,
@@ -294,7 +294,7 @@ export class AppointmentSlotModel {
           totalCapacity: docs.reduce((sum, slot) => sum + slot.capacity, 0),
           totalBooked: docs.reduce((sum, slot) => sum + slot.bookedCount, 0)
         }
-        
+
         resolve(stats)
       })
     })
@@ -303,19 +303,19 @@ export class AppointmentSlotModel {
   // 輔助函數：根據重複模式計算下一個日期
   private getNextDate(currentDate: Date, pattern: RecurringPattern): Date {
     const nextDate = new Date(currentDate)
-    
+
     switch (pattern.type) {
-      case 'daily':
-        nextDate.setDate(nextDate.getDate() + pattern.interval)
-        break
-      case 'weekly':
-        nextDate.setDate(nextDate.getDate() + (7 * pattern.interval))
-        break
-      case 'monthly':
-        nextDate.setMonth(nextDate.getMonth() + pattern.interval)
-        break
+    case 'daily':
+      nextDate.setDate(nextDate.getDate() + pattern.interval)
+      break
+    case 'weekly':
+      nextDate.setDate(nextDate.getDate() + (7 * pattern.interval))
+      break
+    case 'monthly':
+      nextDate.setMonth(nextDate.getMonth() + pattern.interval)
+      break
     }
-    
+
     return nextDate
   }
 }

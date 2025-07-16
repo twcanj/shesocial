@@ -23,10 +23,17 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToRegis
     setError('')
 
     try {
-      await login(formData.email, formData.password)
-      onSuccess()
+      const result = await login(formData.email, formData.password)
+      
+      if (result.success) {
+        onSuccess()
+      } else {
+        // Show the error message from the server response
+        setError(result.error || result.message || '登入失敗')
+      }
     } catch (err) {
-      setError(err instanceof Error ? err.message : '登入失敗')
+      // Handle network errors or other exceptions
+      setError(err instanceof Error ? err.message : '網路連接失敗')
     } finally {
       setLoading(false)
     }

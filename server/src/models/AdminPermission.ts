@@ -6,22 +6,22 @@ export interface PermissionAtom {
   _id?: string
   createdAt: Date
   updatedAt: Date
-  
+
   // Permission Identity
   atomId: string // e.g., "users:view", "content:moderate"
   group: string  // e.g., "users", "content", "system"
   action: string // e.g., "view", "edit", "delete"
-  
+
   // Permission Details
   name: string
   description: string
   riskLevel: 'low' | 'medium' | 'high' | 'critical'
-  
+
   // Constraints
   conflictsWith?: string[] // Array of permission atomIds that conflict
   requiresAll?: string[]   // Array of permission atomIds that are required
   deprecatedAt?: Date
-  
+
   // Metadata
   version: string
   createdBy: string // Admin ID who created this permission
@@ -31,21 +31,21 @@ export interface AdminRole {
   _id?: string
   createdAt: Date
   updatedAt: Date
-  
+
   // Role Identity
   roleId: string // e.g., "super_admin", "system_admin"
   name: string
   department: 'executive' | 'technical' | 'operations' | 'members'
-  
+
   // Permissions
   permissions: string[] // Array of permission atomIds
   isCustom: boolean     // true for custom roles, false for system defaults
-  
+
   // Configuration
   description: string
   maxUsers?: number     // Maximum users allowed for this role
   isActive: boolean
-  
+
   // Metadata
   version: string
   createdBy: string
@@ -56,13 +56,13 @@ export interface AdminUser {
   _id?: string
   createdAt: Date
   updatedAt: Date
-  
+
   // Identity
   adminId: string
   username: string
   email: string
   passwordHash: string
-  
+
   // Profile
   profile: {
     realName: string
@@ -71,19 +71,19 @@ export interface AdminUser {
     joinDate: Date
     lastLogin?: Date
   }
-  
+
   // Role and Permissions
   roleId: string        // Reference to AdminRole
   customPermissions?: string[] // Additional permissions beyond role
-  
+
   // Status
   status: 'active' | 'suspended' | 'inactive'
-  
+
   // Security
   twoFactorEnabled: boolean
   ipWhitelist?: string[]
   sessionTimeout: number // in minutes
-  
+
   // Metadata
   createdBy: string
   lastModifiedBy: string
@@ -92,13 +92,13 @@ export interface AdminUser {
 export interface PermissionAuditLog {
   _id?: string
   timestamp: Date
-  
+
   // Operation Details
   adminId: string
   action: 'grant' | 'revoke' | 'modify' | 'create_role' | 'delete_role'
   targetType: 'user' | 'role' | 'permission'
   targetId: string
-  
+
   // Changes
   changes: {
     before?: any
@@ -106,12 +106,12 @@ export interface PermissionAuditLog {
     permissionsAdded?: string[]
     permissionsRemoved?: string[]
   }
-  
+
   // Context
   reason?: string
   ipAddress: string
   userAgent: string
-  
+
   // Result
   success: boolean
   errorMessage?: string
@@ -131,7 +131,7 @@ export const DEFAULT_PERMISSION_ATOMS: Omit<PermissionAtom, '_id' | 'createdAt' 
   },
   {
     atomId: 'users:edit',
-    group: 'users', 
+    group: 'users',
     action: 'edit',
     name: '編輯用戶',
     description: '編輯用戶個人資料',
@@ -179,7 +179,7 @@ export const DEFAULT_PERMISSION_ATOMS: Omit<PermissionAtom, '_id' | 'createdAt' 
     requiresAll: ['users:view'],
     version: '1.0'
   },
-  
+
   // Content Management Permissions
   {
     atomId: 'content:view',
@@ -240,7 +240,7 @@ export const DEFAULT_PERMISSION_ATOMS: Omit<PermissionAtom, '_id' | 'createdAt' 
     requiresAll: ['content:view', 'content:moderate'],
     version: '1.0'
   },
-  
+
   // Events Management Permissions
   {
     atomId: 'events:view',
@@ -301,7 +301,7 @@ export const DEFAULT_PERMISSION_ATOMS: Omit<PermissionAtom, '_id' | 'createdAt' 
     requiresAll: ['events:view'],
     version: '1.0'
   },
-  
+
   // Interview Management Permissions
   {
     atomId: 'interviews:view',
@@ -362,7 +362,7 @@ export const DEFAULT_PERMISSION_ATOMS: Omit<PermissionAtom, '_id' | 'createdAt' 
     requiresAll: ['interviews:view'],
     version: '1.0'
   },
-  
+
   // System Management Permissions
   {
     atomId: 'system:monitoring',
@@ -426,7 +426,7 @@ export const DEFAULT_PERMISSION_ATOMS: Omit<PermissionAtom, '_id' | 'createdAt' 
     requiresAll: ['system:monitoring', 'system:config'],
     version: '1.0'
   },
-  
+
   // Payment Management Permissions
   {
     atomId: 'payments:view',
@@ -468,7 +468,7 @@ export const DEFAULT_PERMISSION_ATOMS: Omit<PermissionAtom, '_id' | 'createdAt' 
     requiresAll: ['payments:view'],
     version: '1.0'
   },
-  
+
   // VVIP Services Permissions
   {
     atomId: 'vvip:intro_management',
@@ -506,7 +506,7 @@ export const DEFAULT_PERMISSION_ATOMS: Omit<PermissionAtom, '_id' | 'createdAt' 
     riskLevel: 'medium',
     version: '1.0'
   },
-  
+
   // Appointment Management Permissions
   {
     atomId: 'appointments:view',
@@ -567,7 +567,7 @@ export const DEFAULT_PERMISSION_ATOMS: Omit<PermissionAtom, '_id' | 'createdAt' 
     requiresAll: ['appointments:view'],
     version: '1.0'
   },
-  
+
   // Interviewer Management Permissions
   {
     atomId: 'interviewers:view',
@@ -628,7 +628,7 @@ export const DEFAULT_PERMISSION_ATOMS: Omit<PermissionAtom, '_id' | 'createdAt' 
     requiresAll: ['interviewers:view'],
     version: '1.0'
   },
-  
+
   // Export Permissions for Reports
   {
     atomId: 'content:export',
@@ -660,7 +660,7 @@ export const DEFAULT_PERMISSION_ATOMS: Omit<PermissionAtom, '_id' | 'createdAt' 
     requiresAll: ['interviews:view'],
     version: '1.0'
   },
-  
+
   // Admin Management Permissions (Super Admin Only)
   {
     atomId: 'admin:create',
@@ -715,7 +715,7 @@ export const DEFAULT_PERMISSION_ATOMS: Omit<PermissionAtom, '_id' | 'createdAt' 
 // Default role configurations - 2層4類權限架構
 export const DEFAULT_ADMIN_ROLES: Omit<AdminRole, '_id' | 'createdAt' | 'updatedAt' | 'createdBy' | 'lastModifiedBy'>[] = [
   // === 第一層：最高權限層 ===
-  
+
   {
     roleId: 'super_admin',
     name: '總管理員',
@@ -738,7 +738,7 @@ export const DEFAULT_ADMIN_ROLES: Omit<AdminRole, '_id' | 'createdAt' | 'updated
   },
 
   // === 第二層：日常營運層 ===
-  
+
   {
     roleId: 'operation_admin',
     name: '日常營運',
@@ -746,7 +746,7 @@ export const DEFAULT_ADMIN_ROLES: Omit<AdminRole, '_id' | 'createdAt' | 'updated
     permissions: [
       // 內容管理
       'content:view',
-      'content:moderate', 
+      'content:moderate',
       'content:edit',
       'content:feature',
       'content:export',
@@ -786,7 +786,7 @@ export const DEFAULT_ADMIN_ROLES: Omit<AdminRole, '_id' | 'createdAt' | 'updated
       // 面試管理
       'interviews:view',
       'interviews:schedule',
-      'interviews:conduct', 
+      'interviews:conduct',
       'interviews:review',
       'interviews:reschedule',
       'interviews:export',

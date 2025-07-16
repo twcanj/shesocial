@@ -23,7 +23,7 @@ export const generateToken = (user: UserProfile): string => {
     membershipType: user.membership.type,
     permissions: user.membership.permissions
   }
-  
+
   return jwt.sign(payload, JWT_SECRET, {
     expiresIn: '7d',
     issuer: 'shesocial.tw',
@@ -46,8 +46,8 @@ export const verifyToken = (token: string): JwtPayload => {
 
 // Middleware to authenticate requests
 export const authenticateToken = async (
-  req: AuthenticatedRequest, 
-  res: Response, 
+  req: AuthenticatedRequest,
+  res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
@@ -65,7 +65,7 @@ export const authenticateToken = async (
     }
 
     const decoded = verifyToken(token)
-    
+
     // Add user info to request object
     req.userId = (decoded as any).userId
     req.user = {
@@ -102,7 +102,7 @@ export const requireMembership = (...allowedTypes: UserProfile['membership']['ty
     }
 
     const userMembershipType = req.user.membership.type
-    
+
     if (!allowedTypes.includes(userMembershipType)) {
       res.status(403).json({
         success: false,
@@ -131,7 +131,7 @@ export const requirePermission = (permission: keyof UserProfile['membership']['p
     }
 
     const hasPermission = req.user.membership.permissions[permission]
-    
+
     if (!hasPermission) {
       res.status(403).json({
         success: false,
@@ -160,8 +160,8 @@ export const requirePriorityBooking = requirePermission('priorityBooking')
 
 // Optional authentication - doesn't fail if no token
 export const optionalAuth = async (
-  req: AuthenticatedRequest, 
-  res: Response, 
+  req: AuthenticatedRequest,
+  res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
