@@ -45,11 +45,6 @@ export const EventList: React.FC<EventListProps> = ({
     { value: '2day_trip', label: '二日遊' }
   ]
 
-  const eventCategories = [
-    '美食饗宴', '文化藝術', '戶外活動', '商務社交', '興趣愛好',
-    '健康養生', '旅遊探索', '學習成長', '音樂娛樂', '運動休閒'
-  ]
-
   // Filter and sort events
   useEffect(() => {
     let filtered = [...events]
@@ -119,11 +114,12 @@ export const EventList: React.FC<EventListProps> = ({
         case 'participants':
           comparison = (a.participants?.length || 0) - (b.participants?.length || 0)
           break
-        case 'price':
+        case 'price': {
           const avgPriceA = (a.metadata.pricing.male + a.metadata.pricing.female) / 2
           const avgPriceB = (b.metadata.pricing.male + b.metadata.pricing.female) / 2
           comparison = avgPriceA - avgPriceB
           break
+        }
       }
 
       return sortOrder === 'desc' ? -comparison : comparison
@@ -155,7 +151,7 @@ export const EventList: React.FC<EventListProps> = ({
     }
 
     setFilteredEvents(limitedEvents)
-  }, [events, searchTerm, filters, sortBy, sortOrder])
+  }, [events, searchTerm, filters, sortBy, sortOrder, user?.membership?.type])
 
   const clearFilters = () => {
     setSearchTerm('')
@@ -226,7 +222,7 @@ export const EventList: React.FC<EventListProps> = ({
               className={`btn-luxury-outline ${activeFilterCount > 0 ? 'bg-luxury-gold text-white' : ''}`}
             >
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293.707L3.293 7.293A1 1 0 013 6.586V4z" />
               </svg>
               篩選 {activeFilterCount > 0 && `(${activeFilterCount})`}
             </button>
@@ -246,7 +242,7 @@ export const EventList: React.FC<EventListProps> = ({
             <span className="text-sm text-gray-600">排序：</span>
             <select
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as any)}
+              onChange={(e) => setSortBy(e.target.value as 'date' | 'name' | 'participants' | 'price')}
               className="text-sm border border-gray-300 rounded px-2 py-1"
             >
               <option value="date">日期</option>
@@ -289,7 +285,7 @@ export const EventList: React.FC<EventListProps> = ({
                 <label className="block text-sm font-medium text-gray-700 mb-2">活動類型</label>
                 <select
                   value={filters.type || ''}
-                  onChange={(e) => setFilters(prev => ({ ...prev, type: e.target.value as any || undefined }))}
+                  onChange={(e) => setFilters(prev => ({ ...prev, type: e.target.value as EventData['metadata']['type'] | undefined }))}
                   className="input-luxury w-full"
                 >
                   <option value="">所有類型</option>

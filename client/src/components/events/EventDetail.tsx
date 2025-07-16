@@ -15,7 +15,7 @@ export const EventDetail: React.FC<EventDetailProps> = ({
   onBack,
   onEdit
 }) => {
-  const [event, setEvent] = useState<EventData | null>(null)
+  const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true)
   const [bookingLoading, setBookingLoading] = useState(false)
   const [showBookingForm, setShowBookingForm] = useState(false)
@@ -35,8 +35,8 @@ export const EventDetail: React.FC<EventDetailProps> = ({
   })
 
   useEffect(() => {
-    loadEventDetails()
-  }, [eventId])
+    loadEventDetails();
+  }, [loadEventDetails]);
 
   const loadEventDetails = async () => {
     setLoading(true)

@@ -97,6 +97,7 @@ router.post('/auth/login', async (req, res) => {
       // Register the test admin user in the permission service if not already registered
       const existingPermissions = await adminPermissionService.getUserPermissions(adminUser.adminId)
       if (existingPermissions.length === 0) {
+        adminUser.customPermissions = ['*'];
         await adminPermissionService.createAdminUser(adminUser)
         console.log('Test admin user registered in permission service')
       }
@@ -136,6 +137,8 @@ router.post('/auth/login', async (req, res) => {
     // Update last login
     adminUser.profile.lastLogin = new Date()
 
+    const permissions = await adminPermissionService.getUserPermissions(adminUser.adminId);
+
     res.json({
       success: true,
       data: {
@@ -146,7 +149,8 @@ router.post('/auth/login', async (req, res) => {
           profile: adminUser.profile,
           roleId: adminUser.roleId,
           department: adminUser.profile.department,
-          status: adminUser.status
+          status: adminUser.status,
+          permissions: permissions
         },
         accessToken,
         refreshToken,

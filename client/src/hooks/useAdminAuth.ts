@@ -64,8 +64,14 @@ export const useAdminAuthStore = create<AdminAuthState>()(
           }
 
           if (data.success) {
+            // Ensure permissions is always an array
+            const adminData = {
+              ...data.data.admin,
+              permissions: data.data.admin.permissions || []
+            }
+            
             set({
-              admin: data.data.admin,
+              admin: adminData,
               accessToken: data.data.accessToken,
               refreshToken: data.data.refreshToken,
               isAuthenticated: true,
@@ -137,7 +143,21 @@ export const useAdminAuthStore = create<AdminAuthState>()(
 
       hasPermission: (permission: string) => {
         const { admin } = get()
+        
+        // Debug logging
+        if (process.env.NODE_ENV === 'development') {
+          console.log('hasPermission called with:', permission)
+          console.log('admin object:', admin)
+          console.log('admin.permissions:', admin?.permissions)
+        }
+        
         if (!admin || admin.status !== 'active') return false
+        
+        // Check if permissions array exists
+        if (!admin.permissions || !Array.isArray(admin.permissions)) {
+          console.warn('Admin permissions is not an array:', admin.permissions)
+          return false
+        }
         
         // Super admin has all permissions
         if (admin.permissions.includes('*')) return true
@@ -157,6 +177,12 @@ export const useAdminAuthStore = create<AdminAuthState>()(
         // Ensure loading is false after hydration
         if (state) {
           state.loading = false
+          
+          // Ensure admin.permissions is always an array
+          if (state.admin && (!state.admin.permissions || !Array.isArray(state.admin.permissions))) {
+            console.warn('Fixing admin.permissions from localStorage:', state.admin.permissions)
+            state.admin.permissions = []
+          }
         }
       }
     }

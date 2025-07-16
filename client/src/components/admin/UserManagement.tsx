@@ -1,5 +1,5 @@
 // User Management - Manage admin users and assignments
-import React, { useState, useEffect } from 'react'
+import React from 'react';
 import { useAdminAuth } from '../../hooks/useAdminAuth'
 
 export const UserManagement: React.FC = () => {

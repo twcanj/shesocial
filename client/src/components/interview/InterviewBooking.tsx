@@ -57,7 +57,7 @@ export const InterviewBooking: React.FC<InterviewBookingProps> = ({
     }
   }
 
-  const handleBookInterview = async () => {
+  const handleBooking = async (slot: AppointmentSlot) => {
     if (!selectedSlot || !user) return
 
     setBooking(true)

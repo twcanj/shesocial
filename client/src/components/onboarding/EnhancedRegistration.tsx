@@ -58,7 +58,7 @@ export const EnhancedRegistration: React.FC<EnhancedRegistrationProps> = ({
 
   const [currentInterest, setCurrentInterest] = useState('')
 
-  const handleInputChange = (field: keyof RegistrationData, value: any) => {
+  const handleUpdate = (field: keyof UserProfile, value: string | number | string[]) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
@@ -111,7 +111,7 @@ export const EnhancedRegistration: React.FC<EnhancedRegistrationProps> = ({
     }
   }
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     setLoading(true)
     try {
       // Create account with basic info

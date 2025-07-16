@@ -6,9 +6,21 @@ import { RoleManagement } from '../components/admin/RoleManagement'
 import { UserManagement } from '../components/admin/UserManagement'
 import { AuditLogViewer } from '../components/admin/AuditLogViewer'
 import { AdminOverview } from '../components/admin/AdminOverview'
+import { ErrorBoundary } from '../components/common/ErrorBoundary'
 import { useAdminAuth } from '../hooks/useAdminAuth'
 
-type AdminSection = 'overview' | 'permissions' | 'roles' | 'users' | 'audit'
+// Placeholder components for new sections
+const EventManagement: React.FC = () => <div className="text-white">活動管理 Content</div>;
+const InterviewManagement: React.FC = () => <div className="text-white">會員面試管理 Content</div>;
+const ConsultingManagement: React.FC = () => <div className="text-white">諮詢預約管理 Content</div>;
+const EventHistoryManagement: React.FC = () => <div className="text-white">過往活動管理 Content</div>;
+
+// Import debug utilities in development
+if (process.env.NODE_ENV === 'development') {
+  import('../utils/debugAdmin')
+}
+
+type AdminSection = 'overview' | 'permissions' | 'roles' | 'users' | 'audit' | 'event-management' | 'interview-management' | 'consulting-management' | 'event-history-management'
 
 export const AdminDashboard: React.FC = () => {
   const [activeSection, setActiveSection] = useState<AdminSection>('overview')
@@ -31,7 +43,11 @@ export const AdminDashboard: React.FC = () => {
   const renderContent = () => {
     switch (activeSection) {
       case 'overview':
-        return <AdminOverview />
+        return (
+          <ErrorBoundary>
+            <AdminOverview />
+          </ErrorBoundary>
+        )
       case 'permissions':
         return <PermissionManagement />
       case 'roles':
@@ -40,8 +56,20 @@ export const AdminDashboard: React.FC = () => {
         return <UserManagement />
       case 'audit':
         return <AuditLogViewer />
+      case 'event-management':
+        return <EventManagement />
+      case 'interview-management':
+        return <InterviewManagement />
+      case 'consulting-management':
+        return <ConsultingManagement />
+      case 'event-history-management':
+        return <EventHistoryManagement />
       default:
-        return <AdminOverview />
+        return (
+          <ErrorBoundary>
+            <AdminOverview />
+          </ErrorBoundary>
+        )
     }
   }
 
@@ -102,7 +130,11 @@ const getSectionTitle = (section: AdminSection): string => {
     permissions: '權限管理',
     roles: '角色管理',
     users: '管理員管理',
-    audit: '審計日誌'
+    audit: '審計日誌',
+    'event-management': '活動管理',
+    'interview-management': '會員面試管理',
+    'consulting-management': '諮詢預約管理',
+    'event-history-management': '過往活動管理'
   }
   return titles[section]
 }

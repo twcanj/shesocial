@@ -1,7 +1,6 @@
 // Event Form Component for Create/Edit Operations (VIP+ only)
 import React, { useState, useEffect } from 'react'
 import type { EventData } from '../../shared-types'
-import { useAuthStore } from '../../store/authStore'
 import { useEvents } from '../../hooks/useEvents'
 
 interface EventFormProps {
@@ -19,8 +18,8 @@ export const EventForm: React.FC<EventFormProps> = ({
   const [submitLoading, setSubmitLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   
-  const { user, hasPermission } = useAuthStore()
-  const { getEventById, createEvent, updateEvent } = useEvents()
+  
+  const { getEventById, createEvent, updateEvent, hasPermission } = useEvents()
 
   // Form state
   const [formData, setFormData] = useState<Partial<EventData>>({
@@ -90,19 +89,18 @@ export const EventForm: React.FC<EventFormProps> = ({
 
   // Load existing event data for edit mode
   useEffect(() => {
-    if (isEditMode && eventId) {
-      loadEventData()
-    }
-  }, [eventId, isEditMode])
+    loadEventData();
+  }, [loadEventData]);
 
   const loadEventData = async () => {
+    if (!eventId) return;
     setLoading(true)
     try {
-      const event = await getEventById(eventId!)
+      const event = await getEventById(eventId)
       if (event) {
         setFormData(event)
       }
-    } catch (err) {
+    } catch (error) {
       setError('載入活動資料失敗')
     } finally {
       setLoading(false)
@@ -151,18 +149,18 @@ export const EventForm: React.FC<EventFormProps> = ({
       if (!result) {
         setError(isEditMode ? '更新活動失敗' : '創建活動失敗')
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : '操作失敗')
+    } catch (error) {
+      setError(error instanceof Error ? error.message : '操作失敗')
     } finally {
       setSubmitLoading(false)
     }
   }
 
-  const updateFormData = (path: string, value: any) => {
+  const updateFormData = (path: string, value: string | number | boolean | Date) => {
     setFormData(prev => {
       const newData = { ...prev }
       const keys = path.split('.')
-      let current: any = newData
+      let current: Record<string, any> = newData
       
       for (let i = 0; i < keys.length - 1; i++) {
         if (!current[keys[i]]) {

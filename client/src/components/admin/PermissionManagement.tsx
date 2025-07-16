@@ -20,16 +20,16 @@ interface GroupedPermissions {
 
 export const PermissionManagement: React.FC = () => {
   const { hasPermission } = useAdminAuth()
-  const [groupedPermissions, setGroupedPermissions] = useState<GroupedPermissions>({})
-  const [loading, setLoading] = useState(true)
-  const [activeGroup, setActiveGroup] = useState<string>('')
-  const [showCreateModal, setShowCreateModal] = useState(false)
+  const [permissions, setPermissions] = useState<PermissionAtom[]>([]);
+  const [groupedPermissions, setGroupedPermissions] = useState<Record<string, PermissionAtom[]>>({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [validationResult, setValidationResult] = useState<any>(null)
   const [testPermissions, setTestPermissions] = useState<string[]>([])
 
   useEffect(() => {
-    loadPermissions()
-  }, [])
+    loadPermissions();
+  }, [loadPermissions]);
 
   const loadPermissions = async () => {
     try {

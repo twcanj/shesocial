@@ -16,7 +16,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   onToggleMode 
 }) => {
   const [currentMode, setCurrentMode] = useState<'login' | 'register' | 'enhanced_register'>(mode)
-  const [showEnhancedRegistration, setShowEnhancedRegistration] = useState(false)
+  
 
   const handleSuccess = () => {
     onClose()

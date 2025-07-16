@@ -4,7 +4,7 @@ import React from 'react'
 interface AdminSidebarProps {
   activeSection: string
   onSectionChange: (section: string) => void
-  admin: any
+  admin: AdminProfile | null;
   onLogout: () => void
 }
 
@@ -18,6 +18,46 @@ const navigation = [
       </svg>
     ),
     requiredPermission: null
+  },
+  {
+    id: 'event-management',
+    name: '活動管理',
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+      </svg>
+    ),
+    requiredPermission: 'events:view'
+  },
+  {
+    id: 'interview-management',
+    name: '會員面試管理',
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+      </svg>
+    ),
+    requiredPermission: 'interviews:view'
+  },
+  {
+    id: 'consulting-management',
+    name: '諮詢預約管理',
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    ),
+    requiredPermission: 'appointments:view'
+  },
+  {
+    id: 'event-history-management',
+    name: '過往活動管理',
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+      </svg>
+    ),
+    requiredPermission: 'events:showcase'
   },
   {
     id: 'permissions',
@@ -75,15 +115,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
     return admin.permissions.includes(permission)
   }
 
-  const getDepartmentColor = (department: string) => {
-    const colors = {
-      executive: 'from-purple-600 to-purple-800',
-      technical: 'from-blue-600 to-blue-800', 
-      operations: 'from-green-600 to-green-800',
-      members: 'from-orange-600 to-orange-800'
-    }
-    return colors[department as keyof typeof colors] || 'from-gray-600 to-gray-800'
-  }
+  
 
   const getDepartmentName = (department: string) => {
     const names = {

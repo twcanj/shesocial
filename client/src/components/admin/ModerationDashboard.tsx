@@ -37,8 +37,8 @@ export const ModerationDashboard: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<string>('pending')
 
   useEffect(() => {
-    fetchModerationQueue()
-  }, [statusFilter])
+    fetchModerationQueue();
+  }, [fetchModerationQueue]);
 
   const fetchModerationQueue = async () => {
     try {

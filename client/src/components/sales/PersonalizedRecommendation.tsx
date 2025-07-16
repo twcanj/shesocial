@@ -1,6 +1,7 @@
 // Personalized Membership Recommendation based on User Profile
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '../../contexts/AuthContext'
+import { UserProfile } from '../../shared-types'
 
 interface RecommendationData {
   recommendedPlan: 'regular' | 'vip' | 'premium_1300' | 'premium_2500'
@@ -22,13 +23,7 @@ export const PersonalizedRecommendation: React.FC = () => {
   const [recommendation, setRecommendation] = useState<RecommendationData | null>(null)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    if (user) {
-      generateRecommendation()
-    }
-  }, [user])
-
-  const generateRecommendation = async () => {
+  const generateRecommendation = useCallback(async () => {
     if (!user) return
 
     setLoading(true)
@@ -41,9 +36,13 @@ export const PersonalizedRecommendation: React.FC = () => {
     } finally {
       setLoading(false)
     }
-  }
+  }, [user])
 
-  const generateLocalRecommendation = (user: any): RecommendationData => {
+  useEffect(() => {
+    generateRecommendation();
+  }, [generateRecommendation]);
+
+  const generateLocalRecommendation = (user: UserProfile): RecommendationData => {
     const score = {
       regular: 0,
       vip: 0,
@@ -120,7 +119,7 @@ export const PersonalizedRecommendation: React.FC = () => {
       .sort(([,a], [,b]) => b - a)
       .slice(1, 3)
 
-    sortedPlans.forEach(([plan, _]) => {
+    sortedPlans.forEach(([plan]) => {
       switch (plan) {
         case 'regular':
           alternatives.push({

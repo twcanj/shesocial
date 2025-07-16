@@ -218,7 +218,7 @@ export const MediaUpload: React.FC<MediaUploadProps> = ({
     if (files.length > 0) {
       handleFileUpload(files[0])
     }
-  }, [])
+  }, [handleFileUpload])
 
   const handleDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault()

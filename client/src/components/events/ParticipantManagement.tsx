@@ -47,10 +47,8 @@ export const ParticipantManagement: React.FC<ParticipantManagementProps> = ({
   const canManageParticipants = hasPermission('viewParticipants')
 
   useEffect(() => {
-    if (canManageParticipants) {
-      loadParticipants()
-    }
-  }, [event._id, canManageParticipants])
+    loadParticipants();
+  }, [loadParticipants]);
 
   const loadParticipants = async () => {
     setLoading(true)

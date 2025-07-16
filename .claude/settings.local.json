@@ -18,7 +18,10 @@
       "Bash(npm uninstall:*)",
       "Bash(grep:*)",
       "Bash(rg:*)",
-      "Bash(open http://localhost:5173/debug-auth.html)"
+      "Bash(open http://localhost:5173/debug-auth.html)",
+      "Bash(npm run build:client:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run lint:*)"
     ],
     "deny": []
   }

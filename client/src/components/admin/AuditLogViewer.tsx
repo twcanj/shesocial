@@ -1,5 +1,5 @@
 // Audit Log Viewer - View and filter admin operation logs
-import React, { useState, useEffect } from 'react'
+import React from 'react';
 import { useAdminAuth } from '../../hooks/useAdminAuth'
 
 export const AuditLogViewer: React.FC = () => {

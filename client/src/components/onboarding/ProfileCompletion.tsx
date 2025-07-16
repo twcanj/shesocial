@@ -30,7 +30,7 @@ export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({
 
   const [currentInterest, setCurrentInterest] = useState('')
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!user) return
 
