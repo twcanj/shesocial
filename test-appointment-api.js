@@ -17,10 +17,10 @@ const testData = {
     username: 'admin@infinitymatch.com',
     password: 'admin123'
   },
-  // Test user login
+  // Test user login - we need to create a test user first
   user: {
-    email: 'admin@infinitymatch.tw', 
-    password: 'InfinityAdmin2025!'
+    email: 'testuser@infinitymatch.tw', 
+    password: 'TestUser123!'
   },
   // Test appointment booking
   appointmentBooking: {
@@ -131,6 +131,102 @@ const testAdminAuth = async () => {
   }
 };
 
+const testCleanupExistingUser = async () => {
+  log.step('Cleaning up existing test user');
+  
+  try {
+    // Try to login first to check if user exists
+    const loginResponse = await apiCall('POST', '/auth/login', testData.user);
+    
+    if (loginResponse.success && loginResponse.data.accessToken) {
+      const userId = loginResponse.data.user._id;
+      
+      log.info(`Found existing test user: ${loginResponse.data.user.profile.name}`);
+      
+      // Try to delete the user using admin privileges
+      try {
+        const deleteResponse = await apiCall('DELETE', `/admin/users/${userId}`, null, adminToken);
+        
+        if (deleteResponse.success) {
+          log.success('Existing test user deleted successfully');
+          return true; // Can now create new user
+        } else {
+          log.warn('Could not delete existing user - will skip registration test');
+          return false;
+        }
+      } catch (deleteError) {
+        log.warn(`Could not delete existing user: ${deleteError.message}`);
+        return false; // Skip registration test
+      }
+    }
+  } catch (error) {
+    if (error.message.includes('電子郵件或密碼錯誤')) {
+      log.info('Test user does not exist - can proceed with registration');
+      return true; // User doesn't exist, can create
+    } else {
+      log.error(`Cleanup check failed: ${error.message}`);
+      return true; // Assume can create
+    }
+  }
+  
+  return true;
+};
+
+const testCreateTestUser = async () => {
+  log.step('Creating test user');
+  
+  // Check if user already exists
+  const canCreate = await testCleanupExistingUser();
+  
+  if (!canCreate) {
+    log.warn('Skipping user creation - user already exists');
+    return;
+  }
+  
+  try {
+    const registerData = {
+      email: testData.user.email,
+      password: testData.user.password,
+      profile: {
+        name: '測試用戶',
+        age: 30,
+        bio: '測試用戶帳號',
+        interests: ['旅遊', '美食'],
+        location: '台北市',
+        interviewStatus: {
+          completed: false,
+          duration: 0
+        }
+      },
+      membership: {
+        type: 'vvip',
+        joinDate: new Date().toISOString(),
+        payments: [],
+        permissions: {
+          viewParticipants: true,
+          priorityBooking: true
+        }
+      }
+    };
+    
+    const response = await apiCall('POST', '/auth/register', registerData);
+    
+    if (response.success) {
+      log.success('Test user created successfully');
+      log.info(`User: ${response.data?.user?.profile?.name}`);
+    } else {
+      log.warn('Test user creation failed - continuing anyway');
+    }
+  } catch (error) {
+    if (error.message.includes('已存在') || error.message.includes('已被註冊')) {
+      log.warn('Test user already exists - continuing with login');
+    } else {
+      log.error(`Create test user failed: ${error.message}`);
+      throw error;
+    }
+  }
+};
+
 const testUserAuth = async () => {
   log.step('Testing user authentication');
   
@@ -142,7 +238,39 @@ const testUserAuth = async () => {
       log.success('User authentication successful');
       log.info(`User: ${response.data.user.profile.name}`);
       log.info(`Membership: ${response.data.user.membership.type}`);
-      log.info(`Status: ${response.data.user.membership.status}`);
+      log.info(`Status: ${response.data.user.membership.status || 'Active'}`);
+      
+      // If user is not VVIP, let's try to upgrade them for testing
+      if (response.data.user.membership.type !== 'vvip') {
+        log.info('Upgrading user to VVIP for testing purposes...');
+        try {
+          const upgradeResponse = await apiCall('PUT', `/admin/users/${response.data.user._id}`, {
+            membership: {
+              ...response.data.user.membership,
+              type: 'vvip',
+              permissions: {
+                viewParticipants: true,
+                priorityBooking: true
+              }
+            }
+          }, adminToken);
+          
+          if (upgradeResponse.success) {
+            log.success('User upgraded to VVIP successfully');
+            
+            // Re-login to get updated token
+            const newLoginResponse = await apiCall('POST', '/auth/login', testData.user);
+            if (newLoginResponse.success && newLoginResponse.data.accessToken) {
+              userToken = newLoginResponse.data.accessToken;
+              log.info(`Updated membership: ${newLoginResponse.data.user.membership.type}`);
+            }
+          } else {
+            log.warn('Could not upgrade user to VVIP - continuing with current membership');
+          }
+        } catch (upgradeError) {
+          log.warn(`Could not upgrade user: ${upgradeError.message}`);
+        }
+      }
     } else {
       throw new Error('User authentication failed - no token received');
     }
@@ -152,27 +280,128 @@ const testUserAuth = async () => {
   }
 };
 
+const testCreateTestInterviewer = async () => {
+  log.step('Creating test interviewer');
+  
+  try {
+    const interviewerData = {
+      name: '測試面試官',
+      email: 'testinterviewer@infinitymatch.tw',
+      title: '資深面試官',
+      bio: '專業面試官，擅長會員諮詢和配對建議',
+      specialties: ['關係諮詢', '配對建議', '會員面試'],
+      appointmentTypes: ['member_interview', 'consultation'],
+      interviewTypes: ['video_call', 'phone_call'],
+      isActive: true,
+      availability: {
+        monday: [{ start: '09:00', end: '17:00' }],
+        tuesday: [{ start: '09:00', end: '17:00' }],
+        wednesday: [{ start: '09:00', end: '17:00' }],
+        thursday: [{ start: '09:00', end: '17:00' }],
+        friday: [{ start: '09:00', end: '17:00' }]
+      },
+      languages: ['zh-TW', 'en'],
+      maxDailyBookings: 8,
+      bookingAdvanceTime: 24,
+      pricing: {
+        consultation: 500,
+        member_interview: 0
+      }
+    };
+    
+    const response = await apiCall('POST', '/appointments/interviewers', interviewerData, userToken);
+    
+    if (response.success !== false) {
+      log.success('Test interviewer created successfully');
+      testInterviewerId = response.interviewer?._id;
+      log.info(`Interviewer: ${response.interviewer?.name}`);
+    } else {
+      log.warn('Test interviewer might already exist');
+    }
+  } catch (error) {
+    if (error.message.includes('已存在') || error.message.includes('exists')) {
+      log.warn('Test interviewer already exists');
+    } else {
+      log.error(`Create test interviewer failed: ${error.message}`);
+      // Continue anyway
+    }
+  }
+};
+
 const testGetInterviewers = async () => {
   log.step('Testing get interviewers');
   
   try {
-    const response = await apiCall('GET', '/appointments/interviewers', null, adminToken);
+    const response = await apiCall('GET', '/appointments/interviewers', null, null); // No auth required for GET
     
-    if (response.success && response.data) {
-      log.success(`Found ${response.data.length} interviewers`);
+    if (response.success !== false && response.interviewers) {
+      log.success(`Found ${response.interviewers.length} interviewers`);
       
-      if (response.data.length > 0) {
-        testInterviewerId = response.data[0]._id;
-        log.info(`Test interviewer: ${response.data[0].name} (${response.data[0].title})`);
-        log.info(`Specialties: ${response.data[0].specialties.join(', ')}`);
-        log.info(`Active: ${response.data[0].isActive}`);
+      if (response.interviewers.length > 0) {
+        testInterviewerId = response.interviewers[0]._id;
+        log.info(`Test interviewer: ${response.interviewers[0].name} (${response.interviewers[0].title || 'No title'})`);
+        log.info(`Specialties: ${response.interviewers[0].specialties?.join(', ') || 'None'}`);
+        log.info(`Active: ${response.interviewers[0].isActive}`);
       } else {
         log.warn('No interviewers found - this may affect slot testing');
       }
+    } else {
+      log.warn('No interviewers found - this may affect slot testing');
     }
   } catch (error) {
     log.error(`Get interviewers failed: ${error.message}`);
     throw error;
+  }
+};
+
+const testCreateTestSlots = async () => {
+  log.step('Creating test appointment slots');
+  
+  if (!testInterviewerId) {
+    log.warn('No test interviewer available - skipping slot creation');
+    return;
+  }
+  
+  try {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    const slotData = {
+      interviewerId: testInterviewerId,
+      appointmentType: 'member_interview',
+      date: tomorrow.toISOString().split('T')[0],
+      startTime: '10:00',
+      endTime: '11:00',
+      maxBookings: 1,
+      isRecurring: false,
+      availableFor: ['registered', 'vip', 'vvip'],
+      location: {
+        type: 'video_call',
+        details: 'Google Meet 連結將於預約確認後提供'
+      },
+      pricing: {
+        consultation: 500,
+        member_interview: 0
+      }
+    };
+    
+    const response = await apiCall('POST', '/appointments/slots', slotData, userToken);
+    
+    if (response.success !== false) {
+      log.success('Test appointment slot created successfully');
+      testSlotId = response.slot?._id;
+      log.info(`Slot: ${response.slot?.startTime} - ${response.slot?.endTime}`);
+    } else {
+      log.warn('Test slot might already exist');
+    }
+  } catch (error) {
+    if (error.message.includes('已存在') || error.message.includes('exists')) {
+      log.warn('Test slot already exists');
+    } else {
+      log.error(`Create test slot failed: ${error.message}`);
+      // Continue anyway
+    }
   }
 };
 
@@ -186,24 +415,27 @@ const testGetAvailableSlots = async () => {
     
     const queryParams = new URLSearchParams({
       type: 'member_interview',
-      date: tomorrow.toISOString().split('T')[0],
+      startDate: tomorrow.toISOString().split('T')[0],
+      endDate: tomorrow.toISOString().split('T')[0],
       ...(testInterviewerId && { interviewerId: testInterviewerId })
     });
     
-    const response = await apiCall('GET', `/appointments/slots/availability?${queryParams}`);
+    const response = await apiCall('GET', `/appointments/slots/available?${queryParams}`);
     
-    if (response.success && response.data) {
-      log.success(`Found ${response.data.length} available slots`);
+    if (response.success !== false && response.slots) {
+      log.success(`Found ${response.slots.length} available slots`);
       
-      if (response.data.length > 0) {
-        testSlotId = response.data[0].slotId;
-        log.info(`Test slot: ${response.data[0].startTime} - ${response.data[0].endTime}`);
-        log.info(`Interviewer: ${response.data[0].interviewerName}`);
-        log.info(`Available: ${response.data[0].available}`);
-        log.info(`Capacity: ${response.data[0].bookingsCount}/${response.data[0].maxBookings}`);
+      if (response.slots.length > 0) {
+        testSlotId = response.slots[0]._id;
+        log.info(`Test slot: ${response.slots[0].startTime} - ${response.slots[0].endTime}`);
+        log.info(`Interviewer: ${response.slots[0].interviewerName || 'Unknown'}`);
+        log.info(`Available: ${response.slots[0].available}`);
+        log.info(`Capacity: ${response.slots[0].bookingsCount || 0}/${response.slots[0].maxBookings || 1}`);
       } else {
         log.warn('No available slots found - this may affect booking testing');
       }
+    } else {
+      log.warn('No available slots found - this may affect booking testing');
     }
   } catch (error) {
     log.error(`Get available slots failed: ${error.message}`);
@@ -248,12 +480,17 @@ const testGetUserBookings = async () => {
   log.step('Testing get user bookings');
   
   try {
-    const response = await apiCall('GET', '/appointments/bookings', null, userToken);
+    // Add user email as query parameter since the API requires it
+    const queryParams = new URLSearchParams({
+      email: testData.user.email
+    });
     
-    if (response.success && response.data) {
-      log.success(`Found ${response.data.length} user bookings`);
+    const response = await apiCall('GET', `/appointments/bookings?${queryParams}`, null, userToken);
+    
+    if (response.success !== false && response.bookings) {
+      log.success(`Found ${response.bookings.length} user bookings`);
       
-      response.data.forEach((booking, index) => {
+      response.bookings.forEach((booking, index) => {
         log.info(`Booking ${index + 1}:`);
         log.info(`  ID: ${booking._id}`);
         log.info(`  Type: ${booking.appointmentType}`);
@@ -261,6 +498,8 @@ const testGetUserBookings = async () => {
         log.info(`  Date: ${booking.scheduledDate}`);
         log.info(`  Contact: ${booking.contactInfo.name}`);
       });
+    } else {
+      log.warn('No user bookings found');
     }
   } catch (error) {
     log.error(`Get user bookings failed: ${error.message}`);
@@ -272,22 +511,24 @@ const testGetAppointmentStats = async () => {
   log.step('Testing get appointment statistics');
   
   try {
-    const response = await apiCall('GET', '/appointments/stats', null, adminToken);
+    const response = await apiCall('GET', '/appointments/stats', null, userToken);
     
-    if (response.success && response.data) {
+    if (response.success !== false && response.stats) {
       log.success('Appointment statistics retrieved');
-      log.info(`Total slots: ${response.data.totalSlots}`);
-      log.info(`Available slots: ${response.data.availableSlots}`);
-      log.info(`Total bookings: ${response.data.totalBookings}`);
-      log.info(`Today's bookings: ${response.data.todaysBookings}`);
-      log.info(`Upcoming bookings: ${response.data.upcomingBookings}`);
+      log.info(`Total slots: ${response.stats.totalSlots || 0}`);
+      log.info(`Available slots: ${response.stats.availableSlots || 0}`);
+      log.info(`Total bookings: ${response.stats.totalBookings || 0}`);
+      log.info(`Today's bookings: ${response.stats.todaysBookings || 0}`);
+      log.info(`Upcoming bookings: ${response.stats.upcomingBookings || 0}`);
       
-      if (response.data.bookingsByStatus) {
+      if (response.stats.bookingsByStatus) {
         log.info('Bookings by status:');
-        Object.entries(response.data.bookingsByStatus).forEach(([status, count]) => {
+        Object.entries(response.stats.bookingsByStatus).forEach(([status, count]) => {
           log.info(`  ${status}: ${count}`);
         });
       }
+    } else {
+      log.warn('No appointment statistics available');
     }
   } catch (error) {
     log.error(`Get appointment stats failed: ${error.message}`);
@@ -311,14 +552,15 @@ const testRescheduleBooking = async () => {
     
     const queryParams = new URLSearchParams({
       type: 'member_interview',
-      date: dayAfterTomorrow.toISOString().split('T')[0],
+      startDate: dayAfterTomorrow.toISOString().split('T')[0],
+      endDate: dayAfterTomorrow.toISOString().split('T')[0],
       ...(testInterviewerId && { interviewerId: testInterviewerId })
     });
     
-    const slotsResponse = await apiCall('GET', `/appointments/slots/availability?${queryParams}`);
+    const slotsResponse = await apiCall('GET', `/appointments/slots/available?${queryParams}`);
     
-    if (slotsResponse.success && slotsResponse.data.length > 0) {
-      const newSlotId = slotsResponse.data[0].slotId;
+    if (slotsResponse.success !== false && slotsResponse.slots?.length > 0) {
+      const newSlotId = slotsResponse.slots[0]._id;
       
       const rescheduleData = {
         newSlotId,
@@ -326,13 +568,13 @@ const testRescheduleBooking = async () => {
         notifyUser: true
       };
       
-      const response = await apiCall('POST', `/appointments/bookings/${testBookingId}/reschedule`, rescheduleData, adminToken);
+      const response = await apiCall('PUT', `/appointments/bookings/${testBookingId}/reschedule`, rescheduleData, userToken);
       
-      if (response.success && response.data) {
+      if (response.success !== false && response.booking) {
         log.success('Booking rescheduled successfully');
-        log.info(`New scheduled date: ${response.data.scheduledDate}`);
-        log.info(`Status: ${response.data.status}`);
-        log.info(`Reason: ${response.data.rescheduleReason}`);
+        log.info(`New scheduled date: ${response.booking.scheduledDate}`);
+        log.info(`Status: ${response.booking.status}`);
+        log.info(`Reason: ${response.booking.rescheduleReason || 'API 測試重新安排'}`);
       }
     } else {
       log.warn('No available slots for reschedule test');
@@ -389,8 +631,11 @@ const runAllTests = async () => {
   const tests = [
     { name: 'Server Health', fn: testServerHealth },
     { name: 'Admin Authentication', fn: testAdminAuth },
+    { name: 'Cleanup & Create Test User', fn: testCreateTestUser },
     { name: 'User Authentication', fn: testUserAuth },
+    { name: 'Create Test Interviewer', fn: testCreateTestInterviewer },
     { name: 'Get Interviewers', fn: testGetInterviewers },
+    { name: 'Create Test Slots', fn: testCreateTestSlots },
     { name: 'Get Available Slots', fn: testGetAvailableSlots },
     { name: 'Create Appointment Booking', fn: testCreateAppointmentBooking },
     { name: 'Get User Bookings', fn: testGetUserBookings },
