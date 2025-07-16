@@ -6,11 +6,11 @@ import { RoleManagement } from '../components/admin/RoleManagement'
 import { UserManagement } from '../components/admin/UserManagement'
 import { AuditLogViewer } from '../components/admin/AuditLogViewer'
 import { AdminOverview } from '../components/admin/AdminOverview'
+import { EventManagement } from '../components/admin/EventManagement'
 import { ErrorBoundary } from '../components/common/ErrorBoundary'
 import { useAdminAuth } from '../hooks/useAdminAuth'
 
-// Placeholder components for new sections
-const EventManagement: React.FC = () => <div className="text-white">活動管理 Content</div>;
+// Placeholder components for remaining sections
 const InterviewManagement: React.FC = () => <div className="text-white">會員面試管理 Content</div>;
 const ConsultingManagement: React.FC = () => <div className="text-white">諮詢預約管理 Content</div>;
 const EventHistoryManagement: React.FC = () => <div className="text-white">過往活動管理 Content</div>;

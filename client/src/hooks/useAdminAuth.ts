@@ -144,12 +144,12 @@ export const useAdminAuthStore = create<AdminAuthState>()(
       hasPermission: (permission: string) => {
         const { admin } = get()
         
-        // Debug logging
-        if (process.env.NODE_ENV === 'development') {
-          console.log('hasPermission called with:', permission)
-          console.log('admin object:', admin)
-          console.log('admin.permissions:', admin?.permissions)
-        }
+        // Debug logging (disabled to reduce console noise)
+        // if (process.env.NODE_ENV === 'development') {
+        //   console.log('hasPermission called with:', permission)
+        //   console.log('admin object:', admin)
+        //   console.log('admin.permissions:', admin?.permissions)
+        // }
         
         if (!admin || admin.status !== 'active') return false
         
