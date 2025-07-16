@@ -5,7 +5,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { API_CONFIG } from '../config/api'
 
-interface AdminProfile {
+export interface AdminProfile {
   adminId: string
   username: string
   email: string

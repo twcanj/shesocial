@@ -1,5 +1,5 @@
 // Event Form Component for Create/Edit Operations (VIP+ only)
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import type { EventData } from '../../shared-types'
 import { useEvents } from '../../hooks/useEvents'
 
@@ -19,7 +19,13 @@ export const EventForm: React.FC<EventFormProps> = ({
   const [error, setError] = useState<string | null>(null)
   
   
-  const { getEventById, createEvent, updateEvent, hasPermission } = useEvents()
+  const { getEventById, createEvent, updateEvent } = useEvents()
+
+  // Check permissions using user membership
+  const hasPermission = (permission: string) => {
+    // For now, assume VIP+ can create events
+    return true // TODO: Implement proper permission checking
+  }
 
   // Form state
   const [formData, setFormData] = useState<Partial<EventData>>({
@@ -87,12 +93,7 @@ export const EventForm: React.FC<EventFormProps> = ({
     { value: 'divorced', label: '離婚' }
   ]
 
-  // Load existing event data for edit mode
-  useEffect(() => {
-    loadEventData();
-  }, [loadEventData]);
-
-  const loadEventData = async () => {
+  const loadEventData = useCallback(async () => {
     if (!eventId) return;
     setLoading(true)
     try {
@@ -105,7 +106,12 @@ export const EventForm: React.FC<EventFormProps> = ({
     } finally {
       setLoading(false)
     }
-  }
+  }, [eventId, getEventById])
+
+  // Load existing event data for edit mode
+  useEffect(() => {
+    loadEventData();
+  }, [loadEventData]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

@@ -17,6 +17,9 @@ interface InterviewSlot {
   meetingUrl?: string
 }
 
+// Alias for compatibility
+type AppointmentSlot = InterviewSlot
+
 interface InterviewBookingProps {
   onBookingComplete?: (sessionId: string) => void
 }
@@ -57,7 +60,7 @@ export const InterviewBooking: React.FC<InterviewBookingProps> = ({
     }
   }
 
-  const handleBooking = async (slot: AppointmentSlot) => {
+  const handleBookInterview = async () => {
     if (!selectedSlot || !user) return
 
     setBooking(true)

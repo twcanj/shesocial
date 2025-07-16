@@ -1,41 +1,27 @@
-# SheSocial 故障排除指南
+# InfinityMatch 天造地設人成對 - Troubleshooting Guide
+## Development Environment Issues & Solutions
+
+> **Status**: Active Maintenance
+> **Last Updated**: 2025-07-16
+> **Version**: 3.0
+
+---
 
 ## 前端開發環境問題
 
-### 1. ✅ 活動按鈕無響應問題 - 已解決 + 完整功能恢復
+## Current Issues
 
-**問題描述:**
-點擊導航欄中的"活動"按鈕沒有任何響應。
+### Cache & Build Issues
+```bash
+# Clear all caches
+npm run dev:fresh
 
-**根本原因:**
-- 原始實現使用複雜的 EventsPage 組件，但存在 TypeScript 類型導入問題
-- `verbatimModuleSyntax` 設置要求類型導入使用 `import type`
-- useOfflineDB hook 缺少 events CRUD 方法
-- AuthState 接口缺少 token 屬性
+# Full rebuild
+npm run build
 
-**解決方案:**
-系統性修復所有類型問題，恢復完整功能：
-
-**修復步驟:**
-1. ✅ **創建統一類型文件** - shared-types.ts 包含所有接口
-2. ✅ **修復類型導入語法** - 使用 `import type` 語法
-3. ✅ **恢復完整組件系統** - EventsPage, EventList, EventDetail, EventForm 等
-4. ✅ **修復 useOfflineDB hook** - 添加缺少的 events CRUD 方法
-5. ✅ **修復 AuthState** - 添加 token 屬性兼容性
-6. ✅ **創建缺失組件** - LoginForm, RegisterForm 占位組件
-7. ✅ **暫時禁用 Service Worker** - 避免 API 類型問題
-8. ✅ **放寬 TypeScript 設置** - 暫時禁用嚴格空值檢查
-
-**最終狀態:** 🎉 **完整功能恢復**
-- **真實活動數據** - 連接 IndexedDB + NeDB 數據庫
-- **完整 CRUD 操作** - 創建、編輯、刪除、查看活動
-- **高級篩選搜索** - 按日期、地點、類型、會員級別篩選
-- **會員權限控制** - 4層會員制度完整實現
-- **參與者管理** - 查看和管理活動參與者
-- **預訂系統** - 真實活動報名功能
-- **離線優先架構** - IndexedDB 本地存儲 + 背景同步
-- **認證系統** - JWT 完整認證流程
-- **台灣本地化** - 繁體中文完整界面
+# Hard browser refresh
+Ctrl+Shift+R
+```
 
 ### 2. Vite 緩存和類型文件問題
 
@@ -110,13 +96,13 @@ export default {
 
 **錯誤訊息:**
 ```
-EADDRINUSE: address already in use :::3001
+EADDRINUSE: address already in use :::10000
 ```
 
 **解決方案:**
 ```bash
 # 查找佔用端口的進程
-lsof -i :3001
+lsof -i :10000
 
 # 終止進程
 kill -9 <PID>
@@ -202,6 +188,7 @@ npm run dev
 2. 查看項目文檔
 3. 聯繫開發團隊
 
-**聯繫方式:**
-- 郵件: contact@shesocial.tw
-- LINE: @shesocial
+**Support:**
+- GitHub Issues
+- Project Documentation
+- Development Team

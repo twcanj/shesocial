@@ -1,5 +1,5 @@
 // Admin Media Moderation Dashboard
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 
 interface ModerationItem {
   _id: string
@@ -36,11 +36,7 @@ export const ModerationDashboard: React.FC = () => {
   const [rejectionReason, setRejectionReason] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('pending')
 
-  useEffect(() => {
-    fetchModerationQueue();
-  }, [fetchModerationQueue]);
-
-  const fetchModerationQueue = async () => {
+  const fetchModerationQueue = useCallback(async () => {
     try {
       const response = await fetch(`/api/admin/moderation-queue?status=${statusFilter}`, {
         headers: {
@@ -57,7 +53,11 @@ export const ModerationDashboard: React.FC = () => {
     } finally {
       setLoading(false)
     }
-  }
+  }, [statusFilter]);
+
+  useEffect(() => {
+    fetchModerationQueue();
+  }, [fetchModerationQueue]);
 
   const handleReview = async (decision: 'approve' | 'reject' | 'require_revision') => {
     if (!selectedItem) return

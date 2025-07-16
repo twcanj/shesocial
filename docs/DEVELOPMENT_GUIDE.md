@@ -1,50 +1,37 @@
-# Development Guide
+# InfinityMatch 天造地設人成對 - Development Guide
+## Extended Development Procedures
 
-## Quick Start Commands
+> **Status**: Production Ready
+> **Last Updated**: 2025-07-16
+> **Version**: 3.0
 
-### Installation and Setup
+> **Note**: Core development commands are in CLAUDE.md. This guide covers extended procedures.
+
+---
+
+## Extended Commands
+
+### Installation
 ```bash
-# Install all dependencies (root, client, and server)
+# Install all dependencies
 npm run install:all
 
-# Install only client dependencies
+# Individual installations
 cd client && npm install
-
-# Install only server dependencies
 cd server && npm install
 ```
 
-### Development
+### Testing & Quality
 ```bash
-# IMPORTANT: Always test build before starting server
-npm run build
+# Type checking (server)
+cd server && npm run typecheck
 
-# Start both client and server in development mode
-npm run dev
+# Linting (server)
+cd server && npm run lint
+cd server && npm run lint:fix
 
-# Start only client (frontend)
-npm run dev:client
-
-# Start only server (backend)
-npm run dev:server
-
-# Check system health (includes database status)
-curl http://localhost:10000/health
-```
-
-### Build and Production
-```bash
-# Build both client and server
-npm run build
-
-# Build only client
-npm run build:client
-
-# Build only server
-npm run build:server
-
-# Start production server
-npm start
+# Linting (client)
+cd client && npm run lint
 ```
 
 ### Client-specific Commands (from client/ directory)
@@ -81,11 +68,11 @@ curl http://localhost:10000/health?log=true
 ```
 
 ## Development Environment
-- Client runs on http://localhost:5173
-- Server runs on http://localhost:3001
-- API base URL: http://localhost:3001/api
-- Health check: http://localhost:3001/health
-- API documentation: http://localhost:3001
+- **Client**: http://localhost:5173 (React 19 + Vite)
+- **Server**: http://localhost:10000 (Node.js + Express)
+- **API**: http://localhost:10000/api
+- **Health**: http://localhost:10000/health
+- **Admin**: http://localhost:5173/admin_login
 
 ## Cache Management (Vite)
 
@@ -111,9 +98,34 @@ Ctrl+Shift+R (Windows/Linux) or Cmd+Shift+R (Mac)
 - **Dependency Cache**: Located in `node_modules/.vite/` - auto-invalidated on dependency changes
 - **Production Builds**: Automatic content hashing for cache busting (`assets/[name]-[hash].js`)
 
-## Key Development Notes
-- Development environment is stable and working correctly
-- Vite cache is properly configured for optimal development experience
-- Authentication system complete with JWT + bcrypt security
-- 4-tier membership system with role-based permissions implemented
-- Data synchronization service complete with enterprise-grade features
+## Development Workflows
+
+### React Router Development
+- URL-based navigation system implemented
+- Admin routes separated from user routes
+- Mobile-responsive navigation with hamburger menu
+- Profile management with proper state handling
+
+### Authentication Development
+- JWT tokens with 8-hour admin sessions
+- Separate admin authentication system
+- Email/username login support for admins
+- Secure password hashing with bcrypt
+
+### Appointment System Development
+- Enterprise-grade booking system
+- 1,380 appointment slots with conflict detection
+- 9 interviewers with availability management
+- Real-time booking status updates
+
+### Database Development
+- NeDB with 11 collections
+- IndexedDB for offline-first frontend
+- Bidirectional sync with conflict resolution
+- Automated health monitoring
+
+## Production Deployment Notes
+- Platform is production-ready
+- Complete luxury design system implemented
+- Mobile-optimized responsive design
+- Enterprise health monitoring active

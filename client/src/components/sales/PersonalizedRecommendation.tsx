@@ -1,5 +1,5 @@
 // Personalized Membership Recommendation based on User Profile
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useAuth } from '../../contexts/AuthContext'
 import { UserProfile } from '../../shared-types'
 
@@ -77,8 +77,10 @@ export const PersonalizedRecommendation: React.FC = () => {
       reasons.push('都會區會員重視查看參與者功能')
     }
 
-    // Occupation-based recommendations
-    const occupation = user.profile?.occupation?.toLowerCase() || ''
+    // Occupation-based recommendations  
+    // Note: occupation field is not in current UserProfile schema
+    // This is a placeholder for future implementation
+    const occupation = '' // user.profile?.occupation?.toLowerCase() || ''
     if (occupation.includes('醫師') || occupation.includes('律師') || occupation.includes('主管')) {
       score.premium_2500 += 35
       reasons.push('專業人士通常偏好Premium服務')
@@ -96,14 +98,18 @@ export const PersonalizedRecommendation: React.FC = () => {
     }
 
     // Expectations-based recommendations
-    const expectations = user.membership?.salesLead?.expectations || ''
+    // Note: salesLead field is not in current UserProfile schema
+    // This is a placeholder for future implementation
+    const expectations = '' // user.membership?.salesLead?.expectations || ''
     if (expectations.includes('高學歷') || expectations.includes('穩定') || expectations.includes('成熟')) {
       score.premium_2500 += 25
       reasons.push('您期望的伴侶特質符合Premium會員群體')
     }
 
     // Lead source considerations
-    const leadSource = user.membership?.leadSource
+    // Note: leadSource field is not in current UserProfile schema
+    // This is a placeholder for future implementation
+    const leadSource = null // user.membership?.leadSource
     if (leadSource === 'referral') {
       score.premium_1300 += 15
       reasons.push('朋友推薦的會員通常選擇中高階方案')
@@ -154,11 +160,11 @@ export const PersonalizedRecommendation: React.FC = () => {
 
     // Generate discount if applicable
     let discount
-    if (leadSource === 'referral' || new Date().getDay() === 0) { // Sunday special
+    if (new Date().getDay() === 0) { // Sunday special
       discount = {
         amount: 10,
         expiry: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
-        reason: leadSource === 'referral' ? '朋友推薦優惠' : '週日限時優惠'
+        reason: '週日限時優惠'
       }
     }
 

@@ -1,5 +1,5 @@
 // Participant Management Component (Premium 2500 only)
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import type { EventData } from '../../shared-types'
 import { useAuthStore } from '../../store/authStore'
 import { useEvents } from '../../hooks/useEvents'
@@ -46,11 +46,7 @@ export const ParticipantManagement: React.FC<ParticipantManagementProps> = ({
   // Check if user has permission to manage participants
   const canManageParticipants = hasPermission('viewParticipants')
 
-  useEffect(() => {
-    loadParticipants();
-  }, [loadParticipants]);
-
-  const loadParticipants = async () => {
+  const loadParticipants = useCallback(async () => {
     setLoading(true)
     try {
       const participantData = await getEventParticipants(event._id!)
@@ -60,7 +56,11 @@ export const ParticipantManagement: React.FC<ParticipantManagementProps> = ({
     } finally {
       setLoading(false)
     }
-  }
+  }, [event._id, getEventParticipants])
+
+  useEffect(() => {
+    loadParticipants();
+  }, [loadParticipants]);
 
   const updateParticipantStatus = async (
     participantId: string, 

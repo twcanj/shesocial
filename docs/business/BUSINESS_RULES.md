@@ -1,11 +1,34 @@
-# InfinityMatch 天造地設人成對 業務規則文件
-## 三大內容模塊、會員制度與服務管理規範
+# InfinityMatch 天造地設人成對 - Business Rules
+## Core Business Logic & Content Management
 
-> **重要更新**: 2025年實施三大內容模塊架構 - VVIPIntro、EventManagement、EventShowcase，建立分層權限與內容管理系統
+> **Status**: Production Ready
+> **Last Updated**: 2025-07-16
+> **Version**: 3.0
 
 ---
 
-## 💎 會員等級與定價
+## Business Rules Overview
+
+> **Note**: Basic membership structure is defined in CLAUDE.md. This document covers detailed business logic.
+
+## Content Management Modules
+
+### VVIPIntro System
+- Premium member introduction showcase
+- VVIP-exclusive content creation and viewing
+- Professional photo and video content
+
+### Event Management
+- Complete event lifecycle management
+- Booking and cancellation policies
+- Member participation tracking
+
+### Event Showcase
+- Public gallery of successful events
+- Marketing and social proof content
+- Member testimonials and highlights
+
+## Payment & Pricing Rules
 
 ### 會員方案與權限系統
 ```javascript
@@ -21,9 +44,9 @@ const membershipTiers = {
     permissions: {
       joinEvents: false, // 不能參加活動
       viewParticipants: false,
-      viewVVIPIntros: false,
-      purchaseVVIPIntro: false,
-      viewEventShowcase: true // 可瀏覽精彩活動集
+      bookInterview: false,
+      uploadMedia: false,
+      viewEventShowcase: true
     }
   },
   
@@ -38,9 +61,9 @@ const membershipTiers = {
     permissions: {
       joinEvents: false, // 不能參加活動
       viewParticipants: false,
-      viewVVIPIntros: false,
-      purchaseVVIPIntro: false,
-      viewEventShowcase: true // 可瀏覽精彩活動集
+      bookInterview: false,
+      uploadMedia: false,
+      viewEventShowcase: true
     }
   },
   

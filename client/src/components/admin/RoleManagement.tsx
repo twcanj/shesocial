@@ -35,11 +35,9 @@ export const RoleManagement: React.FC = () => {
   const [selectedRole, setSelectedRole] = useState<AdminRole | null>(null)
   const [roleCapabilities, setRoleCapabilities] = useState<RoleCapabilities | null>(null)
   const [loading, setLoading] = useState(true)
+  const [showCreateModal, setShowCreateModal] = useState(false)
+  const [editingRole, setEditingRole] = useState<AdminRole | null>(null)
   
-
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
 
   const loadData = async () => {
     try {

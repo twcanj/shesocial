@@ -1,5 +1,5 @@
 // Permission Management - Manage atomic permissions and validation
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useAdminAuth, adminAPI } from '../../hooks/useAdminAuth'
 
 interface PermissionAtom {
@@ -27,11 +27,10 @@ export const PermissionManagement: React.FC = () => {
   const [validationResult, setValidationResult] = useState<any>(null)
   const [testPermissions, setTestPermissions] = useState<string[]>([])
 
-  useEffect(() => {
-    loadPermissions();
-  }, [loadPermissions]);
+  const [activeGroup, setActiveGroup] = useState<string>('');
+  const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
 
-  const loadPermissions = async () => {
+  const loadPermissions = useCallback(async () => {
     try {
       setLoading(true)
       const response = await adminAPI.getGroupedPermissions()
@@ -49,7 +48,11 @@ export const PermissionManagement: React.FC = () => {
     } finally {
       setLoading(false)
     }
-  }
+  }, [activeGroup]);
+
+  useEffect(() => {
+    loadPermissions();
+  }, [loadPermissions]);
 
   const validatePermissions = async (permissions: string[]) => {
     try {

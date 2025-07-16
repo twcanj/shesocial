@@ -1,5 +1,5 @@
 // Event Detail Page with Booking Flow
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import type { EventData, BookingData } from '../../shared-types'
 import { useAuthStore } from '../../store/authStore'
 import { useEvents } from '../../hooks/useEvents'
@@ -15,7 +15,7 @@ export const EventDetail: React.FC<EventDetailProps> = ({
   onBack,
   onEdit
 }) => {
-  const [event, setEvent] = useState<Event | null>(null);
+  const [event, setEvent] = useState<EventData | null>(null);
   const [loading, setLoading] = useState(true)
   const [bookingLoading, setBookingLoading] = useState(false)
   const [showBookingForm, setShowBookingForm] = useState(false)
@@ -34,11 +34,7 @@ export const EventDetail: React.FC<EventDetailProps> = ({
     }
   })
 
-  useEffect(() => {
-    loadEventDetails();
-  }, [loadEventDetails]);
-
-  const loadEventDetails = async () => {
+  const loadEventDetails = useCallback(async () => {
     setLoading(true)
     try {
       const eventData = await getEventById(eventId)
@@ -54,7 +50,11 @@ export const EventDetail: React.FC<EventDetailProps> = ({
     } finally {
       setLoading(false)
     }
-  }
+  }, [eventId, getEventById, hasPermission, getEventParticipants])
+
+  useEffect(() => {
+    loadEventDetails();
+  }, [loadEventDetails]);
 
   const handleBookEvent = async () => {
     if (!event || !user) return

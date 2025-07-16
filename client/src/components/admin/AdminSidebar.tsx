@@ -1,5 +1,6 @@
 // Admin Sidebar - Navigation for admin dashboard
-import React from 'react'
+import React from 'react';
+import type { AdminProfile } from '../../hooks/useAdminAuth';
 
 interface AdminSidebarProps {
   activeSection: string

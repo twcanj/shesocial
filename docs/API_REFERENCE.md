@@ -1,20 +1,25 @@
-# API Reference
+# InfinityMatch 天造地設人成對 - API Reference
+## Complete API Documentation
+
+> **Status**: Production Ready
+> **Last Updated**: 2025-07-16
+> **Version**: 3.0
+
+---
 
 ## Base URLs
 
 ### Development Environment
 - Client: http://localhost:5173
-- Server: http://localhost:3001
-- API: http://localhost:3001/api
-- Health: http://localhost:3001/health
+- Server: http://localhost:10000
+- API: http://localhost:10000/api
+- Health: http://localhost:10000/health
 
 ### Production Environment
-- **Domain Strategy**: New dedicated domain (planning) | Backup: shesocial.ahexagram.com
-- **API Structure**: api.[domain] | Backup: api-shesocial.ahexagram.com
-- **Admin Panel**: admin.[domain] (future)
-- **CDN**: Cloudflare (DNS management)
-- **SSL**: Automatic via Cloudflare
+- **Domain**: TBD (planning phase)
 - **Deployment**: Render.com
+- **CDN**: Cloudflare
+- **SSL**: Automatic
 
 ## Authentication Endpoints
 
@@ -26,11 +31,12 @@
 - **Change password**: `PUT /api/auth/change-password`
 - **Logout**: `POST /api/auth/logout`
 
-### Admin Authentication (獨立管理系統)
-- **Admin login**: `POST /api/admin/auth/login`
+### Admin Authentication
+- **Admin login**: `POST /api/admin/auth/login` (supports email/username)
 - **Admin logout**: `POST /api/admin/auth/logout`
 - **Admin profile**: `GET /api/admin/auth/profile`
 - **Admin token refresh**: `POST /api/admin/auth/refresh`
+- **Credentials**: admin@infinitymatch.com / admin123
 
 ## Admin Permission Management Endpoints
 - **List permission atoms**: `GET /api/admin/permissions/atoms`
@@ -47,39 +53,43 @@
 - **Audit logs**: `GET /api/admin/audit/logs`
 - **Admin health check**: `GET /api/admin/health`
 
-## Appointment System Endpoints (預約系統 API)
+## Appointment System API
 
-### 時段管理 (客戶管理專責)
-- **Create appointment slot**: `POST /api/appointments/slots`
+### Appointment Slots
+- **Create slot**: `POST /api/appointments/slots` (VIP+ only)
 - **Get available slots**: `GET /api/appointments/slots/available`
-- **Update slot**: `PUT /api/appointments/slots/:slotId`
-- **Delete slot**: `DELETE /api/appointments/slots/:slotId`
+- **Get slot details**: `GET /api/appointments/slots/:slotId`
+- **Update slot**: `PUT /api/appointments/slots/:slotId` (VIP+ only)
+- **Delete slot**: `DELETE /api/appointments/slots/:slotId` (VIP+ only)
 
-### 預約管理 (會員+訪客)
-- **Create booking**: `POST /api/appointments/bookings`
+### Bookings
+- **Create booking**: `POST /api/appointments/bookings` (authenticated)
 - **Get user bookings**: `GET /api/appointments/bookings`
-- **Update booking status**: `PUT /api/appointments/bookings/:bookingId/status`
+- **Get booking details**: `GET /api/appointments/bookings/:bookingId`
+- **Update booking status**: `PUT /api/appointments/bookings/:bookingId/status` (VIP+ only)
 - **Reschedule booking**: `PUT /api/appointments/bookings/:bookingId/reschedule`
 - **Cancel booking**: `PUT /api/appointments/bookings/:bookingId/cancel`
 
-### 面試官管理 (客戶管理專責)
-- **Create interviewer**: `POST /api/appointments/interviewers`
-- **Get interviewers**: `GET /api/appointments/interviewers`
-- **Update interviewer**: `PUT /api/appointments/interviewers/:interviewerId`
-- **Set availability**: `PUT /api/appointments/interviewers/:interviewerId/availability`
+### Interviewers
+- **Get active interviewers**: `GET /api/appointments/interviewers`
+- **Create interviewer**: `POST /api/appointments/interviewers` (VVIP only)
 
-### 統計和管理
-- **Get statistics**: `GET /api/appointments/stats`
-- **Today's bookings**: `GET /api/appointments/today`
-- **Reminder bookings**: `GET /api/appointments/reminders`
+### Analytics
+- **Get appointment statistics**: `GET /api/appointments/stats` (VIP+ only)
 
-## Comprehensive Appointment API
-- **Interviewers**: `GET/POST/PUT/DELETE /api/appointments/interviewers`
-- **Appointment Slots**: `GET/POST/PUT/DELETE /api/appointments/slots`
-- **Appointment Bookings**: `GET/POST/PUT/DELETE /api/appointments/bookings`
-- **Availability Check**: `GET /api/appointments/slots/availability`
-- **Analytics**: `GET /api/appointments/analytics`
-- **Reports**: `GET /api/appointments/reports/export`
+## Events API
+
+### Event Management
+- **Get all events**: `GET /api/events`
+- **Get event details**: `GET /api/events/:eventId`
+- **Create event**: `POST /api/events` (admin only)
+- **Update event**: `PUT /api/events/:eventId` (admin only)
+- **Delete event**: `DELETE /api/events/:eventId` (admin only)
+
+### Event Bookings
+- **Book event**: `POST /api/events/:eventId/book` (VIP+ only)
+- **Get event participants**: `GET /api/events/:eventId/participants` (VVIP only)
+- **Cancel booking**: `DELETE /api/events/:eventId/book`
 
 ## Health & Monitoring Endpoints
 - **Health Check**: `GET /health` - Comprehensive system status
@@ -99,13 +109,12 @@
 - **workbox-webpack-plugin**: "^7.3.0" - Service Worker
 
 ### Backend
-- **nedb**: "^1.8.0" - Lightweight embedded database
+- **@seald-io/nedb**: "^4.1.2" - Embedded database
 - **express**: "^4.21.2" - Web framework
 - **cors**: "^2.8.5" - Cross-origin resource sharing
 - **helmet**: "^8.1.0" - Security middleware
 - **morgan**: "^1.10.0" - HTTP request logger
 - **bcrypt**: "^6.0.0" - Password hashing
 - **jsonwebtoken**: "^9.0.2" - JWT authentication
+- **uuid**: "^11.1.0" - UUID generation
 - **typescript**: "^5.8.3" - Type safety
-- **ts-node**: "^10.9.2" - TypeScript execution
-- **nodemon**: "^3.1.10" - Development server
