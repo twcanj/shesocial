@@ -140,7 +140,7 @@ export const useAuthStore = create<AuthState>()(
             set({ isLoading: false })
             return result
           }
-        } catch (error) {
+        } catch {
           set({ isLoading: false })
           return {
             success: false,
@@ -180,7 +180,7 @@ export const useAuthStore = create<AuthState>()(
             set({ isLoading: false })
             return result
           }
-        } catch (error) {
+        } catch {
           set({ isLoading: false })
           return {
             success: false,
@@ -245,7 +245,7 @@ export const useAuthStore = create<AuthState>()(
             get().logout()
             return false
           }
-        } catch (error) {
+        } catch {
           get().logout()
           return false
         }
@@ -305,7 +305,7 @@ export const useAuthStore = create<AuthState>()(
 
           const result = await response.json()
           return result.success
-        } catch (error) {
+        } catch {
           return false
         }
       },

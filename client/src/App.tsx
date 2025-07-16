@@ -23,7 +23,7 @@ function AuthInitializer() {
       if (refreshToken && isAuthenticated) {
         try {
           await getCurrentUser()
-        } catch (error) {
+        } catch {
           // If restoration fails, clear the invalid auth state
           useAuthStore.getState().logout()
         }
@@ -33,7 +33,7 @@ function AuthInitializer() {
     // Small delay to ensure Zustand has hydrated from localStorage
     const timer = setTimeout(initializeAuth, 200)
     return () => clearTimeout(timer)
-  }, []) // Only run once on mount
+  }, [refreshToken, isAuthenticated, getCurrentUser]) // Include dependencies
 
   return null
 }

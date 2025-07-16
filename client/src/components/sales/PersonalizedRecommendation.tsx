@@ -44,7 +44,7 @@ export const PersonalizedRecommendation: React.FC = () => {
   }
 
   const generateLocalRecommendation = (user: any): RecommendationData => {
-    let score = {
+    const score = {
       regular: 0,
       vip: 0,
       premium_1300: 0,
