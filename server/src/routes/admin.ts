@@ -106,7 +106,7 @@ router.post('/auth/login', async (req, res) => {
 
     // Validate password
     const isValidPassword = await bcrypt.compare(password, adminUser.passwordHash)
-    if (!isValidPassword || adminUser.username !== username) {
+    if (!isValidPassword || (adminUser.username !== username && adminUser.email !== username)) {
       return res.status(401).json({ error: 'Invalid credentials' })
     }
 

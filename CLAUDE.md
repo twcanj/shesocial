@@ -17,17 +17,18 @@ curl http://localhost:10000/health
 ```
 
 ### Environment
-- **Client**: http://localhost:5173 (React 19 + TypeScript + Vite)
-- **Server**: http://localhost:3001 (Node.js + Express + NeDB)
-- **API**: http://localhost:3001/api
+- **Client**: http://localhost:5173 (React 19 + TypeScript + Vite + React Router)
+- **Server**: http://localhost:10000 (Node.js + Express + NeDB)
+- **API**: http://localhost:10000/api
 
 ## 🏗️ Architecture
 
 ### Core Stack
-- **Frontend**: React 19 + TypeScript + Tailwind CSS + Dexie.js (IndexedDB)
+- **Frontend**: React 19 + TypeScript + Tailwind CSS + Dexie.js (IndexedDB) + React Router
 - **Backend**: Node.js + Express + NeDB + JWT authentication
 - **Design**: Zodiac-inspired luxury theme with imperial purple (#663399) and dark gold (#b8860b)
 - **Language**: Traditional Chinese (Taiwan localization)
+- **Routing**: URL-based routing with admin separation
 
 ### Key Features
 - **4-Tier Membership**: visitor → registered → vip → vvip (updated membership structure)
@@ -114,6 +115,11 @@ curl http://localhost:10000/health
 - LINE Official Account integration
 
 ### 🚀 Recent Fixes & Improvements
+- **React Router Implementation**: Added URL-based routing with admin separation
+- **Admin Login Route**: Dedicated `/admin_login` path for admin access
+- **API Configuration**: Centralized API base URL configuration in `client/src/config/api.ts`
+- **Port Correction**: Fixed all API endpoints to use correct port 10000 (not 3001)
+- **Admin Authentication**: Email/username login support for admin users
 - **Fixed ProfilePage Flash Issue**: Resolved window.location.href causing page reload and logout
 - **Mobile Navigation**: Added missing 個人檔案 button to mobile hamburger menu
 - **Dropdown Contrast**: Fixed invisible text in membership dropdown with luxury theme
@@ -124,7 +130,8 @@ curl http://localhost:10000/health
 ## 🔧 Key Files
 
 ### Frontend Core
-- `client/src/App.tsx` - Main app with AuthProvider
+- `client/src/App.tsx` - Main app with React Router and AuthProvider
+- `client/src/config/api.ts` - Centralized API configuration
 - `client/src/db/offline-db.ts` - IndexedDB database
 - `client/src/services/sync-service.ts` - Bidirectional sync
 - `client/src/store/authStore.ts` - Authentication state
@@ -135,7 +142,15 @@ curl http://localhost:10000/health
 - `client/src/components/auth/RegisterForm.tsx` - Registration form with luxury styling and fixed dropdown contrast
 - `client/src/contexts/AuthContext.tsx` - Authentication context provider
 - `client/src/components/common/NavigationHeader.tsx` - Navigation with mobile profile button (fixed)
+- `client/src/components/common/NavigationHeaderRouter.tsx` - React Router compatible navigation
 - `client/src/pages/ProfilePage.tsx` - Profile page with proper navigation handling (fixed)
+- `client/src/pages/HomePage.tsx` - Home page component with React Router navigation
+
+### Admin System (Complete)
+- `client/src/pages/AdminLoginPage.tsx` - Dedicated admin login page
+- `client/src/pages/AdminDashboard.tsx` - Main admin interface
+- `client/src/hooks/useAdminAuth.ts` - Admin authentication hook
+- `server/src/routes/admin.ts` - Admin API routes with email/username login support
 
 ### Appointment/Booking System (Complete)
 - `client/src/components/interview/InterviewBooking.tsx` - Interview booking interface (updated to use new API)
@@ -223,11 +238,39 @@ curl http://localhost:10000/health
 5. Interviewer receives notification
 6. Status updated to confirmed/completed
 
+### 🌐 Routing Structure
+
+**Regular User Routes:**
+- `/` - Home page with login/registration
+- `/events` - Events listing and booking
+- `/members` - Member information and management
+- `/about` - About page and consultation booking
+- `/pricing` - Membership pricing and payment
+- `/profile` - User profile management
+
+**Admin Routes:**
+- `/admin_login` - Admin login page (email + password)
+- `/admin/dashboard` - Main admin dashboard (after login)
+- `/admin/events` - Manage ongoing events
+- `/admin/interviews` - Manage interviews and scheduling
+- `/admin/reports` - Manage successful held events
+
+**Admin Credentials:**
+- **Email**: `admin@infinitymatch.com`
+- **Password**: `admin123`
+- **Login URL**: `http://localhost:5173/admin_login`
+
 ### API Endpoints (Updated)
 **Authentication:**
 - `POST /api/auth/register` - Registration with new membership types (registered, vip, vvip)
 - `POST /api/auth/login` - Login with JWT token
 - `GET /api/auth/me` - Get current user profile
+
+**Admin Authentication:**
+- `POST /api/admin/auth/login` - Admin login (accepts email or username)
+- `POST /api/admin/auth/logout` - Admin logout
+- `POST /api/admin/auth/refresh` - Refresh admin token
+- `GET /api/admin/auth/profile` - Get admin profile
 
 **Appointment System (Complete):**
 - `GET /api/appointments/slots/available` - Get available appointment slots
