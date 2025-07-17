@@ -177,9 +177,10 @@
     background: var(--gradient-card);
     @apply backdrop-blur-md rounded-2xl border border-white/30;
     @apply shadow-card-depth hover:shadow-mystical;
-    @apply transition-all duration-500 ease-in-out;
+    @apply transition-all duration-300 ease-out;
     position: relative;
     overflow: hidden;
+    will-change: transform, box-shadow;
   }
   
   .card-luxury::before {
@@ -201,12 +202,12 @@
   
   .card-luxury-hover {
     @apply card-luxury;
-    transform-style: preserve-3d;
-    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+    transition: transform 0.3s ease-out;
   }
   
   .card-luxury-hover:hover {
-    transform: scale(1.02) rotateX(2deg) rotateY(2deg);
+    transform: translateY(-2px) scale(1.01);
     @apply shadow-mystical;
   }
   
@@ -215,7 +216,10 @@
     background: rgba(12, 12, 12, 0.95); /* Dark background with transparency */
     backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(212, 175, 55, 0.2); /* Golden border */
-    @apply sticky top-0 z-50;
+    @apply sticky top-0;
+    z-index: 9999 !important; /* Ensure navigation stays above all content */
+    position: sticky !important;
+    will-change: transform;
   }
   
   /* Mystical Glass Effect */
@@ -536,11 +540,14 @@
 @layer utilities {
   /* Improved Text Gradients with Better Contrast */
   .text-gradient-luxury {
-    /* Use darker gradient for better readability */
+    /* Use darker gradient for better readability - static version to prevent blinking */
     background: linear-gradient(135deg, #4a2470 0%, #b8860b 100%);
     @apply bg-clip-text text-transparent;
-    background-size: 200% 200%;
-    animation: gradientShift 3s ease-in-out infinite;
+    background-size: 100% 100%;
+    /* Remove animation to prevent blinking */
+    will-change: auto;
+    transform: translateZ(0); /* Force GPU acceleration */
+    backface-visibility: hidden; /* Prevent flickering */
   }
   
   .text-gradient-mystical {
@@ -642,8 +649,14 @@
   0%, 100% {
     background-position: 0% 50%;
   }
+  25% {
+    background-position: 25% 50%;
+  }
   50% {
-    background-position: 100% 50%;
+    background-position: 50% 50%;
+  }
+  75% {
+    background-position: 75% 50%;
   }
 }
 

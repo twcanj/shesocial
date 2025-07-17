@@ -2,18 +2,12 @@
 // Create Seed Data Script - Populates database with predefined users and data
 // Run with: node server/scripts/create-seed-data.js
 
-const bcrypt = require('bcrypt')
-const path = require('path')
-const fs = require('fs')
-
-// Import our database setup
-const NeDBSetup = require('../dist/db/nedb-setup').default
-const { SYSTEM_USERS, ADMIN_USERS, INTERVIEWERS } = require('./seed-data')
-
-// Import models
-const { UserModel } = require('../dist/models/User')
-const { InterviewerModel } = require('../dist/models/Interviewer')
-const { AdminPermissionService } = require('../dist/services/AdminPermissionService')
+import bcrypt from 'bcrypt'
+import NeDBSetup from '../dist/db/nedb-setup.js'
+import { SYSTEM_USERS, ADMIN_USERS, INTERVIEWERS } from './seed-data.js'
+import { UserModel } from '../dist/models/User.js'
+import { InterviewerModel } from '../dist/models/Interviewer.js'
+import { AdminPermissionService } from '../dist/services/AdminPermissionService.js'
 
 async function createSeedData() {
   console.log('🌱 Starting seed data creation for InfinityMatch platform...\n')
@@ -33,13 +27,13 @@ async function createSeedData() {
     // Create system users
     console.log('👥 Creating system users...')
     const createdUsers = []
-    
+
     for (const userData of SYSTEM_USERS) {
       try {
         // Hash password
         const saltRounds = 12
         const hashedPassword = await bcrypt.hash(userData.password, saltRounds)
-        
+
         // Prepare user data
         const userToCreate = {
           ...userData,
@@ -74,7 +68,7 @@ async function createSeedData() {
         // Hash password
         const saltRounds = 12
         const hashedPassword = await bcrypt.hash(adminData.password, saltRounds)
-        
+
         // Prepare admin data
         const adminToCreate = {
           ...adminData,
@@ -88,7 +82,7 @@ async function createSeedData() {
         // Create admin user through permission service
         const createdAdmin = await adminPermissionService.createAdminUser(adminToCreate)
         console.log(`  ✅ Created admin: ${adminData.profile.realName} (${adminData.username})`)
-        
+
         createdAdmins.push({
           ...createdAdmin,
           originalPassword: adminData.password // For logging
@@ -108,7 +102,7 @@ async function createSeedData() {
     for (let i = 0; i < INTERVIEWERS.length; i++) {
       try {
         const interviewerTemplate = INTERVIEWERS[i]
-        
+
         const interviewerData = {
           ...interviewerTemplate,
           userId: null, // 面試官不是系統用戶，由營運人員管理
@@ -129,8 +123,8 @@ async function createSeedData() {
 
     // Generate login credentials summary
     console.log('📋 LOGIN CREDENTIALS SUMMARY')
-    console.log('=' * 50)
-    
+    console.log('='.repeat(50))
+
     console.log('\n🔐 ADMIN USERS:')
     createdAdmins.forEach(admin => {
       console.log(`  👤 ${admin.profile.realName}`)
@@ -170,7 +164,6 @@ async function createSeedData() {
     console.log('4. Test the booking system with different user types')
     console.log('')
     console.log('🌟 Seed data creation completed successfully!')
-
   } catch (error) {
     console.error('❌ Fatal error during seed data creation:', error)
     process.exit(1)
@@ -178,16 +171,14 @@ async function createSeedData() {
 }
 
 // Main execution
-if (require.main === module) {
-  createSeedData()
-    .then(() => {
-      console.log('\n✅ Seed data creation process finished.')
-      process.exit(0)
-    })
-    .catch((error) => {
-      console.error('\n❌ Seed data creation failed:', error)
-      process.exit(1)
-    })
-}
+createSeedData()
+  .then(() => {
+    console.log('\n✅ Seed data creation process finished.')
+    process.exit(0)
+  })
+  .catch((error) => {
+    console.error('\n❌ Seed data creation failed:', error)
+    process.exit(1)
+  })
 
-module.exports = { createSeedData }
+export { createSeedData }

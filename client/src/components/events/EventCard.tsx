@@ -86,7 +86,7 @@ export const EventCard: React.FC<EventCardProps> = ({
   }
 
   return (
-    <div className={`${getCardClass()} group hover:shadow-luxury transition-all duration-500 hover:-translate-y-1`}>
+    <div className={`${getCardClass()} group hover:shadow-luxury transition-all duration-300 hover:-translate-y-1`}>
       {/* Luxury Gold Border Accent */}
       <div className="absolute inset-0 bg-gradient-to-r from-luxury-gold/30 via-transparent to-luxury-gold/30 p-[1px] rounded-xl">
         <div className="w-full h-full bg-gradient-to-br from-luxury-midnight-black via-luxury-deep-blue to-luxury-imperial rounded-xl"></div>
@@ -249,7 +249,7 @@ export const EventCard: React.FC<EventCardProps> = ({
         <div className="flex gap-3 pt-6 border-t border-luxury-gold/20 relative z-10">
           <button
             onClick={() => onViewDetails(event._id!)}
-            className="flex-1 bg-luxury-platinum/10 hover:bg-luxury-platinum/20 text-luxury-platinum border border-luxury-platinum/30 hover:border-luxury-platinum/50 font-semibold py-3 px-4 rounded-lg transition-all duration-300 hover:shadow-lg group"
+            className="flex-1 bg-luxury-platinum/10 hover:bg-luxury-platinum/20 text-luxury-platinum border border-luxury-platinum/30 hover:border-luxury-platinum/50 font-semibold py-3 px-4 rounded-lg transition-all duration-200 will-change-auto group"
           >
             <span className="flex items-center justify-center space-x-2 text-sm">
               <span>查看詳情</span>
@@ -260,7 +260,7 @@ export const EventCard: React.FC<EventCardProps> = ({
             <button
               onClick={() => onBookEvent(event._id!)}
               disabled={isUserBooked}
-              className={`flex-1 font-semibold py-3 px-4 rounded-lg transition-all duration-300 group ${
+              className={`flex-1 font-semibold py-3 px-4 rounded-lg transition-all duration-200 will-change-auto group ${
                 isUserBooked 
                   ? 'bg-luxury-gold/20 text-luxury-gold border border-luxury-gold/30 cursor-not-allowed' 
                   : 'bg-luxury-gold hover:bg-luxury-gold/90 text-luxury-midnight-black border border-luxury-gold shadow-lg hover:shadow-xl'

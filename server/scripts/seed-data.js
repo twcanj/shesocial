@@ -1,9 +1,6 @@
 // Seed Data Script for InfinityMatch Platform
 // Creates predefined users for system testing and demo purposes
 
-const bcrypt = require('bcrypt')
-const { v4: uuidv4 } = require('uuid')
-
 // Predefined system users with different membership levels
 const SYSTEM_USERS = [
   // Super Admin User
@@ -263,7 +260,7 @@ const SYSTEM_USERS = [
 // Admin users - 2層4類權限架構
 const ADMIN_USERS = [
   // === 第一層：最高權限層 ===
-  
+
   // 1. 總管理員 - 業務最高決策權
   {
     adminId: 'admin-001',
@@ -311,7 +308,7 @@ const ADMIN_USERS = [
   },
 
   // === 第二層：日常營運層 ===
-  
+
   // 3. 日常營運 - 內容活動管理，不觸及客戶
   {
     adminId: 'admin-003',
@@ -552,7 +549,7 @@ const INTERVIEWERS = [
   }
 ]
 
-module.exports = {
+export {
   SYSTEM_USERS,
   ADMIN_USERS,
   INTERVIEWERS

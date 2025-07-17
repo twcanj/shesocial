@@ -159,7 +159,7 @@ export const NavigationHeaderRouter: React.FC = () => {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden bg-white border-t border-secondary-200 py-4">
+          <div className="md:hidden bg-luxury-midnight-black border-t border-luxury-gold/20 py-4 relative z-50">
             <div className="flex flex-col space-y-3">
               <Link 
                 to="/" 
@@ -198,7 +198,7 @@ export const NavigationHeaderRouter: React.FC = () => {
               </Link>
               
               {/* Mobile Auth Actions */}
-              <div className="border-t border-secondary-200 pt-3 mt-3">
+              <div className="border-t border-luxury-gold/20 pt-3 mt-3">
                 {isAuthenticated ? (
                   <div className="flex flex-col space-y-3">
                     <Link 
