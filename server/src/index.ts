@@ -99,7 +99,8 @@ app.get('/health', async (req, res) => {
         'users', 'events', 'bookings', 'syncQueue',
         'appointments_slots', 'appointment_bookings', 'interviewers',
         'availability_overrides', 'appointment_notifications',
-        'startup_records', 'health_logs'
+        'startup_records', 'health_logs',
+        'admin_users', 'admin_roles', 'permission_atoms', 'permission_audit_logs'
       ]
 
       const collectionCounts = {}
