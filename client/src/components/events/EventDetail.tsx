@@ -1,5 +1,5 @@
 // Event Detail Page with Booking Flow
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import type { EventData, BookingData } from '../../shared-types'
 import { useAuthStore } from '../../store/authStore'
 import { useEvents } from '../../hooks/useEvents'
@@ -26,6 +26,7 @@ export const EventDetail: React.FC<EventDetailProps> = ({
   const [bookingLoading, setBookingLoading] = useState(false)
   const [showBookingForm, setShowBookingForm] = useState(false)
   const [participants, setParticipants] = useState<Participant[]>([])
+  const hasLoadedOnce = useRef<string | null>(null)
   
   const { user, isAuthenticated, hasPermission } = useAuthStore()
   const { getEventById, bookEvent, cancelBooking, getEventParticipants } = useEvents()
@@ -56,11 +57,15 @@ export const EventDetail: React.FC<EventDetailProps> = ({
     } finally {
       setLoading(false)
     }
-  }, [eventId, getEventById, hasPermission, getEventParticipants])
+  }, [eventId]) // Remove function dependencies to prevent loops
 
   useEffect(() => {
-    loadEventDetails();
-  }, [loadEventDetails]);
+    // Only load once per eventId to prevent loops
+    if (hasLoadedOnce.current !== eventId) {
+      hasLoadedOnce.current = eventId
+      loadEventDetails()
+    }
+  }, [eventId, loadEventDetails]) // Include loadEventDetails but it's stable now
 
   const handleBookEvent = async () => {
     if (!event || !user) return
@@ -70,7 +75,9 @@ export const EventDetail: React.FC<EventDetailProps> = ({
       const success = await bookEvent(eventId, bookingForm)
       if (success) {
         setShowBookingForm(false)
-        await loadEventDetails() // Refresh event data
+        // Simple reload without calling loadEventDetails to prevent loops
+        const eventData = await getEventById(eventId)
+        setEvent(eventData)
       }
     } catch (error) {
       console.error('Booking failed:', error)
@@ -89,7 +96,9 @@ export const EventDetail: React.FC<EventDetailProps> = ({
     try {
       const success = await cancelBooking(eventId)
       if (success) {
-        await loadEventDetails() // Refresh event data
+        // Simple reload without calling loadEventDetails to prevent loops
+        const eventData = await getEventById(eventId)
+        setEvent(eventData)
       }
     } catch (error) {
       console.error('Cancel booking failed:', error)

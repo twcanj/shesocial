@@ -511,14 +511,22 @@ export const useEvents = (options: UseEventsOptions = {}): UseEventsReturn => {
     return { total, upcoming, participated, created }
   }, [events, getUpcomingEvents, getUserBookedEvents, user])
 
-  // Subscribe to event bus messages (no dependencies to prevent loops)
+  // Subscribe to event bus messages (with debouncing to prevent blinking)
   useEffect(() => {
+    let updateTimeout: NodeJS.Timeout | null = null
+
+    const debouncedUpdate = () => {
+      if (updateTimeout) {
+        clearTimeout(updateTimeout)
+      }
+      updateTimeout = setTimeout(() => {
+        triggerUpdate()
+      }, 50) // Debounce updates to prevent rapid re-renders
+    }
+
     const handleDbChange = (message: any) => {
       if (message.payload.collection === 'events') {
-        // Use a timeout to prevent immediate circular updates
-        setTimeout(() => {
-          triggerUpdate()
-        }, 10)
+        debouncedUpdate()
       }
     }
 
@@ -526,28 +534,23 @@ export const useEvents = (options: UseEventsOptions = {}): UseEventsReturn => {
       if (autoFetch) {
         setTimeout(() => {
           fetchEventsFromServer()
-        }, 100)
+        }, 200)
       }
-    }
-
-    const handleUiRefresh = () => {
-      setTimeout(() => {
-        triggerUpdate()
-      }, 10)
     }
 
     const unsubscribeDbInsert = eventBus.subscribe('DB_INSERT', handleDbChange)
     const unsubscribeDbUpdate = eventBus.subscribe('DB_UPDATE', handleDbChange)
     const unsubscribeDbDelete = eventBus.subscribe('DB_DELETE', handleDbChange)
     const unsubscribeNetworkOnline = eventBus.subscribe('NETWORK_ONLINE', handleNetworkOnline)
-    const unsubscribeUiRefresh = eventBus.subscribe('EventList:UI_REFRESH', handleUiRefresh)
 
     return () => {
+      if (updateTimeout) {
+        clearTimeout(updateTimeout)
+      }
       unsubscribeDbInsert()
       unsubscribeDbUpdate()
       unsubscribeDbDelete()
       unsubscribeNetworkOnline()
-      unsubscribeUiRefresh()
     }
   }, []) // Empty dependency array to prevent loops
 
