@@ -5,6 +5,7 @@ import Datastore from '@seald-io/nedb'
 import path from 'path'
 import fs from 'fs'
 import { UserProfile, EventData, BookingData, SyncQueueItem, StartupRecord, HealthLog } from '../types/database'
+import { AdminUser, AdminRole, PermissionAtom, PermissionAuditLog } from '../models/AdminPermission'
 
 export interface DatabaseCollections {
   users: Datastore<UserProfile>
@@ -20,6 +21,11 @@ export interface DatabaseCollections {
   // Health monitoring collections
   startup_records: Datastore<StartupRecord>
   health_logs: Datastore<HealthLog>
+  // Admin system collections
+  admin_users: Datastore<AdminUser>
+  admin_roles: Datastore<AdminRole>
+  permission_atoms: Datastore<PermissionAtom>
+  permission_audit_logs: Datastore<PermissionAuditLog>
 }
 
 class NeDBSetup {
@@ -111,6 +117,27 @@ class NeDBSetup {
         filename: path.join(this.dbPath, 'health-logs.db'),
         autoload: true,
         timestampData: true
+      }),
+      // Admin system collections
+      admin_users: new Datastore<AdminUser>({
+        filename: path.join(this.dbPath, 'admin-users.db'),
+        autoload: true,
+        timestampData: true
+      }),
+      admin_roles: new Datastore<AdminRole>({
+        filename: path.join(this.dbPath, 'admin-roles.db'),
+        autoload: true,
+        timestampData: true
+      }),
+      permission_atoms: new Datastore<PermissionAtom>({
+        filename: path.join(this.dbPath, 'permission-atoms.db'),
+        autoload: true,
+        timestampData: true
+      }),
+      permission_audit_logs: new Datastore<PermissionAuditLog>({
+        filename: path.join(this.dbPath, 'permission-audit-logs.db'),
+        autoload: true,
+        timestampData: true
       })
     }
 
@@ -199,7 +226,35 @@ class NeDBSetup {
       databases.health_logs.ensureIndex({ fieldName: 'database.status' })
       databases.health_logs.ensureIndex({ fieldName: 'createdAt' })
 
-      console.log('📊 Database indexes created successfully (including appointment system + health monitoring)')
+      // Admin system indexes
+      databases.admin_users.ensureIndex({ fieldName: 'adminId', unique: true })
+      databases.admin_users.ensureIndex({ fieldName: 'username', unique: true })
+      databases.admin_users.ensureIndex({ fieldName: 'email', unique: true })
+      databases.admin_users.ensureIndex({ fieldName: 'roleId' })
+      databases.admin_users.ensureIndex({ fieldName: 'profile.department' })
+      databases.admin_users.ensureIndex({ fieldName: 'status' })
+      databases.admin_users.ensureIndex({ fieldName: 'createdAt' })
+
+      databases.admin_roles.ensureIndex({ fieldName: 'roleId', unique: true })
+      databases.admin_roles.ensureIndex({ fieldName: 'department' })
+      databases.admin_roles.ensureIndex({ fieldName: 'isActive' })
+      databases.admin_roles.ensureIndex({ fieldName: 'isCustom' })
+      databases.admin_roles.ensureIndex({ fieldName: 'createdAt' })
+
+      databases.permission_atoms.ensureIndex({ fieldName: 'atomId', unique: true })
+      databases.permission_atoms.ensureIndex({ fieldName: 'group' })
+      databases.permission_atoms.ensureIndex({ fieldName: 'action' })
+      databases.permission_atoms.ensureIndex({ fieldName: 'riskLevel' })
+      databases.permission_atoms.ensureIndex({ fieldName: 'createdAt' })
+
+      databases.permission_audit_logs.ensureIndex({ fieldName: 'adminId' })
+      databases.permission_audit_logs.ensureIndex({ fieldName: 'targetType' })
+      databases.permission_audit_logs.ensureIndex({ fieldName: 'targetId' })
+      databases.permission_audit_logs.ensureIndex({ fieldName: 'action' })
+      databases.permission_audit_logs.ensureIndex({ fieldName: 'timestamp' })
+      databases.permission_audit_logs.ensureIndex({ fieldName: 'success' })
+
+      console.log('📊 Database indexes created successfully (including appointment system + health monitoring + admin system)')
     } catch (error) {
       console.warn('⚠️ Warning: Some database indexes could not be created:', error)
     }

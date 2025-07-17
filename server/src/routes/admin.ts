@@ -3,7 +3,7 @@
 import express, { Request, Response, NextFunction } from 'express'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import { AdminPermissionService } from '../services/AdminPermissionService'
+import { AdminPermissionServiceDB } from '../services/AdminPermissionServiceDB'
 import { AdminUser } from '../models/AdminPermission'
 
 // Extend Express Request type for admin authentication
@@ -18,7 +18,7 @@ interface AdminRequest extends Request {
 }
 
 const router = express.Router()
-const adminPermissionService = new AdminPermissionService()
+const adminPermissionService = new AdminPermissionServiceDB()
 
 // JWT Configuration for Admin (separate from user JWT)
 const ADMIN_JWT_SECRET = process.env.ADMIN_JWT_SECRET || 'admin_jwt_secret_key_should_be_secure'
@@ -69,47 +69,28 @@ router.post('/auth/login', async (req, res) => {
       return res.status(400).json({ error: 'Username and password are required' })
     }
 
-    // For now, create a test super admin if it doesn't exist
-    let adminUser: AdminUser
+    // Look up admin user from database
+    let adminUser: AdminUser | null
     try {
-      // Try to find existing admin (this would normally be a database lookup)
-      adminUser = {
-        _id: 'super_admin_001',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        adminId: 'super_admin_001',
-        username: 'superadmin',
-        email: 'admin@infinitymatch.com',
-        passwordHash: await bcrypt.hash('admin123', 12),
-        profile: {
-          realName: '系統管理員',
-          employeeId: 'EMP001',
-          department: 'executive',
-          joinDate: new Date(),
-          lastLogin: new Date()
-        },
-        roleId: 'super_admin',
-        status: 'active',
-        twoFactorEnabled: false,
-        sessionTimeout: 480, // 8 hours
-        createdBy: 'system',
-        lastModifiedBy: 'system'
-      }
-
-      // Register the test admin user in the permission service if not already registered
-      const existingPermissions = await adminPermissionService.getUserPermissions(adminUser.adminId)
-      if (existingPermissions.length === 0) {
-        adminUser.customPermissions = ['*']
-        await adminPermissionService.createAdminUser(adminUser)
-        console.log('Test admin user registered in permission service')
+      // Try to find by username first, then by email
+      adminUser = await adminPermissionService.getAdminUserByUsername(username)
+      if (!adminUser) {
+        // Try email lookup if username failed
+        const allUsers = await adminPermissionService.getAllAdminUsers()
+        adminUser = allUsers.find(user => user.email === username) || null
       }
     } catch (error) {
-      return res.status(404).json({ error: 'Admin user not found' })
+      console.error('Error looking up admin user:', error)
+      return res.status(500).json({ error: 'Server error during authentication' })
+    }
+
+    if (!adminUser) {
+      return res.status(401).json({ error: 'Invalid credentials' })
     }
 
     // Validate password
     const isValidPassword = await bcrypt.compare(password, adminUser.passwordHash)
-    if (!isValidPassword || (adminUser.username !== username && adminUser.email !== username)) {
+    if (!isValidPassword) {
       return res.status(401).json({ error: 'Invalid credentials' })
     }
 
