@@ -379,6 +379,15 @@ export class AdminPermissionServiceDB {
     })
   }
 
+  async getAdminUserByEmail(email: string): Promise<AdminUser | null> {
+    return new Promise((resolve, reject) => {
+      this.db.admin_users.findOne({ email }, (err, doc) => {
+        if (err) reject(err)
+        else resolve(doc)
+      })
+    })
+  }
+
   async getAllAdminUsers(): Promise<AdminUser[]> {
     return new Promise((resolve, reject) => {
       this.db.admin_users.find({}, (err, docs) => {

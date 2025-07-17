@@ -28,7 +28,7 @@ interface AdminAuthState {
   loading: boolean
   
   // Actions
-  login: (username: string, password: string) => Promise<void>
+  login: (email: string, password: string) => Promise<void>
   logout: () => void
   refreshAccessToken: () => Promise<boolean>
   hasPermission: (permission: string) => boolean
@@ -45,21 +45,26 @@ export const useAdminAuthStore = create<AdminAuthState>()(
       isAuthenticated: false,
       loading: false,
 
-      login: async (username: string, password: string) => {
+      login: async (email: string, password: string) => {
         set({ loading: true })
         
         try {
-                    const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.ADMIN.AUTH.LOGIN}`, {
+          console.log('🔐 Admin login attempt:', { email, url: `${API_BASE_URL}${API_ENDPOINTS.ADMIN.AUTH.LOGIN}` })
+          
+          const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.ADMIN.AUTH.LOGIN}`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ username, password })
+            body: JSON.stringify({ email, password })
           })
 
+          console.log('📡 Response status:', response.status)
           const data = await response.json()
+          console.log('📦 Response data:', data)
 
           if (!response.ok) {
+            console.error('❌ Login failed:', data.error)
             throw new Error(data.error || '登入失敗')
           }
 

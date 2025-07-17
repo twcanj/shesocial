@@ -25,7 +25,8 @@
       "Bash(rm:*)",
       "Bash(find:*)",
       "Bash(npx eslint:*)",
-      "Bash(npm run typecheck:*)"
+      "Bash(npm run typecheck:*)",
+      "Bash(cat:*)"
     ],
     "deny": []
   }

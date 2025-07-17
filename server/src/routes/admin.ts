@@ -63,22 +63,16 @@ const requirePermission = (permission: string) => {
 // Admin Authentication Routes
 router.post('/auth/login', async (req, res) => {
   try {
-    const { username, password } = req.body
+    const { email, password } = req.body
 
-    if (!username || !password) {
-      return res.status(400).json({ error: 'Username and password are required' })
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email and password are required' })
     }
 
-    // Look up admin user from database
+    // Look up admin user from database by email
     let adminUser: AdminUser | null
     try {
-      // Try to find by username first, then by email
-      adminUser = await adminPermissionService.getAdminUserByUsername(username)
-      if (!adminUser) {
-        // Try email lookup if username failed
-        const allUsers = await adminPermissionService.getAllAdminUsers()
-        adminUser = allUsers.find(user => user.email === username) || null
-      }
+      adminUser = await adminPermissionService.getAdminUserByEmail(email)
     } catch (error) {
       console.error('Error looking up admin user:', error)
       return res.status(500).json({ error: 'Server error during authentication' })

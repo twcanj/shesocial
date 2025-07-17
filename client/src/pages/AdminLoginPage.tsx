@@ -6,7 +6,7 @@ import { useAdminAuth } from '../hooks/useAdminAuth'
 
 export const AdminLoginPage = () => {
   const [credentials, setCredentials] = useState({
-    username: '',
+    email: '',
     password: ''
   })
   const [error, setError] = useState('')
@@ -21,7 +21,7 @@ export const AdminLoginPage = () => {
     setLoading(true)
 
     try {
-      await login(credentials.username, credentials.password)
+      await login(credentials.email, credentials.password)
       navigate('/admin/dashboard')
         } catch (err: unknown) {
       setError((err as any).message || '登入失敗')
@@ -47,19 +47,19 @@ export const AdminLoginPage = () => {
 
           {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Username/Email Field */}
+            {/* Email Field */}
             <div>
               <label className="block text-luxury-pearl font-medium mb-2">
-                管理員帳號
+                管理員信箱
               </label>
               <input
-                type="text"
-                value={credentials.username}
-                onChange={(e) => setCredentials(prev => ({ ...prev, username: e.target.value }))}
-                placeholder="請輸入帳號或信箱"
+                type="email"
+                value={credentials.email}
+                onChange={(e) => setCredentials(prev => ({ ...prev, email: e.target.value }))}
+                placeholder="請輸入管理員信箱"
                 className="luxury-input w-full"
                 required
-                autoComplete="username"
+                autoComplete="email"
               />
             </div>
 
