@@ -86,7 +86,7 @@ export const EventCard: React.FC<EventCardProps> = ({
   }
 
   return (
-    <div className={`${getCardClass()} group hover:shadow-luxury transition-all duration-300 hover:-translate-y-1`}>
+    <div className={`${getCardClass()} group hover:shadow-luxury transition-all duration-300 hover:-translate-y-1 will-change-transform`}>
       {/* Luxury Gold Border Accent */}
       <div className="absolute inset-0 bg-gradient-to-r from-luxury-gold/30 via-transparent to-luxury-gold/30 p-[1px] rounded-xl">
         <div className="w-full h-full bg-gradient-to-br from-luxury-midnight-black via-luxury-deep-blue to-luxury-imperial rounded-xl"></div>

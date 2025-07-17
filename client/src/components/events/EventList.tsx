@@ -531,7 +531,7 @@ export const EventList: React.FC<EventListProps> = ({
           {/* Luxury Event Cards Grid */}
           <div className="relative z-10 max-w-6xl mx-auto">
             <div className="text-center mb-8">
-              <h2 className="text-luxury-gold font-luxury font-bold text-2xl mb-2">精選活動</h2>
+              
               <div className="w-16 h-px bg-luxury-gold mx-auto"></div>
             </div>
             
