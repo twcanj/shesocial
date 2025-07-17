@@ -67,8 +67,7 @@ export class AuthController {
       const saltRounds = 12
       const hashedPassword = await bcrypt.hash(password, saltRounds)
 
-      // Set membership permissions based on type
-      const membershipPermissions = this.getMembershipPermissions(membershipType)
+      
 
       // Create user data
       const userData: Omit<UserProfile, '_id' | 'createdAt' | 'updatedAt'> = {
@@ -425,7 +424,7 @@ export class AuthController {
   }
 
   // Helper method to get membership permissions (now only used for reference)
-  private getMembershipPermissions(membershipType: UserProfile['membership']['type']): UserProfile['membership']['permissions'] {
+  private getMembershipPermissions(_membershipType: UserProfile['membership']['type']): UserProfile['membership']['permissions'] {
     // All new users start with minimal permissions until they complete the full flow
     // Permissions are updated based on membership status progression:
     // profile_incomplete -> profile_completed -> pending_payment -> paid -> interview_scheduled -> interview_completed -> active

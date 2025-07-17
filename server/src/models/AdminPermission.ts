@@ -1,6 +1,6 @@
 // Admin Permission Model
 // Defines atomic permissions and role configurations for the admin system
-import { v4 as uuidv4 } from 'uuid'
+
 
 export interface PermissionAtom {
   _id?: string

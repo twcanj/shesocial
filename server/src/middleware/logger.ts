@@ -33,7 +33,7 @@ const productionFormat = morgan(':timestamp-tw :remote-addr ":method :url HTTP/:
 
 // Error logging format
 const errorFormat = morgan('combined', {
-  skip: function (req, res) {
+  skip: function (_req, res) {
     return res.statusCode < 400
   }
 })

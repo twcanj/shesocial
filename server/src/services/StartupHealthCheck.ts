@@ -136,7 +136,7 @@ export class StartupHealthCheck {
           totalRecords += count
 
         } catch (error) {
-          collectionStatus[collectionName] = `error: ${error.message}`
+          collectionStatus[collectionName] = `error: query failed`
         }
       }
 
@@ -218,7 +218,6 @@ export class StartupHealthCheck {
       }
 
       // Check disk space (basic check)
-      const stats = fs.statSync(dataPath)
       const files = fs.readdirSync(dataPath).filter(f => f.endsWith('.db'))
 
       let totalSize = 0
@@ -382,9 +381,7 @@ export class StartupHealthCheck {
 
     if (errors === 0) {
       console.log('🎉 All systems operational and ready!')
-    } else if (warnings > 0 && errors === 0) {
-      console.log('⚠️ Server started with warnings - some features may be limited')
-    } else {
+    } else if (errors > 0) {
       console.log('❌ Critical errors detected - server functionality may be impaired')
     }
     console.log('')
@@ -398,7 +395,7 @@ export class StartupHealthCheck {
       const db = this.dbSetup.getDatabases()
       const startupDuration = Date.now() - this.startTime.getTime()
 
-      const healthy = this.results.filter(r => r.status === 'healthy').length
+
       const warnings = this.results.filter(r => r.status === 'warning').length
       const errors = this.results.filter(r => r.status === 'error').length
 

@@ -38,13 +38,13 @@ app.use(helmet({
       defaultSrc: ["'self'"],
       styleSrc: ["'self'", "'unsafe-inline'"],
       scriptSrc: ["'self'"],
-      imgSrc: ["'self'", "data:", "https:"],
+      imgSrc: ["'self'", 'data:', 'https:'],
       connectSrc: ["'self'"],
       fontSrc: ["'self'"],
       objectSrc: ["'none'"],
       mediaSrc: ["'self'"],
-      frameSrc: ["'none'"],
-    },
+      frameSrc: ["'none'"]
+    }
   },
   crossOriginEmbedderPolicy: false
 }))
@@ -93,7 +93,7 @@ app.get('/health', async (req, res) => {
     try {
       const dbSetup = NeDBSetup.getInstance()
       const db = dbSetup.getDatabases()
-      
+
       // Get collection counts
       const collections = [
         'users', 'events', 'bookings', 'syncQueue',
@@ -101,7 +101,7 @@ app.get('/health', async (req, res) => {
         'availability_overrides', 'appointment_notifications',
         'startup_records', 'health_logs'
       ]
-      
+
       const collectionCounts = {}
       for (const collectionName of collections) {
         try {
@@ -113,14 +113,14 @@ app.get('/health', async (req, res) => {
           })
           collectionCounts[collectionName] = count
         } catch (error) {
-          collectionCounts[collectionName] = `error: ${error.message}`
+          collectionCounts[collectionName] = 'error: query failed'
         }
       }
 
       // Get database files info
       const dbFiles = await dbSetup.listDatabaseFiles()
       const dataPath = dbSetup.getDataPath()
-      
+
       const fileStats = dbFiles.map(file => {
         try {
           const filePath = path.join(dataPath, file)
@@ -174,7 +174,6 @@ app.get('/health', async (req, res) => {
     }
 
     res.json(healthResponse)
-
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -226,9 +225,9 @@ app.use('*', (req, res) => {
 })
 
 // Global error handler
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use((err: any, req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error('🚨 Server Error:', err)
-  
+
   res.status(err.status || 500).json({
     success: false,
     error: NODE_ENV === 'production' ? 'Internal server error' : err.message,
@@ -252,11 +251,11 @@ process.on('SIGINT', () => {
 async function startServer() {
   try {
     console.log('🏥 Initializing startup health checks...')
-    
+
     // Run comprehensive health checks
     const healthCheck = new StartupHealthCheck()
     const allSystemsHealthy = await healthCheck.runAllChecks()
-    
+
     // Start the server regardless of health check results (graceful degradation)
     app.listen(PORT, async () => {
       console.log('🚀 SheSocial Backend Server Started')
@@ -266,24 +265,23 @@ async function startServer() {
       console.log(`⏰ Started at: ${new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' })}`)
       console.log(`🔗 Health check: http://localhost:${PORT}/health`)
       console.log(`📚 API docs: http://localhost:${PORT}/api`)
-      
+
       if (allSystemsHealthy) {
         console.log('✅ All systems operational and ready!')
       } else {
         console.log('⚠️ Server started with warnings - some features may be limited')
         console.log('   Check startup health logs for details')
       }
-      
+
       console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
-      
+
       // Create initial health log
       try {
         await healthCheck.createHealthLog('startup')
       } catch (error) {
-        console.warn('⚠️ Failed to create startup health log:', error.message)
+        console.warn('⚠️ Failed to create startup health log:')
       }
     })
-    
   } catch (error) {
     console.error('❌ Server startup failed:', error)
     process.exit(1)

@@ -320,7 +320,7 @@ export class AppointmentController {
   getUserBookings = async (req: Request, res: Response) => {
     try {
       const user = (req as any).user
-      const { status, type } = req.query
+      const { status } = req.query
 
       let bookings: AppointmentBooking[]
 

@@ -1,5 +1,5 @@
 // JWT Authentication Middleware for SheSocial
-import jwt, { SignOptions, JwtPayload } from 'jsonwebtoken'
+import jwt, { JwtPayload } from 'jsonwebtoken'
 import { Request, Response, NextFunction } from 'express'
 import { UserProfile } from '../types/database'
 
@@ -13,7 +13,7 @@ export interface AuthenticatedRequest extends Request {
 
 // JWT Secret from environment or default for development
 const JWT_SECRET = process.env.JWT_SECRET || 'shesocial-taiwan-luxury-social-platform-secret-key-2025'
-const JWT_EXPIRES_IN: string = process.env.JWT_EXPIRES_IN || '7d'
+
 
 // Generate JWT token for user
 export const generateToken = (user: UserProfile): string => {

@@ -36,7 +36,7 @@ const adminAuth = async (req: AdminRequest, res: Response, next: NextFunction) =
 
     const decoded = jwt.verify(token, ADMIN_JWT_SECRET) as any
 
-        // Check if user has permission for this endpoint if a permission is required
+    // Check if user has permission for this endpoint if a permission is required
     if (req.requiredPermission) {
       const hasPermission = await adminPermissionService.userHasPermission(decoded.adminId, req.requiredPermission)
 
@@ -97,9 +97,9 @@ router.post('/auth/login', async (req, res) => {
       }
 
       // Register the test admin user in the permission service if not already registered
-            const existingPermissions = await adminPermissionService.getUserPermissions(adminUser.adminId)
+      const existingPermissions = await adminPermissionService.getUserPermissions(adminUser.adminId)
       if (existingPermissions.length === 0) {
-        adminUser.customPermissions = ['*'];
+        adminUser.customPermissions = ['*']
         await adminPermissionService.createAdminUser(adminUser)
         console.log('Test admin user registered in permission service')
       }
@@ -139,7 +139,7 @@ router.post('/auth/login', async (req, res) => {
     // Update last login
     adminUser.profile.lastLogin = new Date()
 
-    const permissions = await adminPermissionService.getUserPermissions(adminUser.adminId);
+    const permissions = await adminPermissionService.getUserPermissions(adminUser.adminId)
 
     res.json({
       success: true,
@@ -383,9 +383,9 @@ router.get('/events', requirePermission('admin:audit'), adminAuth, async (req, r
 
     const { status, limit, offset } = req.query
     const filters: any = {}
-    
+
     if (status) filters.status = status
-    
+
     const page = offset ? Math.floor(parseInt(offset as string) / (limit ? parseInt(limit as string) : 10)) + 1 : 1
     const pageLimit = limit ? parseInt(limit as string) : 10
     const eventsResult = await eventModel.findAll(page, pageLimit)
@@ -427,9 +427,9 @@ router.put('/events/:id/status', requirePermission('admin:edit'), adminAuth, asy
     const databases = NeDBSetup.getInstance().getDatabases()
     const eventModel = new EventModel(databases.events)
 
-    const { status, reason } = req.body
+    const { status } = req.body
     const validStatuses = ['draft', 'published', 'cancelled', 'completed']
-    
+
     if (!validStatuses.includes(status)) {
       return res.status(400).json({ error: 'Invalid status' })
     }

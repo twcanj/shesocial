@@ -1,7 +1,7 @@
 // AppointmentSlot Model - 預約時段管理
 // InfinityMatch 天造地設人成對 - 1+1=∞ 台灣頂級配對平台
 
-import { AppointmentSlot, AppointmentType, InterviewType, RecurringPattern } from '../types/appointments'
+import { AppointmentSlot, AppointmentType, RecurringPattern } from '../types/appointments'
 
 export class AppointmentSlotModel {
   private db: any

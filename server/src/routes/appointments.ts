@@ -3,7 +3,7 @@
 
 import { Router } from 'express'
 import { AppointmentController } from '../controllers/AppointmentController'
-import { authenticateToken as authMiddleware, requireMembership } from '../middleware/auth'
+import { authenticateToken as authMiddleware } from '../middleware/auth'
 
 // Optional auth middleware
 const optionalAuthMiddleware = (req: any, res: any, next: any) => {
