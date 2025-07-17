@@ -238,12 +238,13 @@ export const EventList: React.FC<EventListProps> = ({
           </div>
 
           {/* Sort Controls */}
-          <div className="flex items-center space-x-2">
-            <span className="text-sm text-gray-600">排序：</span>
+          <div className="flex items-center space-x-3 bg-gradient-to-r from-purple-50 to-gold-50 px-4 py-2 rounded-lg border border-purple-200/50">
+            <span className="text-sm text-purple-700 font-semibold tracking-wide">排序</span>
+            <div className="w-px h-4 bg-purple-200"></div>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as 'date' | 'name' | 'participants' | 'price')}
-              className="text-sm border border-gray-300 rounded px-2 py-1"
+              className="text-sm bg-white/80 backdrop-blur-sm border border-purple-300/60 rounded-md px-3 py-1.5 text-gray-800 font-medium shadow-sm hover:border-purple-400 focus:ring-2 focus:ring-purple-500/30 focus:border-purple-500 transition-all"
             >
               <option value="date">日期</option>
               <option value="name">名稱</option>
@@ -252,7 +253,7 @@ export const EventList: React.FC<EventListProps> = ({
             </select>
             <button
               onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-              className="p-1 hover:bg-gray-100 rounded"
+              className="p-1.5 bg-white/80 backdrop-blur-sm border border-purple-300/60 rounded-md hover:bg-purple-50 hover:border-purple-400 text-purple-600 shadow-sm transition-all duration-200 hover:shadow-md"
             >
               <svg className={`w-4 h-4 transform ${sortOrder === 'desc' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />

@@ -1,5 +1,5 @@
 // Events Hook for State Management and API Integration
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import type { EventData, BookingData } from '../shared-types'
 import { useOfflineDB } from './useOfflineDB'
 import { useAuthStore } from '../store/authStore'
@@ -54,58 +54,98 @@ export const useEvents = (options: UseEventsOptions = {}): UseEventsReturn => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [refreshing, setRefreshing] = useState(false)
+  const hasFetchedOnce = useRef(false)
   
   const { events: dbEvents, addEvent, updateEvent: updateEventDB, deleteEvent: deleteEventDB } = useOfflineDB()
   const { user, isAuthenticated, token } = useAuthStore()
 
   const API_BASE = API_CONFIG.BASE_URL
 
-  // Filter events based on options
-  const filterEvents = useCallback((eventList: EventData[]) => {
-    let filtered = [...eventList]
+  // Simple reload function for after operations
+  const reloadEvents = useCallback(async () => {
+    try {
+      const eventList = await dbEvents.getAll()
+      let filtered = [...eventList]
 
-    if (filters.status) {
-      filtered = filtered.filter(event => event.status === filters.status)
+      // Apply status filtering
+      if (filters.status) {
+        filtered = filtered.filter(event => event.status === filters.status)
+      }
+      else if (!user || !user.membership?.type || user.membership.type !== 'vvip') {
+        filtered = filtered.filter(event => event.status === 'published' || event.status === 'draft')
+      }
+
+      // Apply upcoming filter
+      if (filters.upcoming) {
+        const now = new Date()
+        filtered = filtered.filter(event => new Date(event.metadata.date) > now)
+      }
+
+      // Apply user events filter
+      if (filters.userEvents && user) {
+        filtered = filtered.filter(event => 
+          event.participants?.some(p => p.userId === user._id)
+        )
+      }
+
+      const sorted = filtered.sort((a, b) => new Date(a.metadata.date).getTime() - new Date(b.metadata.date).getTime())
+      setEvents(sorted)
+    } catch (err) {
+      console.error('Failed to reload events:', err)
     }
+  }, []) // Remove dependencies to prevent loops
 
-    if (filters.upcoming) {
-      const now = new Date()
-      filtered = filtered.filter(event => new Date(event.metadata.date) > now)
-    }
-
-    if (filters.userEvents && user) {
-      filtered = filtered.filter(event => 
-        event.participants?.some(p => p.userId === user._id)
-      )
-    }
-
-    return filtered.sort((a, b) => new Date(a.metadata.date).getTime() - new Date(b.metadata.date).getTime())
-  }, [filters, user])
-
-  // Load events from database
-  const loadEvents = useCallback(async () => {
+  // Load events from database with immediate filtering
+  const loadEventsWithFilter = useCallback(async () => {
     try {
       setError(null)
       const eventList = await dbEvents.getAll()
-      const filtered = filterEvents(eventList)
-      setEvents(filtered)
+      let filtered = [...eventList]
+
+      // Apply status filtering
+      if (filters.status) {
+        filtered = filtered.filter(event => event.status === filters.status)
+      }
+      else if (!user || !user.membership?.type || user.membership.type !== 'vvip') {
+        filtered = filtered.filter(event => event.status === 'published' || event.status === 'draft')
+      }
+
+      // Apply upcoming filter
+      if (filters.upcoming) {
+        const now = new Date()
+        filtered = filtered.filter(event => new Date(event.metadata.date) > now)
+      }
+
+      // Apply user events filter
+      if (filters.userEvents && user) {
+        filtered = filtered.filter(event => 
+          event.participants?.some(p => p.userId === user._id)
+        )
+      }
+
+      const sorted = filtered.sort((a, b) => new Date(a.metadata.date).getTime() - new Date(b.metadata.date).getTime())
+      setEvents(sorted)
     } catch (err) {
       setError(err instanceof Error ? err.message : '載入活動失敗')
     } finally {
       setLoading(false)
     }
-  }, [dbEvents, filterEvents])
+  }, []) // Remove all dependencies to prevent loops
 
   // Fetch events from server
   const fetchEventsFromServer = useCallback(async () => {
-    if (!isAuthenticated || !token) return
-
     try {
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json'
+      }
+      
+      // Add auth header if available (events API is public)
+      if (isAuthenticated && token) {
+        headers['Authorization'] = `Bearer ${token}`
+      }
+
       const response = await fetch(`${API_BASE}/events`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
+        headers
       })
 
       if (!response.ok) {
@@ -116,22 +156,32 @@ export const useEvents = (options: UseEventsOptions = {}): UseEventsReturn => {
       if (result.success) {
         // Update local database with server data
         for (const event of result.data) {
-          await addEvent(event)
+          try {
+            await addEvent(event)
+          } catch (err) {
+            // If event already exists, try to update it instead
+            if (err instanceof Error && err.name === 'ConstraintError') {
+              await updateEventDB(event._id!, event)
+            } else {
+              console.warn('Failed to add event:', event._id, err)
+            }
+          }
         }
-        await loadEvents()
+        // Reload events after server sync
+        await loadEventsWithFilter()
       }
     } catch (err) {
       console.error('Failed to fetch events from server:', err)
     }
-  }, [isAuthenticated, token, API_BASE, addEvent, loadEvents])
+  }, [API_BASE, addEvent, updateEventDB, loadEventsWithFilter, isAuthenticated, token])
 
   // Refresh events (from server and local)
   const refreshEvents = useCallback(async () => {
     setRefreshing(true)
     await fetchEventsFromServer()
-    await loadEvents()
+    await loadEventsWithFilter()
     setRefreshing(false)
-  }, [fetchEventsFromServer, loadEvents])
+  }, [fetchEventsFromServer, loadEventsWithFilter])
 
   // Create new event
   const createEvent = useCallback(async (eventData: Omit<EventData, '_id' | 'createdAt' | 'updatedAt'>): Promise<EventData | null> => {
@@ -181,13 +231,13 @@ export const useEvents = (options: UseEventsOptions = {}): UseEventsReturn => {
         }
       }
 
-      await loadEvents()
+      await reloadEvents()
       return localEvent
     } catch (err) {
       setError(err instanceof Error ? err.message : '創建活動失敗')
       return null
     }
-  }, [isAuthenticated, token, API_BASE, addEvent, updateEventDB, loadEvents])
+  }, [isAuthenticated, token, API_BASE, addEvent, updateEventDB, reloadEvents])
 
   // Update event
   const updateEvent = useCallback(async (eventId: string, updates: Partial<EventData>): Promise<boolean> => {
@@ -225,13 +275,13 @@ export const useEvents = (options: UseEventsOptions = {}): UseEventsReturn => {
         }
       }
 
-      await loadEvents()
+      await reloadEvents()
       return true
     } catch (err) {
       setError(err instanceof Error ? err.message : '更新活動失敗')
       return false
     }
-  }, [isAuthenticated, token, API_BASE, updateEventDB, loadEvents])
+  }, [isAuthenticated, token, API_BASE, updateEventDB, reloadEvents])
 
   // Delete event
   const deleteEvent = useCallback(async (eventId: string): Promise<boolean> => {
@@ -262,13 +312,13 @@ export const useEvents = (options: UseEventsOptions = {}): UseEventsReturn => {
         }
       }
 
-      await loadEvents()
+      await reloadEvents()
       return true
     } catch (err) {
       setError(err instanceof Error ? err.message : '刪除活動失敗')
       return false
     }
-  }, [isAuthenticated, token, API_BASE, deleteEventDB, loadEvents])
+  }, [isAuthenticated, token, API_BASE, deleteEventDB, reloadEvents])
 
   // Get event by ID
   const getEventById = useCallback(async (eventId: string): Promise<EventData | null> => {
@@ -429,19 +479,20 @@ export const useEvents = (options: UseEventsOptions = {}): UseEventsReturn => {
     return { total, upcoming, participated, created }
   }, [events, getUpcomingEvents, getUserBookedEvents, user])
 
-  // Load events on mount and when filters change
+  // Load events on mount
   useEffect(() => {
     if (autoFetch) {
-      loadEvents()
+      loadEventsWithFilter()
     }
-  }, [loadEvents, autoFetch])
+  }, [autoFetch]) // Only depend on autoFetch
 
-  // Fetch from server when authenticated
+  // Fetch from server once on mount
   useEffect(() => {
-    if (autoFetch && isAuthenticated) {
+    if (autoFetch && !hasFetchedOnce.current) {
+      hasFetchedOnce.current = true
       fetchEventsFromServer()
     }
-  }, [fetchEventsFromServer, autoFetch, isAuthenticated])
+  }, [autoFetch]) // Remove fetchEventsFromServer dependency
 
   return {
     events,
