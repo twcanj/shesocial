@@ -88,12 +88,12 @@ async function seedAdminSystem() {
       // Super Admin
       {
         adminId: 'admin-001',
-        username: 'superadmin',
-        email: 'superadmin@infinitymatch.tw',
-        passwordHash: await bcrypt.hash('SuperAdmin2025!', 12),
+        username: 'admin',
+        email: 'admin@infinitymatch.com',
+        passwordHash: await bcrypt.hash('admin123', 12),
         profile: {
-          realName: '張執行長',
-          employeeId: 'CEO-001',
+          realName: '系統管理員',
+          employeeId: 'SYS-001',
           department: 'executive',
           joinDate: new Date(),
           lastLogin: null
@@ -232,11 +232,11 @@ async function seedAdminSystem() {
     console.log(`   🏢 Admin roles: ${roleCount}`)
     console.log(`   👥 Admin users: ${userCount}`)
     
-    console.log('\n🚀 Admin login credentials:')
-    console.log('   Username: superadmin, Password: SuperAdmin2025!')
-    console.log('   Username: sysadmin,   Password: SysAdmin2025!')
-    console.log('   Username: operations, Password: Operations2025!')
-    console.log('   Username: customer,   Password: Customer2025!')
+    console.log('\n🚀 Admin login credentials (use EMAIL to login):')
+    console.log('   Email: admin@infinitymatch.com,        Password: admin123')
+    console.log('   Email: sysadmin@infinitymatch.tw,      Password: SysAdmin2025!')
+    console.log('   Email: operations@infinitymatch.tw,    Password: Operations2025!')
+    console.log('   Email: customer@infinitymatch.tw,      Password: Customer2025!')
     
   } catch (error) {
     console.error('❌ Error seeding admin system:', error.message)

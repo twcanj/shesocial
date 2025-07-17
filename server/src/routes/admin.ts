@@ -395,7 +395,27 @@ router.get('/events/:id', requirePermission('admin:audit'), adminAuth, async (re
   }
 })
 
-router.put('/events/:id/status', requirePermission('admin:edit'), adminAuth, async (req: AdminRequest, res: Response) => {
+router.put('/events/:id', requirePermission('events:edit'), adminAuth, async (req: AdminRequest, res: Response) => {
+  try {
+    const { EventModel } = await import('../models/Event')
+    const NeDBSetup = (await import('../db/nedb-setup')).default
+    const databases = NeDBSetup.getInstance().getDatabases()
+    const eventModel = new EventModel(databases.events)
+
+    const eventResult = await eventModel.update(req.params.id, req.body)
+
+    if (!eventResult.success || !eventResult.data) {
+      return res.status(404).json({ error: 'Event not found' })
+    }
+
+    res.json({ success: true, data: eventResult.data })
+  } catch (error) {
+    console.error('Admin event update error:', error)
+    res.status(500).json({ error: 'Failed to update event' })
+  }
+})
+
+router.put('/events/:id/status', requirePermission('events:edit'), adminAuth, async (req: AdminRequest, res: Response) => {
   try {
     const { EventModel } = await import('../models/Event')
     const NeDBSetup = (await import('../db/nedb-setup')).default

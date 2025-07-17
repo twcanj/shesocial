@@ -8,6 +8,237 @@ interface CreateEventModalProps {
   onEventCreated: () => void
 }
 
+interface EditEventModalProps {
+  event: EventData
+  onClose: () => void
+  onEventUpdated: () => void
+}
+
+const EditEventModal: React.FC<EditEventModalProps> = ({ event, onClose, onEventUpdated }) => {
+  const { apiCall } = useAdminAuth()
+  const [loading, setLoading] = useState(false)
+  const [formData, setFormData] = useState({
+    name: event.name,
+    description: event.description || '',
+    date: event.metadata.date.split('T')[0],
+    time: event.metadata.date.split('T')[1]?.substring(0, 5) || '',
+    location: event.metadata.location,
+    category: event.metadata.category,
+    type: event.metadata.type as '1day_trip' | '4hour_dining' | '2day_trip',
+    maxParticipants: event.maxParticipants?.toString() || '',
+    pricing: {
+      male: event.metadata.pricing.male?.toString() || '',
+      female: event.metadata.pricing.female?.toString() || '',
+      voucherDiscount: {
+        '100': event.metadata.pricing.voucherDiscount?.['100']?.toString() || '',
+        '200': event.metadata.pricing.voucherDiscount?.['200']?.toString() || ''
+      }
+    },
+    requirements: {
+      ageMin: event.metadata.requirements.ageMin?.toString() || '',
+      ageMax: event.metadata.requirements.ageMax?.toString() || '',
+      maritalStatus: event.metadata.requirements.maritalStatus || 'any' as 'single' | 'divorced' | 'any'
+    }
+  })
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+
+    try {
+      // Combine date and time
+      const eventDateTime = new Date(`${formData.date}T${formData.time}`)
+      
+      const eventData = {
+        name: formData.name,
+        description: formData.description,
+        metadata: {
+          date: eventDateTime.toISOString(),
+          location: formData.location,
+          category: formData.category,
+          type: formData.type,
+          pricing: {
+            male: parseFloat(formData.pricing.male) || 0,
+            female: parseFloat(formData.pricing.female) || 0,
+            voucherDiscount: {
+              '100': parseFloat(formData.pricing.voucherDiscount['100']) || 0,
+              '200': parseFloat(formData.pricing.voucherDiscount['200']) || 0
+            }
+          },
+          requirements: {
+            ageMin: parseInt(formData.requirements.ageMin) || 18,
+            ageMax: parseInt(formData.requirements.ageMax) || 65,
+            maritalStatus: formData.requirements.maritalStatus
+          }
+        },
+        maxParticipants: parseInt(formData.maxParticipants) || undefined
+      }
+
+      const response = await apiCall(`/events/${event._id}`, {
+        method: 'PUT',
+        body: JSON.stringify(eventData)
+      })
+
+      const result = await response.json()
+      
+      if (result.success) {
+        onEventUpdated()
+        onClose()
+      } else {
+        throw new Error(result.error || '更新活動失敗')
+      }
+    } catch (error) {
+      console.error('Failed to update event:', error)
+      alert('更新活動失敗，請重試')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-luxury-midnight-black border border-luxury-gold/30 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-2xl font-bold text-luxury-gold">編輯活動</h3>
+            <button
+              onClick={onClose}
+              className="text-luxury-platinum/60 hover:text-luxury-gold transition-colors"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Use same form structure as CreateEventModal */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-luxury-platinum mb-2">
+                  活動名稱 <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.name}
+                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  className="w-full bg-luxury-midnight-black/50 border border-luxury-gold/30 rounded-lg px-4 py-2 text-luxury-platinum focus:outline-none focus:border-luxury-gold"
+                  placeholder="輸入活動名稱"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-luxury-platinum mb-2">
+                  活動類別 <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.category}
+                  onChange={(e) => setFormData({...formData, category: e.target.value})}
+                  className="w-full bg-luxury-midnight-black/50 border border-luxury-gold/30 rounded-lg px-4 py-2 text-luxury-platinum focus:outline-none focus:border-luxury-gold"
+                  placeholder="例如：戶外活動、美食體驗"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-luxury-platinum mb-2">
+                  活動日期 <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="date"
+                  required
+                  value={formData.date}
+                  onChange={(e) => setFormData({...formData, date: e.target.value})}
+                  className="w-full bg-luxury-midnight-black/50 border border-luxury-gold/30 rounded-lg px-4 py-2 text-luxury-platinum focus:outline-none focus:border-luxury-gold"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-luxury-platinum mb-2">
+                  開始時間 <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="time"
+                  required
+                  value={formData.time}
+                  onChange={(e) => setFormData({...formData, time: e.target.value})}
+                  className="w-full bg-luxury-midnight-black/50 border border-luxury-gold/30 rounded-lg px-4 py-2 text-luxury-platinum focus:outline-none focus:border-luxury-gold"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-luxury-platinum mb-2">
+                  活動類型 <span className="text-red-400">*</span>
+                </label>
+                <select
+                  value={formData.type}
+                  onChange={(e) => setFormData({...formData, type: e.target.value as typeof formData.type})}
+                  className="w-full bg-luxury-midnight-black/50 border border-luxury-gold/30 rounded-lg px-4 py-2 text-luxury-platinum focus:outline-none focus:border-luxury-gold"
+                >
+                  <option value="1day_trip">一日遊</option>
+                  <option value="4hour_dining">四小時用餐</option>
+                  <option value="2day_trip">二日遊</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-luxury-platinum mb-2">
+                  活動地點 <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.location}
+                  onChange={(e) => setFormData({...formData, location: e.target.value})}
+                  className="w-full bg-luxury-midnight-black/50 border border-luxury-gold/30 rounded-lg px-4 py-2 text-luxury-platinum focus:outline-none focus:border-luxury-gold"
+                  placeholder="輸入活動地點"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-luxury-platinum mb-2">
+                  參與人數限制
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  value={formData.maxParticipants}
+                  onChange={(e) => setFormData({...formData, maxParticipants: e.target.value})}
+                  className="w-full bg-luxury-midnight-black/50 border border-luxury-gold/30 rounded-lg px-4 py-2 text-luxury-platinum focus:outline-none focus:border-luxury-gold"
+                  placeholder="留空表示無限制"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end space-x-4 pt-6 border-t border-luxury-gold/20">
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-6 py-2 border border-luxury-gold/30 text-luxury-platinum hover:bg-luxury-gold/10 rounded-lg transition-colors"
+              >
+                取消
+              </button>
+              <button
+                type="submit"
+                disabled={loading}
+                className="luxury-button disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? '更新中...' : '更新活動'}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 const CreateEventModal: React.FC<CreateEventModalProps> = ({ onClose, onEventCreated }) => {
   const { apiCall } = useAdminAuth()
   const [loading, setLoading] = useState(false)
@@ -396,6 +627,7 @@ export const EventManagement: React.FC = () => {
   const [loading, setLoading] = useState(true)
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null)
   const [showCreateModal, setShowCreateModal] = useState(false)
+  const [editingEvent, setEditingEvent] = useState<EventData | null>(null)
   const [filter, setFilter] = useState<'all' | 'upcoming' | 'completed' | 'cancelled'>('all')
 
     const { apiCall, hasPermission } = useAdminAuth()
@@ -646,6 +878,17 @@ export const EventManagement: React.FC = () => {
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                             </svg>
                           </button>
+                          {(event.status === 'draft' || event.status === 'published') && (
+                            <button
+                              onClick={() => setEditingEvent(event)}
+                              className="text-blue-400 hover:text-blue-300 transition-colors"
+                              title="編輯活動"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                              </svg>
+                            </button>
+                          )}
                           {(event.status === 'published' || event.status === 'full') && (
                             <>
                               <button
@@ -693,6 +936,15 @@ export const EventManagement: React.FC = () => {
         <CreateEventModal 
           onClose={() => setShowCreateModal(false)}
           onEventCreated={loadEvents}
+        />
+      )}
+
+      {/* Edit Event Modal */}
+      {editingEvent && (
+        <EditEventModal 
+          event={editingEvent}
+          onClose={() => setEditingEvent(null)}
+          onEventUpdated={loadEvents}
         />
       )}
 
