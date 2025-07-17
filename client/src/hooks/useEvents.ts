@@ -4,6 +4,7 @@ import type { EventData, BookingData } from '../shared-types'
 import { useOfflineDB } from './useOfflineDB'
 import { useAuthStore } from '../store/authStore'
 import { API_CONFIG } from '../config/api'
+import { eventBus, dbEvents, networkEvents, uiEvents } from '../services/event-bus'
 
 interface UseEventsOptions {
   autoFetch?: boolean
@@ -56,15 +57,58 @@ export const useEvents = (options: UseEventsOptions = {}): UseEventsReturn => {
   const [refreshing, setRefreshing] = useState(false)
   const hasFetchedOnce = useRef(false)
   
-  const { events: dbEvents, addEvent, updateEvent: updateEventDB, deleteEvent: deleteEventDB } = useOfflineDB()
+  const { events: dbEventsTable, addEvent, updateEvent: updateEventDB, deleteEvent: deleteEventDB } = useOfflineDB()
   const { user, isAuthenticated, token } = useAuthStore()
+
+  const currentFilters = useRef(filters)
+  const currentUser = useRef(user)
+
+  // Update refs when props change
+  currentFilters.current = filters
+  currentUser.current = user
+
+  // Helper to trigger immediate UI update after DB operations
+  const triggerUpdate = useCallback(async () => {
+    try {
+      const eventList = await dbEventsTable.getAll()
+      let filtered = [...eventList]
+
+      // Apply status filtering using current refs
+      if (currentFilters.current.status) {
+        filtered = filtered.filter(event => event.status === currentFilters.current.status)
+      }
+      else if (!currentUser.current || !currentUser.current.membership?.type || currentUser.current.membership.type !== 'vvip') {
+        filtered = filtered.filter(event => event.status === 'published' || event.status === 'draft')
+      }
+
+      // Apply upcoming filter
+      if (currentFilters.current.upcoming) {
+        const now = new Date()
+        filtered = filtered.filter(event => new Date(event.metadata.date) > now)
+      }
+
+      // Apply user events filter
+      if (currentFilters.current.userEvents && currentUser.current) {
+        filtered = filtered.filter(event => 
+          event.participants?.some(p => p.userId === currentUser.current._id)
+        )
+      }
+
+      const sorted = filtered.sort((a, b) => new Date(a.metadata.date).getTime() - new Date(b.metadata.date).getTime())
+      setEvents(sorted)
+      
+      // Don't publish UI refresh event here to prevent loops
+    } catch (err) {
+      console.error('Failed to update events:', err)
+    }
+  }, [dbEventsTable.getAll])
 
   const API_BASE = API_CONFIG.BASE_URL
 
   // Simple reload function for after operations
   const reloadEvents = useCallback(async () => {
     try {
-      const eventList = await dbEvents.getAll()
+      const eventList = await dbEventsTable.getAll()
       let filtered = [...eventList]
 
       // Apply status filtering
@@ -95,42 +139,17 @@ export const useEvents = (options: UseEventsOptions = {}): UseEventsReturn => {
     }
   }, []) // Remove dependencies to prevent loops
 
-  // Load events from database with immediate filtering
+  // Load events from database with immediate filtering  
   const loadEventsWithFilter = useCallback(async () => {
     try {
       setError(null)
-      const eventList = await dbEvents.getAll()
-      let filtered = [...eventList]
-
-      // Apply status filtering
-      if (filters.status) {
-        filtered = filtered.filter(event => event.status === filters.status)
-      }
-      else if (!user || !user.membership?.type || user.membership.type !== 'vvip') {
-        filtered = filtered.filter(event => event.status === 'published' || event.status === 'draft')
-      }
-
-      // Apply upcoming filter
-      if (filters.upcoming) {
-        const now = new Date()
-        filtered = filtered.filter(event => new Date(event.metadata.date) > now)
-      }
-
-      // Apply user events filter
-      if (filters.userEvents && user) {
-        filtered = filtered.filter(event => 
-          event.participants?.some(p => p.userId === user._id)
-        )
-      }
-
-      const sorted = filtered.sort((a, b) => new Date(a.metadata.date).getTime() - new Date(b.metadata.date).getTime())
-      setEvents(sorted)
+      await triggerUpdate()
     } catch (err) {
       setError(err instanceof Error ? err.message : '載入活動失敗')
     } finally {
       setLoading(false)
     }
-  }, []) // Remove all dependencies to prevent loops
+  }, [triggerUpdate])
 
   // Fetch events from server
   const fetchEventsFromServer = useCallback(async () => {
@@ -154,7 +173,7 @@ export const useEvents = (options: UseEventsOptions = {}): UseEventsReturn => {
 
       const result = await response.json()
       if (result.success) {
-        // Update local database with server data
+        // Update local database with server data (don't publish events here to prevent loops)
         for (const event of result.data) {
           try {
             await addEvent(event)
@@ -167,13 +186,15 @@ export const useEvents = (options: UseEventsOptions = {}): UseEventsReturn => {
             }
           }
         }
-        // Reload events after server sync
-        await loadEventsWithFilter()
+        // Trigger update once after all events processed  
+        await triggerUpdate()
+        // Publish sync complete event (separate from DB events)
+        networkEvents.syncComplete(result.data.length)
       }
     } catch (err) {
       console.error('Failed to fetch events from server:', err)
     }
-  }, [API_BASE, addEvent, updateEventDB, loadEventsWithFilter, isAuthenticated, token])
+  }, [API_BASE, addEvent, updateEventDB, triggerUpdate, isAuthenticated, token])
 
   // Refresh events (from server and local)
   const refreshEvents = useCallback(async () => {
@@ -206,6 +227,9 @@ export const useEvents = (options: UseEventsOptions = {}): UseEventsReturn => {
       // Add to local database first (offline-first)
       const localEvent = await addEvent(newEvent)
       
+      // Publish DB insert event (only for user-initiated actions)
+      dbEvents.insert('events', localEvent, user?._id)
+      
       // Try to sync to server
       if (navigator.onLine) {
         try {
@@ -223,6 +247,8 @@ export const useEvents = (options: UseEventsOptions = {}): UseEventsReturn => {
             if (result.success && result.data) {
               // Update with server ID
               await updateEventDB(localEvent._id!, result.data)
+              // Publish DB update event
+              dbEvents.update('events', result.data, user?._id)
             }
           }
         } catch (serverError) {
@@ -231,13 +257,13 @@ export const useEvents = (options: UseEventsOptions = {}): UseEventsReturn => {
         }
       }
 
-      await reloadEvents()
+      await triggerUpdate()
       return localEvent
     } catch (err) {
       setError(err instanceof Error ? err.message : '創建活動失敗')
       return null
     }
-  }, [isAuthenticated, token, API_BASE, addEvent, updateEventDB, reloadEvents])
+  }, [isAuthenticated, token, API_BASE, addEvent, updateEventDB, reloadEvents, triggerUpdate])
 
   // Update event
   const updateEvent = useCallback(async (eventId: string, updates: Partial<EventData>): Promise<boolean> => {
@@ -254,6 +280,9 @@ export const useEvents = (options: UseEventsOptions = {}): UseEventsReturn => {
 
       // Update local database first
       await updateEventDB(eventId, updateData)
+      
+      // Publish DB update event
+      dbEvents.update('events', { _id: eventId, ...updateData }, user?._id)
 
       // Try to sync to server
       if (navigator.onLine) {
@@ -275,13 +304,13 @@ export const useEvents = (options: UseEventsOptions = {}): UseEventsReturn => {
         }
       }
 
-      await reloadEvents()
+      await triggerUpdate()
       return true
     } catch (err) {
       setError(err instanceof Error ? err.message : '更新活動失敗')
       return false
     }
-  }, [isAuthenticated, token, API_BASE, updateEventDB, reloadEvents])
+  }, [isAuthenticated, token, API_BASE, updateEventDB, reloadEvents, triggerUpdate])
 
   // Delete event
   const deleteEvent = useCallback(async (eventId: string): Promise<boolean> => {
@@ -293,6 +322,9 @@ export const useEvents = (options: UseEventsOptions = {}): UseEventsReturn => {
     try {
       // Delete from local database first
       await deleteEventDB(eventId)
+      
+      // Publish DB delete event
+      dbEvents.delete('events', { _id: eventId }, user?._id)
 
       // Try to sync to server
       if (navigator.onLine) {
@@ -312,23 +344,23 @@ export const useEvents = (options: UseEventsOptions = {}): UseEventsReturn => {
         }
       }
 
-      await reloadEvents()
+      await triggerUpdate()
       return true
     } catch (err) {
       setError(err instanceof Error ? err.message : '刪除活動失敗')
       return false
     }
-  }, [isAuthenticated, token, API_BASE, deleteEventDB, reloadEvents])
+  }, [isAuthenticated, token, API_BASE, deleteEventDB, reloadEvents, triggerUpdate])
 
   // Get event by ID
   const getEventById = useCallback(async (eventId: string): Promise<EventData | null> => {
     try {
-      return await dbEvents.get(eventId)
+      return await dbEventsTable.get(eventId)
     } catch (err) {
       setError(err instanceof Error ? err.message : '獲取活動失敗')
       return null
     }
-  }, [dbEvents])
+  }, [dbEventsTable])
 
   // Book event
   const bookEvent = useCallback(async (eventId: string, bookingData: Partial<BookingData> = {}): Promise<boolean> => {
@@ -479,12 +511,57 @@ export const useEvents = (options: UseEventsOptions = {}): UseEventsReturn => {
     return { total, upcoming, participated, created }
   }, [events, getUpcomingEvents, getUserBookedEvents, user])
 
-  // Load events on mount
+  // Subscribe to event bus messages (no dependencies to prevent loops)
+  useEffect(() => {
+    const handleDbChange = (message: any) => {
+      if (message.payload.collection === 'events') {
+        // Use a timeout to prevent immediate circular updates
+        setTimeout(() => {
+          triggerUpdate()
+        }, 10)
+      }
+    }
+
+    const handleNetworkOnline = () => {
+      if (autoFetch) {
+        setTimeout(() => {
+          fetchEventsFromServer()
+        }, 100)
+      }
+    }
+
+    const handleUiRefresh = () => {
+      setTimeout(() => {
+        triggerUpdate()
+      }, 10)
+    }
+
+    const unsubscribeDbInsert = eventBus.subscribe('DB_INSERT', handleDbChange)
+    const unsubscribeDbUpdate = eventBus.subscribe('DB_UPDATE', handleDbChange)
+    const unsubscribeDbDelete = eventBus.subscribe('DB_DELETE', handleDbChange)
+    const unsubscribeNetworkOnline = eventBus.subscribe('NETWORK_ONLINE', handleNetworkOnline)
+    const unsubscribeUiRefresh = eventBus.subscribe('EventList:UI_REFRESH', handleUiRefresh)
+
+    return () => {
+      unsubscribeDbInsert()
+      unsubscribeDbUpdate()
+      unsubscribeDbDelete()
+      unsubscribeNetworkOnline()
+      unsubscribeUiRefresh()
+    }
+  }, []) // Empty dependency array to prevent loops
+
+  // Load events on mount only
   useEffect(() => {
     if (autoFetch) {
       loadEventsWithFilter()
     }
-  }, [autoFetch]) // Only depend on autoFetch
+  }, [autoFetch]) // Only trigger on mount
+
+  // React to filter changes by calling triggerUpdate directly  
+  useEffect(() => {
+    triggerUpdate()
+  }, [filters.status, filters.upcoming, filters.userEvents, user?.membership?.type]) // Remove triggerUpdate dependency
 
   // Fetch from server once on mount
   useEffect(() => {

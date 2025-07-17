@@ -2,6 +2,7 @@
 // IndexedDB implementation with Dexie.js matching NeDB structure
 
 import { Dexie } from 'dexie'
+import { dbEvents } from '../services/event-bus'
 import type { 
   UserProfile, 
   EventData, 
@@ -82,6 +83,7 @@ export class SheSocialOfflineDB extends Dexie {
     
     await this.users.add(user)
     await this.queueSync('users', 'insert', user)
+    dbEvents.insert('users', user, user._id)
     return user
   }
 
@@ -95,6 +97,7 @@ export class SheSocialOfflineDB extends Dexie {
     const updatedUser = await this.users.get(userId)
     if (updatedUser) {
       await this.queueSync('users', 'update', updatedUser)
+      dbEvents.update('users', updatedUser, userId)
     }
   }
 
@@ -109,6 +112,7 @@ export class SheSocialOfflineDB extends Dexie {
     
     await this.events.add(event)
     await this.queueSync('events', 'insert', event)
+    dbEvents.insert('events', event)
     return event
   }
 
@@ -123,6 +127,7 @@ export class SheSocialOfflineDB extends Dexie {
     
     await this.bookings.add(booking)
     await this.queueSync('bookings', 'insert', booking)
+    dbEvents.insert('bookings', booking, booking.userId)
     return booking
   }
 

@@ -4,6 +4,7 @@ import { EventCard } from './EventCard'
 import { ActivityLimitPrompt } from '../ui/ActivityLimitPrompt'
 import type { EventData, EventFilters } from '../../shared-types'
 import { useAuthStore } from '../../store/authStore'
+import { eventBus, uiEvents } from '../../services/event-bus'
 
 interface EventListProps {
   events: EventData[]
@@ -44,6 +45,30 @@ export const EventList: React.FC<EventListProps> = ({
     { value: '4hour_dining', label: '4小時餐敘' },
     { value: '2day_trip', label: '二日遊' }
   ]
+
+  // Subscribe to event bus messages for reactive updates
+  useEffect(() => {
+    const unsubscribe = eventBus.subscribe('UI_REFRESH', (message) => {
+      if (message.payload.component === 'EventList') {
+        // Trigger re-filter when EventList refresh is requested
+        setFilteredEvents([...events])
+      }
+    })
+
+    return unsubscribe
+  }, [events])
+
+  // Publish filter changes to event bus
+  const handleFilterChange = (newFilters: Partial<EventFilters>) => {
+    setFilters(newFilters)
+    uiEvents.filterChange('EventList', newFilters)
+  }
+
+  const handleSortChange = (newSortBy: typeof sortBy, newSortOrder: typeof sortOrder) => {
+    setSortBy(newSortBy)
+    setSortOrder(newSortOrder)
+    uiEvents.filterChange('EventList', { sortBy: newSortBy, sortOrder: newSortOrder })
+  }
 
   // Filter and sort events
   useEffect(() => {
@@ -158,6 +183,7 @@ export const EventList: React.FC<EventListProps> = ({
     setFilters({})
     setSortBy('date')
     setSortOrder('asc')
+    uiEvents.filterChange('EventList', { cleared: true })
   }
 
   const activeFilterCount = Object.keys(filters).filter(key => filters[key as keyof EventFilters]).length + (searchTerm ? 1 : 0)
@@ -271,7 +297,7 @@ export const EventList: React.FC<EventListProps> = ({
                 <label className="block text-sm font-medium text-gray-700 mb-2">地點</label>
                 <select
                   value={filters.location || ''}
-                  onChange={(e) => setFilters(prev => ({ ...prev, location: e.target.value || undefined }))}
+                  onChange={(e) => handleFilterChange({ ...filters, location: e.target.value || undefined })}
                   className="input-luxury w-full"
                 >
                   <option value="">所有地點</option>
@@ -286,7 +312,7 @@ export const EventList: React.FC<EventListProps> = ({
                 <label className="block text-sm font-medium text-gray-700 mb-2">活動類型</label>
                 <select
                   value={filters.type || ''}
-                  onChange={(e) => setFilters(prev => ({ ...prev, type: e.target.value as EventData['metadata']['type'] | undefined }))}
+                  onChange={(e) => handleFilterChange({ ...filters, type: e.target.value as EventData['metadata']['type'] | undefined })}
                   className="input-luxury w-full"
                 >
                   <option value="">所有類型</option>
