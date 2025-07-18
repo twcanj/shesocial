@@ -728,6 +728,37 @@ router.get('/templates/system', async (req, res) => {
         }
       },
       {
+        templateId: 'sys_upgrade_vvip',
+        name: 'VVIP升級邀請',
+        description: '邀請VIP會員升級至VVIP頂級會員',
+        category: 'membership_upgrade',
+        type: 'cta',
+        content: {
+          title: '升級VVIP頂級會員，享受至尊體驗！',
+          description: '升級至VVIP頂級會員，享受參與者查看權限、專屬客服及所有平台功能。',
+          primaryCTA: {
+            text: '立即升級VVIP',
+            action: 'upgrade',
+            variant: 'luxury'
+          },
+          secondaryCTA: {
+            text: '了解VVIP特權',
+            action: 'custom',
+            customUrl: '/pricing',
+            variant: 'secondary'
+          }
+        },
+        variables: [
+          { name: 'userName', type: 'string', description: '使用者姓名', required: true },
+          { name: 'currentMembership', type: 'string', description: '目前會員類型', required: true }
+        ],
+        settings: {
+          isActive: true,
+          isSystem: true,
+          usage: { totalCampaigns: 0 }
+        }
+      },
+      {
         templateId: 'sys_event_reminder',
         name: '活動提醒',
         description: '活動開始前的提醒訊息',

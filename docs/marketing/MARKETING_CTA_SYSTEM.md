@@ -113,7 +113,11 @@ The Marketing CTA System is an enterprise-grade campaign management platform des
 - **Real-time Results**: Live performance monitoring
 
 ### Audience Targeting
-- **Membership-based**: Target by visitor, registered, VIP, VVIP
+- **4-Tier Membership System**: Target by visitor, registered, VIP, VVIP
+  - **visitor**: Browse-only users (no registration)
+  - **registered**: Basic registered members
+  - **VIP**: Premium members with priority features
+  - **VVIP**: Top-tier members with full platform access
 - **Demographic Filters**: Age, location, interests
 - **Behavioral Filters**: Activity level, engagement history
 - **Dynamic Audiences**: Auto-updating based on criteria
@@ -127,17 +131,22 @@ The Marketing CTA System is an enterprise-grade campaign management platform des
 - **Purpose**: Onboard new registered users
 - **Variables**: `userName`, `membershipType`
 
-#### 2. **VIP Upgrade Invitation**
-- **Template ID**: `sys_upgrade_vip`
-- **Purpose**: Encourage membership upgrades
+#### 2. **Membership Upgrade Invitation**
+- **Template ID**: `sys_upgrade_membership`
+- **Purpose**: Encourage membership upgrades (registered → VIP → VVIP)
+- **Variables**: `userName`, `currentMembership`, `targetMembership`
+
+#### 3. **VVIP Upgrade Invitation**
+- **Template ID**: `sys_upgrade_vvip`
+- **Purpose**: Encourage VIP members to upgrade to VVIP
 - **Variables**: `userName`, `currentMembership`
 
-#### 3. **Event Reminder**
+#### 4. **Event Reminder**
 - **Template ID**: `sys_event_reminder`
 - **Purpose**: Remind users of upcoming events
 - **Variables**: `userName`, `eventName`, `eventDate`, `eventId`
 
-#### 4. **Interview Booking**
+#### 5. **Interview Booking**
 - **Template ID**: `sys_interview_booking`
 - **Purpose**: Encourage interview scheduling
 - **Variables**: `userName`, `membershipType`
@@ -200,9 +209,9 @@ await fetch('/api/analytics/track/click', {
 
 ### Backend Campaign Creation
 ```javascript
-// Create new campaign
-const campaign = {
-  name: '會員升級促銷',
+// Create new campaign - VIP upgrade for registered members
+const vipUpgradeCampaign = {
+  name: 'VIP會員升級促銷',
   type: 'cta',
   targeting: {
     membershipTypes: ['registered'],
@@ -216,7 +225,35 @@ const campaign = {
     title: '升級VIP享受更多特權！',
     description: '立即升級VIP會員，享受優先預約和專屬服務。',
     primaryCTA: {
-      text: '立即升級',
+      text: '立即升級VIP',
+      action: 'upgrade',
+      variant: 'luxury'
+    }
+  },
+  schedule: {
+    startDate: new Date(),
+    endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+    timezone: 'Asia/Taipei'
+  }
+};
+
+// Create new campaign - VVIP upgrade for VIP members
+const vvipUpgradeCampaign = {
+  name: 'VVIP頂級會員升級',
+  type: 'cta',
+  targeting: {
+    membershipTypes: ['vip'],
+    demographics: {
+      ageMin: 28,
+      ageMax: 50,
+      location: ['台北', '新北', '桃園', '台中']
+    }
+  },
+  content: {
+    title: '升級VVIP頂級會員，享受至尊體驗！',
+    description: '升級至VVIP頂級會員，享受參與者查看權限、專屬客服及所有平台功能。',
+    primaryCTA: {
+      text: '立即升級VVIP',
       action: 'upgrade',
       variant: 'luxury'
     }
