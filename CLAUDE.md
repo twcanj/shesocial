@@ -20,6 +20,7 @@ curl http://localhost:10000/health
 - **Client**: http://localhost:5173 (React 19 + TypeScript + Vite + React Router)
 - **Server**: http://localhost:10000 (Node.js + Express + NeDB)
 - **API**: http://localhost:10000/api
+- **Marketing CTA System**: http://localhost:10000/api/marketing
 
 ## 🏗️ Architecture
 

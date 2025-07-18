@@ -2,8 +2,8 @@
 ## Complete API Documentation
 
 > **Status**: Production Ready
-> **Last Updated**: 2025-07-17
-> **Version**: 3.1
+> **Last Updated**: 2025-07-18
+> **Version**: 3.2
 
 ---
 
@@ -77,6 +77,44 @@
 ### System Management
 - **Audit logs**: `GET /api/admin/audit/logs`
 - **Admin health check**: `GET /api/admin/health`
+
+## Marketing CTA System API
+
+### Marketing Campaign Management
+- **Get marketing campaigns**: `GET /api/marketing/campaigns` (marketing:view required)
+- **Create marketing campaign**: `POST /api/marketing/campaigns` (marketing:send required)
+- **Get campaign details**: `GET /api/marketing/campaigns/:id` (marketing:view required)
+- **Update campaign**: `PUT /api/marketing/campaigns/:id` (marketing:send required)
+- **Delete campaign**: `DELETE /api/marketing/campaigns/:id` (marketing:send required)
+- **Schedule campaign**: `POST /api/marketing/campaigns/:id/schedule` (marketing:schedule required)
+- **Cancel scheduled campaign**: `DELETE /api/marketing/campaigns/:id/schedule` (marketing:schedule required)
+
+### Marketing Templates
+- **Get marketing templates**: `GET /api/marketing/templates` (marketing:view required)
+- **Create template**: `POST /api/marketing/templates` (marketing:templates required)
+- **Get template details**: `GET /api/marketing/templates/:id` (marketing:view required)
+- **Update template**: `PUT /api/marketing/templates/:id` (marketing:templates required)
+- **Delete template**: `DELETE /api/marketing/templates/:id` (marketing:templates required)
+
+### Target Audience Management
+- **Get target audiences**: `GET /api/marketing/audiences` (marketing:view required)
+- **Create target audience**: `POST /api/marketing/audiences` (marketing:audiences required)
+- **Get audience details**: `GET /api/marketing/audiences/:id` (marketing:view required)
+- **Update audience**: `PUT /api/marketing/audiences/:id` (marketing:audiences required)
+- **Delete audience**: `DELETE /api/marketing/audiences/:id` (marketing:audiences required)
+
+### Marketing Analytics
+- **Get campaign analytics**: `GET /api/marketing/analytics/campaigns` (marketing:analytics required)
+- **Get campaign performance**: `GET /api/marketing/analytics/campaigns/:id` (marketing:analytics required)
+- **Get audience response**: `GET /api/marketing/analytics/audience-response` (marketing:analytics required)
+- **Get conversion metrics**: `GET /api/marketing/analytics/conversions` (marketing:analytics required)
+- **Get optimal send times**: `GET /api/marketing/analytics/optimal-times` (marketing:analytics required)
+
+### Event Marketing Triggers
+- **Get event marketing status**: `GET /api/marketing/events/:eventId/status` (marketing:view required)
+- **Get urgency level**: `GET /api/marketing/events/:eventId/urgency` (marketing:view required)
+- **Trigger marketing campaign**: `POST /api/marketing/events/:eventId/trigger` (marketing:send required)
+- **Get eligible events**: `GET /api/marketing/events/eligible` (marketing:view required)
 
 ## Appointment System API
 
@@ -246,10 +284,11 @@
 - Real-time health monitoring
 - Database maintenance and backup
 - Comprehensive audit logging
+- Marketing CTA System with campaign management
 
-**📊 Total Endpoints:** 80+ endpoints across 6 major API groups
+**📊 Total Endpoints:** 100+ endpoints across 7 major API groups
 **🔐 Security:** JWT with refresh tokens, RBAC permissions
 **💾 Database:** 11 collections with real-time sync
 **🚀 Performance:** Health score 100/100, enterprise-grade
 
-*Last Updated: 2025-07-17 - Complete API documentation with all production endpoints*
+*Last Updated: 2025-07-18 - Added Marketing CTA System API endpoints*
