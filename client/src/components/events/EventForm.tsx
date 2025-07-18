@@ -1,7 +1,31 @@
 // Event Form Component for Create/Edit Operations (VIP+ only)
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import type { EventData } from '../../shared-types'
 import { useEvents } from '../../hooks/useEvents'
+import DatePicker, { DatePickerHandle } from '../common/DatePicker'
+import { buildUrl, API_ENDPOINTS } from '../../config/api'
+
+interface EventType {
+  typeId: string
+  name: string
+  displayName: string
+  description?: string
+  color?: string
+  icon?: string
+  isActive: boolean
+  sortOrder: number
+  metadata?: {
+    defaultDuration?: number
+    suggestedPricing?: {
+      male?: number
+      female?: number
+    }
+    commonRequirements?: {
+      ageMin?: number
+      ageMax?: number
+    }
+  }
+}
 
 interface EventFormProps {
   eventId?: string // If provided, edit mode; otherwise create mode
@@ -17,7 +41,10 @@ export const EventForm: React.FC<EventFormProps> = ({
   const [loading, setLoading] = useState(false)
   const [submitLoading, setSubmitLoading] = useState(false)
   const [error, setError] = useState<string | null>(null);
-    const { getEventById, createEvent, updateEvent } = useEvents()
+  const [eventTypes, setEventTypes] = useState<EventType[]>([])
+  const [loadingEventTypes, setLoadingEventTypes] = useState(true)
+  const { getEventById, createEvent, updateEvent } = useEvents()
+  const datePickerRef = useRef<DatePickerHandle>(null)
 
   // Check permissions using user membership
     const hasPermission = () => {
@@ -74,7 +101,7 @@ export const EventForm: React.FC<EventFormProps> = ({
     '台東縣', '澎湖縣', '金門縣', '連江縣'
   ]
 
-  const eventTypes = [
+  const eventTypeOptions = [
     { value: '1day_trip', label: '一日遊' },
     { value: '4hour_dining', label: '4小時餐敘' },
     { value: '2day_trip', label: '二日遊' }
@@ -90,6 +117,49 @@ export const EventForm: React.FC<EventFormProps> = ({
     { value: 'single', label: '單身' },
     { value: 'divorced', label: '離婚' }
   ]
+
+  // Fetch event types on component mount
+  useEffect(() => {
+    const fetchEventTypes = async () => {
+      try {
+        const url = buildUrl(API_ENDPOINTS.EVENT_TYPES.LIST)
+        const response = await fetch(url)
+        const data = await response.json()
+        
+        if (data.success) {
+          setEventTypes(data.data || [])
+        }
+      } catch (error) {
+        console.error('Failed to fetch event types:', error)
+      } finally {
+        setLoadingEventTypes(false)
+      }
+    }
+
+    fetchEventTypes()
+  }, [])
+
+  // Auto-fill pricing when event type is selected
+  const handleCategoryChange = (eventTypeName: string) => {
+    updateFormData('metadata.category', eventTypeName)
+    
+    // Find the selected event type and auto-fill suggested pricing
+    const selectedEventType = eventTypes.find(et => et.name === eventTypeName)
+    if (selectedEventType?.metadata?.suggestedPricing) {
+      if (selectedEventType.metadata.suggestedPricing.male) {
+        updateFormData('metadata.pricing.male', selectedEventType.metadata.suggestedPricing.male)
+      }
+      if (selectedEventType.metadata.suggestedPricing.female) {
+        updateFormData('metadata.pricing.female', selectedEventType.metadata.suggestedPricing.female)
+      }
+      if (selectedEventType.metadata?.commonRequirements?.ageMin) {
+        updateFormData('metadata.requirements.ageMin', selectedEventType.metadata.commonRequirements.ageMin)
+      }
+      if (selectedEventType.metadata?.commonRequirements?.ageMax) {
+        updateFormData('metadata.requirements.ageMax', selectedEventType.metadata.commonRequirements.ageMax)
+      }
+    }
+  }
 
   const loadEventData = useCallback(async () => {
     if (!eventId) return;
@@ -241,8 +311,8 @@ export const EventForm: React.FC<EventFormProps> = ({
           <div className="card-luxury p-8">
             <h2 className="text-xl font-semibold mb-6">基本資訊</h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="md:col-span-2">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="md:col-span-3">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   活動名稱 *
                 </label>
@@ -256,16 +326,30 @@ export const EventForm: React.FC<EventFormProps> = ({
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  活動日期 *
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                  活動日期與時間 *
+                  <button 
+                    type="button" 
+                    className="ml-2 text-luxury-gold hover:text-luxury-gold/80 transition-colors"
+                    onClick={() => {
+                      if (datePickerRef.current) {
+                        datePickerRef.current.open();
+                      }
+                    }}
+                    title="開啟日期選擇器"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 002 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </button>
                 </label>
-                <input
-                  type="datetime-local"
-                  required
-                  value={formData.metadata?.date ? new Date(formData.metadata.date).toISOString().slice(0, 16) : ''}
-                  onChange={(e) => updateFormData('metadata.date', new Date(e.target.value))}
-                  className="input-luxury w-full"
+                <DatePicker
+                  ref={datePickerRef}
+                  value={formData.metadata?.date || new Date()}
+                  onChange={(date) => updateFormData('metadata.date', date)}
+                  showTime={true}
+                  className="w-full"
                 />
               </div>
 
@@ -296,7 +380,7 @@ export const EventForm: React.FC<EventFormProps> = ({
                   onChange={(e) => updateFormData('metadata.type', e.target.value)}
                   className="input-luxury w-full"
                 >
-                  {eventTypes.map(type => (
+                  {eventTypeOptions.map(type => (
                     <option key={type.value} value={type.value}>{type.label}</option>
                   ))}
                 </select>
@@ -306,17 +390,31 @@ export const EventForm: React.FC<EventFormProps> = ({
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   活動類別 *
                 </label>
-                <select
-                  required
-                  value={formData.metadata?.category || ''}
-                  onChange={(e) => updateFormData('metadata.category', e.target.value)}
-                  className="input-luxury w-full"
-                >
-                  <option value="">選擇類別</option>
-                  {eventCategories.map(category => (
-                    <option key={category} value={category}>{category}</option>
-                  ))}
-                </select>
+                {loadingEventTypes ? (
+                  <div className="input-luxury w-full text-gray-400">
+                    載入中...
+                  </div>
+                ) : (
+                  <select
+                    required
+                    value={formData.metadata?.category || ''}
+                    onChange={(e) => handleCategoryChange(e.target.value)}
+                    className="input-luxury w-full"
+                  >
+                    <option value="">請選擇活動類別</option>
+                    {eventTypes.map((eventType) => (
+                      <option key={eventType.typeId} value={eventType.name}>
+                        {eventType.displayName}
+                        {eventType.description && ` - ${eventType.description}`}
+                      </option>
+                    ))}
+                  </select>
+                )}
+                {formData.metadata?.category && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    已選擇：{eventTypes.find(et => et.name === formData.metadata?.category)?.displayName}
+                  </p>
+                )}
               </div>
 
               <div>

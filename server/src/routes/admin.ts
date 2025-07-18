@@ -5,6 +5,7 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { AdminPermissionServiceDB } from '../services/AdminPermissionServiceDB'
 import { AdminUser } from '../models/AdminPermission'
+import NeDBSetup from '../db/nedb-setup'
 
 // Extend Express Request type for admin authentication
 interface AdminRequest extends Request {
@@ -350,9 +351,10 @@ router.get('/audit/logs', requirePermission('admin:audit'), adminAuth, async (re
 // Events Management Routes (Admin-specific)
 router.get('/events', requirePermission('admin:audit'), adminAuth, async (req, res) => {
   try {
+    console.log('🔍 Admin events endpoint called')
     // Import event model here to avoid circular dependencies
-    const { EventModel } = await import('../models/Event')
-    const NeDBSetup = (await import('../db/nedb-setup')).default
+    const { EventModel } = require('../models/Event')
+    console.log('✅ EventModel imported successfully')
     const databases = NeDBSetup.getInstance().getDatabases()
     const eventModel = new EventModel(databases.events)
 
@@ -378,8 +380,7 @@ router.get('/events', requirePermission('admin:audit'), adminAuth, async (req, r
 
 router.get('/events/:id', requirePermission('admin:audit'), adminAuth, async (req, res) => {
   try {
-    const { EventModel } = await import('../models/Event')
-    const NeDBSetup = (await import('../db/nedb-setup')).default
+    const { EventModel } = require('../models/Event')
     const databases = NeDBSetup.getInstance().getDatabases()
     const eventModel = new EventModel(databases.events)
 
@@ -395,10 +396,38 @@ router.get('/events/:id', requirePermission('admin:audit'), adminAuth, async (re
   }
 })
 
+router.post('/events', requirePermission('events:create'), adminAuth, async (req: AdminRequest, res: Response) => {
+  try {
+    console.log('🔍 Admin create event endpoint called')
+    const { EventModel } = require('../models/Event')
+    const databases = NeDBSetup.getInstance().getDatabases()
+    const eventModel = new EventModel(databases.events)
+
+    // Add creator information
+    const eventData = {
+      ...req.body,
+      createdBy: req.admin!.adminId,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }
+
+    console.log('📝 Creating event with data:', eventData)
+    const eventResult = await eventModel.create(eventData)
+
+    if (!eventResult.success) {
+      return res.status(400).json({ error: eventResult.error })
+    }
+
+    res.status(201).json({ success: true, data: eventResult.data })
+  } catch (error) {
+    console.error('Admin event creation error:', error)
+    res.status(500).json({ error: 'Failed to create event' })
+  }
+})
+
 router.put('/events/:id', requirePermission('events:edit'), adminAuth, async (req: AdminRequest, res: Response) => {
   try {
-    const { EventModel } = await import('../models/Event')
-    const NeDBSetup = (await import('../db/nedb-setup')).default
+    const { EventModel } = require('../models/Event')
     const databases = NeDBSetup.getInstance().getDatabases()
     const eventModel = new EventModel(databases.events)
 
@@ -417,8 +446,7 @@ router.put('/events/:id', requirePermission('events:edit'), adminAuth, async (re
 
 router.put('/events/:id/status', requirePermission('events:edit'), adminAuth, async (req: AdminRequest, res: Response) => {
   try {
-    const { EventModel } = await import('../models/Event')
-    const NeDBSetup = (await import('../db/nedb-setup')).default
+    const { EventModel } = require('../models/Event')
     const databases = NeDBSetup.getInstance().getDatabases()
     const eventModel = new EventModel(databases.events)
 
@@ -444,8 +472,7 @@ router.put('/events/:id/status', requirePermission('events:edit'), adminAuth, as
 
 router.delete('/events/:id', requirePermission('admin:delete'), adminAuth, async (req: AdminRequest, res: Response) => {
   try {
-    const { EventModel } = await import('../models/Event')
-    const NeDBSetup = (await import('../db/nedb-setup')).default
+    const { EventModel } = require('../models/Event')
     const databases = NeDBSetup.getInstance().getDatabases()
     const eventModel = new EventModel(databases.events)
 
@@ -464,7 +491,6 @@ router.delete('/events/:id', requirePermission('admin:delete'), adminAuth, async
 // System Statistics
 router.get('/system/stats', adminAuth, async (req: AdminRequest, res: Response) => {
   try {
-    const NeDBSetup = (await import('../db/nedb-setup')).default
     const databases = NeDBSetup.getInstance().getDatabases()
 
     // Get collection counts
@@ -516,6 +542,102 @@ router.get('/system/stats', adminAuth, async (req: AdminRequest, res: Response) 
   } catch (error) {
     console.error('System stats error:', error)
     res.status(500).json({ error: 'Failed to fetch system statistics' })
+  }
+})
+
+// Development Setup Endpoint (creates default admin users)
+router.post('/setup', async (req, res) => {
+  try {
+    // Only allow in development mode
+    if (process.env.NODE_ENV === 'production') {
+      return res.status(403).json({ error: 'Setup endpoint not available in production' })
+    }
+
+    // Check if admin users already exist
+    const db = NeDBSetup.getInstance().getDatabases()
+    
+    const existingAdmins = await new Promise<any[]>((resolve, reject) => {
+      db.admin_users.find({}, (err: any, docs: any[]) => {
+        if (err) reject(err)
+        else resolve(docs)
+      })
+    })
+
+    if (existingAdmins.length > 0) {
+      return res.json({ 
+        success: true, 
+        message: 'Admin users already exist',
+        count: existingAdmins.length
+      })
+    }
+
+    // Create default admin users
+    const defaultAdmins = [
+      {
+        adminId: 'super-admin-001',
+        username: 'superadmin',
+        email: 'superadmin@infinitymatch.tw',
+        passwordHash: await bcrypt.hash('SuperAdmin2025!', 10),
+        profile: {
+          realName: '張執行長',
+          employeeId: 'CEO-001',
+          department: 'executive' as const,
+          joinDate: new Date()
+        },
+        roleId: 'super_admin',
+        status: 'active' as const,
+        twoFactorEnabled: false,
+        sessionTimeout: 480,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        createdBy: 'system',
+        lastModifiedBy: 'system'
+      },
+      {
+        adminId: 'admin-infinitymatch-001',
+        username: 'admin',
+        email: 'admin@infinitymatch.com',
+        passwordHash: await bcrypt.hash('admin123', 10),
+        profile: {
+          realName: '系統管理員',
+          employeeId: 'ADM-001',
+          department: 'technical' as const,
+          joinDate: new Date()
+        },
+        roleId: 'system_admin',
+        status: 'active' as const,
+        twoFactorEnabled: false,
+        sessionTimeout: 480,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        createdBy: 'system',
+        lastModifiedBy: 'system'
+      }
+    ]
+
+    // Insert admin users
+    for (const admin of defaultAdmins) {
+      await new Promise<void>((resolve, reject) => {
+        db.admin_users.insert(admin, (err: any) => {
+          if (err) reject(err)
+          else resolve()
+        })
+      })
+    }
+
+    res.json({
+      success: true,
+      message: 'Default admin users created successfully',
+      admins: defaultAdmins.map(admin => ({
+        email: admin.email,
+        username: admin.username,
+        department: admin.profile.department
+      }))
+    })
+
+  } catch (error) {
+    console.error('Setup error:', error)
+    res.status(500).json({ error: 'Failed to setup admin users' })
   }
 })
 
