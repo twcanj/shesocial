@@ -7,6 +7,7 @@ import fs from 'fs'
 import { UserProfile, EventData, BookingData, SyncQueueItem, StartupRecord, HealthLog } from '../types/database'
 import { AdminUser, AdminRole, PermissionAtom, PermissionAuditLog } from '../models/AdminPermission'
 import { EventType } from '../models/EventType'
+import { MarketingCampaign, MarketingTemplate, MarketingAudience, MarketingAnalytics, MarketingEvent } from '../models/Marketing'
 
 export interface DatabaseCollections {
   users: Datastore<UserProfile>
@@ -29,6 +30,12 @@ export interface DatabaseCollections {
   admin_roles: Datastore<AdminRole>
   permission_atoms: Datastore<PermissionAtom>
   permission_audit_logs: Datastore<PermissionAuditLog>
+  // Marketing CTA system collections
+  marketing_campaigns: Datastore<MarketingCampaign>
+  marketing_templates: Datastore<MarketingTemplate>
+  marketing_audiences: Datastore<MarketingAudience>
+  marketing_analytics: Datastore<MarketingAnalytics>
+  marketing_events: Datastore<MarketingEvent>
 }
 
 class NeDBSetup {
@@ -145,6 +152,32 @@ class NeDBSetup {
       }),
       permission_audit_logs: new Datastore<PermissionAuditLog>({
         filename: path.join(this.dbPath, 'permission-audit-logs.db'),
+        autoload: true,
+        timestampData: true
+      }),
+      // Marketing CTA system collections
+      marketing_campaigns: new Datastore<MarketingCampaign>({
+        filename: path.join(this.dbPath, 'marketing-campaigns.db'),
+        autoload: true,
+        timestampData: true
+      }),
+      marketing_templates: new Datastore<MarketingTemplate>({
+        filename: path.join(this.dbPath, 'marketing-templates.db'),
+        autoload: true,
+        timestampData: true
+      }),
+      marketing_audiences: new Datastore<MarketingAudience>({
+        filename: path.join(this.dbPath, 'marketing-audiences.db'),
+        autoload: true,
+        timestampData: true
+      }),
+      marketing_analytics: new Datastore<MarketingAnalytics>({
+        filename: path.join(this.dbPath, 'marketing-analytics.db'),
+        autoload: true,
+        timestampData: true
+      }),
+      marketing_events: new Datastore<MarketingEvent>({
+        filename: path.join(this.dbPath, 'marketing-events.db'),
         autoload: true,
         timestampData: true
       })
@@ -270,7 +303,48 @@ class NeDBSetup {
       databases.permission_audit_logs.ensureIndex({ fieldName: 'timestamp' })
       databases.permission_audit_logs.ensureIndex({ fieldName: 'success' })
 
-      console.log('📊 Database indexes created successfully (including appointment system + health monitoring + admin system)')
+      // Marketing CTA system indexes
+      databases.marketing_campaigns.ensureIndex({ fieldName: 'campaignId', unique: true })
+      databases.marketing_campaigns.ensureIndex({ fieldName: 'status' })
+      databases.marketing_campaigns.ensureIndex({ fieldName: 'type' })
+      databases.marketing_campaigns.ensureIndex({ fieldName: 'createdBy' })
+      databases.marketing_campaigns.ensureIndex({ fieldName: 'schedule.startDate' })
+      databases.marketing_campaigns.ensureIndex({ fieldName: 'schedule.endDate' })
+      databases.marketing_campaigns.ensureIndex({ fieldName: 'targeting.membershipTypes' })
+      databases.marketing_campaigns.ensureIndex({ fieldName: 'createdAt' })
+
+      databases.marketing_templates.ensureIndex({ fieldName: 'templateId', unique: true })
+      databases.marketing_templates.ensureIndex({ fieldName: 'category' })
+      databases.marketing_templates.ensureIndex({ fieldName: 'type' })
+      databases.marketing_templates.ensureIndex({ fieldName: 'settings.isActive' })
+      databases.marketing_templates.ensureIndex({ fieldName: 'settings.isSystem' })
+      databases.marketing_templates.ensureIndex({ fieldName: 'createdBy' })
+      databases.marketing_templates.ensureIndex({ fieldName: 'createdAt' })
+
+      databases.marketing_audiences.ensureIndex({ fieldName: 'audienceId', unique: true })
+      databases.marketing_audiences.ensureIndex({ fieldName: 'type' })
+      databases.marketing_audiences.ensureIndex({ fieldName: 'criteria.membershipTypes' })
+      databases.marketing_audiences.ensureIndex({ fieldName: 'createdBy' })
+      databases.marketing_audiences.ensureIndex({ fieldName: 'stats.totalMembers' })
+      databases.marketing_audiences.ensureIndex({ fieldName: 'createdAt' })
+
+      databases.marketing_analytics.ensureIndex({ fieldName: 'analyticsId', unique: true })
+      databases.marketing_analytics.ensureIndex({ fieldName: 'campaignId' })
+      databases.marketing_analytics.ensureIndex({ fieldName: 'dateRange.from' })
+      databases.marketing_analytics.ensureIndex({ fieldName: 'dateRange.to' })
+      databases.marketing_analytics.ensureIndex({ fieldName: 'metrics.conversionRate' })
+      databases.marketing_analytics.ensureIndex({ fieldName: 'generatedAt' })
+
+      databases.marketing_events.ensureIndex({ fieldName: 'eventId', unique: true })
+      databases.marketing_events.ensureIndex({ fieldName: 'campaignId' })
+      databases.marketing_events.ensureIndex({ fieldName: 'userId' })
+      databases.marketing_events.ensureIndex({ fieldName: 'sessionId' })
+      databases.marketing_events.ensureIndex({ fieldName: 'eventType' })
+      databases.marketing_events.ensureIndex({ fieldName: 'timestamp' })
+      databases.marketing_events.ensureIndex({ fieldName: 'userContext.membershipType' })
+      databases.marketing_events.ensureIndex({ fieldName: 'eventData.conversionType' })
+
+      console.log('📊 Database indexes created successfully (including appointment system + health monitoring + admin system + marketing CTA system)')
     } catch (error) {
       console.warn('⚠️ Warning: Some database indexes could not be created:', error)
     }

@@ -38,6 +38,7 @@ curl http://localhost:10000/health
 - **Sales-Optimized**: Profile collection before payment
 - **Enterprise Health**: Comprehensive monitoring system
 - **Mobile-Optimized**: Responsive design with luxury theme and proper navigation
+- **🎯 Marketing CTA System**: Enterprise-grade campaign management with real-time analytics
 
 ## 📋 Business Rules
 
@@ -85,6 +86,7 @@ curl http://localhost:10000/health
 - **[API Reference](docs/API_REFERENCE.md)**: Complete endpoint documentation
 - **[Development Guide](docs/DEVELOPMENT_GUIDE.md)**: Extended development procedures
 - **[Troubleshooting](docs/technical/TROUBLESHOOTING.md)**: Common issues & solutions
+- **[Marketing CTA System](docs/marketing/MARKETING_CTA_SYSTEM.md)**: Campaign management & analytics
 
 ## 🎯 Current Status
 
@@ -99,6 +101,7 @@ curl http://localhost:10000/health
 - Enterprise health monitoring system
 - Production-ready deployment configuration
 - **Admin & Management pages** fully updated with luxury styling
+- **🎯 Marketing CTA System**: Enterprise campaign management with real-time analytics
 
 ### 🔄 Next Phase
 - LINE Pay integration for Taiwan market
@@ -113,6 +116,7 @@ curl http://localhost:10000/health
 - Admin dashboard with atomic permissions
 - Mobile-optimized responsive design
 - JWT authentication with secure session management
+- **Marketing CTA System**: 5 database collections, 20+ API endpoints, real-time tracking
 
 ## 🔧 Key Files
 
@@ -148,12 +152,21 @@ curl http://localhost:10000/health
 - `server/src/models/Interviewer.ts` - Interviewer management with availability
 - `server/src/types/appointments.ts` - TypeScript types for appointment system
 
+### Marketing CTA System (Complete)
+- `server/src/models/Marketing.ts` - Marketing data models and types
+- `server/src/controllers/MarketingController.ts` - Campaign management controller
+- `server/src/services/CTAAnalyticsService.ts` - Real-time analytics service
+- `server/src/services/CTAContentService.ts` - Dynamic content management
+- `server/src/routes/marketing.ts` - Marketing campaign API routes
+- `server/src/routes/analytics.ts` - Analytics tracking API routes
+- `server/src/middleware/adminAuth.ts` - Admin authentication middleware
+- `client/src/components/ui/CTASection.tsx` - Reusable CTA component (luxury styled)
+
 ### Backend Core
 - `server/src/index.ts` - Server entry point
-- `server/src/db/nedb-setup.ts` - Database setup
-- `server/src/routes/` - API routes (auth, admin, appointments)
+- `server/src/db/nedb-setup.ts` - Database setup (21 collections)
+- `server/src/routes/` - API routes (auth, admin, appointments, marketing, analytics)
 - `server/src/services/StartupHealthCheck.ts` - Health monitoring
-
 
 ### Configuration
 - `client/tailwind.config.js` - Luxury design system
@@ -185,13 +198,22 @@ curl http://localhost:10000/health
 curl -X POST http://localhost:10000/api/admin/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"admin@infinitymatch.com","password":"admin123"}'
+
+# Marketing CTA system test
+curl -X GET "http://localhost:10000/api/marketing/cta/personalized?membershipType=visitor&pageRoute=/"
+
+# CTA tracking test
+curl -X POST http://localhost:10000/api/analytics/track/impression \
+  -H "Content-Type: application/json" \
+  -d '{"campaignId":"test-campaign","context":{"placement":"homepage"}}'
 ```
 
 ### 🗄️ Data Architecture
-- **Backend**: NeDB (11 collections) with JWT authentication
+- **Backend**: NeDB (21 collections) with JWT authentication
 - **Frontend**: IndexedDB with bidirectional sync
 - **Authentication**: 8-hour admin sessions, secure password hashing
 - **Offline Support**: Full offline-first architecture
+- **Marketing System**: 5 dedicated collections for campaign management
 
 ### Appointment System Architecture
 **Database Collections:**
@@ -217,6 +239,26 @@ curl -X POST http://localhost:10000/api/admin/auth/login \
 4. Email confirmation sent
 5. Interviewer receives notification
 6. Status updated to confirmed/completed
+
+### Marketing CTA System Architecture
+**Database Collections:**
+- `marketing_campaigns`: Campaign management with targeting and analytics
+- `marketing_templates`: Reusable CTA templates with variable processing
+- `marketing_audiences`: Dynamic and static audience segmentation
+- `marketing_analytics`: Real-time performance metrics and insights
+- `marketing_events`: User interaction tracking (impressions, clicks, conversions)
+
+**Campaign Features:**
+- **Personalized Content**: Dynamic CTAs based on user membership and behavior
+- **Real-time Analytics**: Impression, click, and conversion tracking
+- **A/B Testing**: Multiple variants with statistical analysis
+- **Audience Targeting**: Advanced segmentation with behavioral filters
+- **Template System**: Reusable templates with variable substitution
+
+**API Endpoints:**
+- **Public**: `/api/marketing/cta/*` - Content delivery and tracking
+- **Analytics**: `/api/analytics/*` - Performance monitoring
+- **Management**: `/api/marketing/*` - Campaign administration
 
 ### 🌐 Routing Structure
 
@@ -268,6 +310,35 @@ curl -X POST http://localhost:10000/api/admin/auth/login \
 - `POST /api/appointments/interviewers` - Create interviewer (VVIP only)
 - `GET /api/appointments/stats` - Get appointment statistics (VIP+ only)
 
+**Marketing CTA System (Complete):**
+- `GET /api/marketing/cta/personalized` - Get personalized CTA content (public)
+- `GET /api/marketing/cta/placement/:placement` - Get CTA for specific placement (public)
+- `GET /api/marketing/cta/should-show` - Check CTA frequency rules (public)
+- `GET /api/marketing/cta/ab-test/:campaignId` - Get A/B test variants (public)
+- `GET /api/marketing/campaigns` - Get campaigns (admin)
+- `POST /api/marketing/campaigns` - Create campaign (admin)
+- `PUT /api/marketing/campaigns/:campaignId` - Update campaign (admin)
+- `DELETE /api/marketing/campaigns/:campaignId` - Delete campaign (admin)
+- `GET /api/marketing/templates` - Get templates (admin)
+- `POST /api/marketing/templates` - Create template (admin)
+- `POST /api/marketing/templates/:templateId/process` - Process template with variables (admin)
+- `GET /api/marketing/templates/system` - Get system templates (admin)
+- `GET /api/marketing/audiences` - Get audiences (admin)
+- `POST /api/marketing/audiences` - Create audience (admin)
+- `POST /api/marketing/audiences/:audienceId/refresh` - Refresh audience stats (admin)
+
+**Marketing Analytics (Complete):**
+- `POST /api/analytics/track/impression` - Track CTA impression (public)
+- `POST /api/analytics/track/click` - Track CTA click (public)
+- `POST /api/analytics/track/conversion` - Track CTA conversion (public)
+- `POST /api/analytics/track/dismiss` - Track CTA dismissal (public)
+- `GET /api/analytics/campaigns/:campaignId/metrics` - Get campaign metrics (admin)
+- `GET /api/analytics/campaigns/:campaignId/realtime` - Get real-time analytics (admin)
+- `GET /api/analytics/campaigns/:campaignId/ab-test` - Get A/B test results (admin)
+- `GET /api/analytics/campaigns/:campaignId/demographics` - Get demographic breakdown (admin)
+- `GET /api/analytics/dashboard` - Get marketing dashboard (admin)
+- `GET /api/analytics/export` - Export analytics data (admin)
+
 **Membership Access Control:**
 - **visitor**: No API access (browse only)
 - **registered**: Basic API access for profile and events
@@ -290,6 +361,6 @@ curl -X POST http://localhost:10000/api/admin/auth/login \
 
 ---
 
-**Platform Summary**: Enterprise-grade luxury social platform for Taiwan market with complete appointment system, 4-tier membership structure, and production-ready deployment.
+**Platform Summary**: Enterprise-grade luxury social platform for Taiwan market with complete appointment system, 4-tier membership structure, marketing CTA system, and production-ready deployment.
 
 **Key Documentation**: See docs/ folder for detailed business rules, API reference, and troubleshooting guides.

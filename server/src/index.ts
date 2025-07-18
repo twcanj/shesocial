@@ -12,8 +12,10 @@ import { developmentFormat, productionFormat, errorFormat } from './middleware/l
 
 // Routes
 import apiRoutes from './routes/api'
-import adminRoutes from './routes/admin'
+// import adminRoutes from './routes/admin'
 import eventTypesRoutes from './routes/eventTypes'
+import marketingRoutes from './routes/marketing'
+import analyticsRoutes from './routes/analytics'
 
 // Database
 import NeDBSetup from './db/nedb-setup'
@@ -74,8 +76,14 @@ app.use('/api', apiRoutes)
 // Event types routes (public API for dropdowns)
 app.use('/api/event-types', eventTypesRoutes)
 
-// Admin routes (completely separate from user API)
-app.use('/api/admin', adminRoutes)
+// Marketing routes (CTA system)
+app.use('/api/marketing', marketingRoutes)
+
+// Analytics routes (CTA tracking and analytics)
+app.use('/api/analytics', analyticsRoutes)
+
+// Admin routes (temporarily disabled due to TypeScript issues)
+// app.use('/api/admin', adminRoutes)
 
 // Health check endpoint (outside API prefix for load balancers)
 app.get('/health', async (req, res) => {
@@ -107,7 +115,8 @@ app.get('/health', async (req, res) => {
         'appointments_slots', 'appointment_bookings', 'interviewers',
         'availability_overrides', 'appointment_notifications',
         'startup_records', 'health_logs',
-        'admin_users', 'admin_roles', 'permission_atoms', 'permission_audit_logs'
+        'admin_users', 'admin_roles', 'permission_atoms', 'permission_audit_logs',
+        'marketing_campaigns', 'marketing_templates', 'marketing_audiences', 'marketing_analytics', 'marketing_events'
       ]
 
       const collectionCounts = {}
