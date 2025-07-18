@@ -110,7 +110,7 @@ router.post('/auth/login', async (req, res) => {
         adminId: adminUser.adminId,
         username: adminUser.username,
         roleId: adminUser.roleId,
-        department: adminUser.department || 'admin' // Use department directly or default to 'admin'
+        type: adminUser.type || 'super_admin' // Admin type for permission checking
       },
       ADMIN_JWT_SECRET,
       { expiresIn: ADMIN_JWT_EXPIRES_IN }
@@ -131,9 +131,15 @@ router.post('/auth/login', async (req, res) => {
     }
 
     console.log('🔍 Getting permissions for admin:', adminUser.adminId)
-    // 直接使用 adminUser.permissions
-    const permissions = adminUser.permissions || []
+    
+    // Check if this is a top-level admin based on admin type (no permission checking needed)
+    const isTopLevelAdmin = adminUser.type === 'super_admin' || 
+                           adminUser.type === 'technical_admin'
+    
+    const permissions = isTopLevelAdmin ? ['*'] : (adminUser.permissions || [])
     console.log('📋 Admin permissions:', permissions)
+    console.log('🔝 Is top-level admin (type based):', isTopLevelAdmin)
+    console.log('🏷️  Admin type:', adminUser.type)
 
     res.json({
       success: true,
@@ -144,7 +150,7 @@ router.post('/auth/login', async (req, res) => {
           email: adminUser.email,
           profile: adminUser.profile,
           roleId: adminUser.roleId,
-          department: adminUser.department || 'admin',
+          type: adminUser.type || 'super_admin',
           status: adminUser.status,
           permissions: permissions
         },

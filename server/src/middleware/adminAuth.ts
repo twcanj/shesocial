@@ -24,8 +24,19 @@ export const adminAuth = async (req: AdminRequest, res: Response, next: NextFunc
 
     const decoded = jwt.verify(token, ADMIN_JWT_SECRET) as any
 
-    // 如果端點需要特定權限，則檢查用戶是否具有該功能的權限
-    if (req.requiredPermission) {
+    // Check if this is a top-level admin based on admin type (bypass all permission checks)
+    const isTopLevelAdmin = decoded.type === 'super_admin' || 
+                           decoded.type === 'system_admin'
+
+    console.log('🔍 Admin auth check:', { 
+      username: decoded.username, 
+      type: decoded.type,
+      isTopLevelAdmin,
+      requiredPermission: req.requiredPermission 
+    })
+
+    // 如果是頂級管理員類型，跳過所有權限檢查
+    if (!isTopLevelAdmin && req.requiredPermission) {
       const hasPermission = await adminPermissionService.userHasPermission(decoded.adminId, req.requiredPermission)
 
       if (!hasPermission) {

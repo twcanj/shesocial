@@ -10,7 +10,7 @@ export interface AdminProfile {
   username: string
   email: string
   roleId: string
-  department: 'executive' | 'technical' | 'operations' | 'members'
+  type: 'super_admin' | 'system_admin' | 'operation_admin' | 'premium_admin'
   permissions: string[]
   profile: {
     realName: string

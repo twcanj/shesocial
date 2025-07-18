@@ -141,17 +141,22 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
 }) => {
   // Check if user has permission for a navigation item - function level approach
   const hasPermission = (permission: string | null) => {
+    // Check if this is a top-level admin based on admin type (bypass all permission checks)
+    const isTopLevelAdmin = admin?.type === 'super_admin' || admin?.type === 'system_admin'
+    
     // Debug logging for development
     if (process.env.NODE_ENV === 'development') {
       console.log('hasPermission check:', { 
         permission, 
+        adminType: admin?.type,
+        isTopLevelAdmin,
         adminPermissions: admin?.permissions,
         hasSuperAdmin: admin?.permissions?.includes('*')
       })
     }
     
-    // No permission required or top-level admin (has wildcard permission)
-    if (!permission || admin?.permissions?.includes('*')) return true
+    // No permission required or top-level admin (bypass all checks)
+    if (!permission || isTopLevelAdmin || admin?.permissions?.includes('*')) return true
     
     // 從權限字符串中提取功能名稱（例如 'events:view' -> 'events'）
     if (permission) {
@@ -167,14 +172,14 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
     return false
   }
 
-  const getDepartmentName = (department: string) => {
+  const getAdminTypeName = (type: string) => {
     const names = {
-      executive: '執行部',
-      technical: '技術部',
-      operations: '營運部', 
-      members: '會員部'
+      'super_admin': '總管理',
+      'system_admin': '系統管理',
+      'operation_admin': '營運管理',
+      'premium_admin': '付費用戶管理者'
     }
-    return names[department as keyof typeof names] || department
+    return names[type as keyof typeof names] || type
   }
 
   return (
@@ -201,7 +206,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium truncate text-luxury-midnight-black">{admin?.profile?.realName}</p>
-              <p className="text-xs text-luxury-midnight-black/80">{getDepartmentName(admin?.department)}</p>
+              <p className="text-xs text-luxury-midnight-black/80">{getAdminTypeName(admin?.type)}</p>
               <p className="text-xs text-luxury-midnight-black/60">{admin?.profile?.employeeId}</p>
             </div>
           </div>
