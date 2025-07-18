@@ -139,7 +139,7 @@ export const HomePage = () => {
                 </div>
                 <div>
                   <div className="font-semibold text-luxury-gold">35歲 科技業</div>
-                  <div className="text-sm text-luxury-platinum/60">Premium會員</div>
+                  <div className="text-sm text-luxury-platinum/60">VVIP會員</div>
                 </div>
               </div>
               <p className="text-luxury-platinum/80 italic">

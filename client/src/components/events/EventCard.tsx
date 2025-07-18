@@ -210,7 +210,7 @@ export const EventCard: React.FC<EventCardProps> = ({
             </div>
           </div>
 
-          {/* Participant List Preview (Premium only) */}
+          {/* Participant List Preview (VVIP only) */}
           {canViewParticipants && showParticipants && participantCount > 0 && (
             <div className="bg-luxury-imperial/20 border border-luxury-imperial/30 rounded-lg p-4 mt-4">
               <div className="text-center mb-3">

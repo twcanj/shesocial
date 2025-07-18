@@ -245,10 +245,10 @@ export const InterviewBooking: React.FC<InterviewBookingProps> = ({
               }))}
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-luxury-gold focus:border-transparent"
             >
-              <option value="regular">Regular會員 (¥600入會+¥300/月)</option>
-              <option value="vip">VIP會員 (¥1000入會+¥300/月)</option>
-              <option value="premium_1300">Premium 1300 (¥1300券包)</option>
-              <option value="premium_2500">Premium 2500 (¥2500券包)</option>
+              <option value="regular">Regular會員 (NT$600入會+NT$300/月)</option>
+              <option value="vip">VIP會員 (NT$1000入會+NT$300/月)</option>
+              <option value="vip">VIP會員 (NT$1300券包)</option>
+              <option value="vvip">VVIP會員 (NT$2500券包)</option>
             </select>
           </div>
 

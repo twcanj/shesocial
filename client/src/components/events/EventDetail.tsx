@@ -375,7 +375,7 @@ export const EventDetail: React.FC<EventDetailProps> = ({
               </div>
             )}
 
-            {/* Luxury Participant List (Premium only) */}
+            {/* Luxury Participant List (VVIP only) */}
             {hasPermission('viewParticipants') && participants.length > 0 && (
               <div className="bg-gradient-to-br from-luxury-midnight-black via-luxury-deep-blue to-luxury-imperial border border-luxury-gold/20 rounded-xl p-6 shadow-2xl">
                 <div className="text-center mb-6">

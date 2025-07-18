@@ -171,28 +171,28 @@ export const EnhancedRegistration: React.FC<EnhancedRegistrationProps> = ({
     {
       id: 'regular',
       name: 'Regular會員',
-      price: '¥600入會+¥300/月',
+      price: 'NT$600入會+NT$300/月',
       features: ['參加所有活動', '基本會員權益'],
       recommended: false
     },
     {
       id: 'vip',
       name: 'VIP會員',
-      price: '¥1000入會+¥300/月',
+      price: 'NT$1000入會+NT$300/月',
       features: ['優先報名', 'VIP專屬活動', '客服支援'],
       recommended: false
     },
     {
-      id: 'premium_1300',
-      name: 'Premium 1300',
-      price: '¥1300券包',
+      id: 'vip',
+      name: 'VIP會員',
+      price: 'NT$1300券包',
       features: ['優先報名', '活動折扣券', '特殊權益'],
       recommended: true
     },
     {
-      id: 'premium_2500',
-      name: 'Premium 2500',
-      price: '¥2500券包',
+      id: 'vvip',
+      name: 'VVIP會員',
+      price: 'NT$2500券包',
       features: ['查看參與者', '最高優先權', '專屬服務'],
       recommended: false
     }

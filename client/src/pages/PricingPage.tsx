@@ -362,8 +362,8 @@ export const PricingPage: React.FC = () => {
                       </svg>
                     </span>
                   </td>
-                  <td className="p-4 text-center bg-luxury-gold/10 font-medium text-luxury-gold">¥100 x 13張</td>
-                  <td className="p-4 text-center font-bold text-luxury-gold">¥200 x 12.5張</td>
+                  <td className="p-4 text-center bg-luxury-gold/10 font-medium text-luxury-gold">NT$100 x 13張</td>
+                  <td className="p-4 text-center font-bold text-luxury-gold">NT$200 x 12.5張</td>
                 </tr>
                 <tr className="bg-luxury-midnight-black/5">
                   <td className="p-4 font-medium text-luxury-gold">專屬客服</td>

@@ -22,22 +22,22 @@ export const MembershipDetailsModalContent: React.FC = () => {
               <th className="p-4 text-left font-semibold">功能特色</th>
               <th className="p-4 text-center font-semibold">一般會員</th>
               <th className="p-4 text-center font-semibold">VIP會員</th>
-              <th className="p-4 text-center font-semibold">Premium 1300</th>
-              <th className="p-4 text-center font-semibold">Premium 2500</th>
+              <th className="p-4 text-center font-semibold">VIP會員</th>
+              <th className="p-4 text-center font-semibold">VVIP會員</th>
             </tr>
           </thead>
           <tbody>
             <tr className="border-b border-gray-100">
               <td className="p-4 font-medium">入會費用</td>
-              <td className="p-4 text-center">¥600</td>
-              <td className="p-4 text-center">¥1000</td>
-              <td className="p-4 text-center">¥1300</td>
-              <td className="p-4 text-center">¥2500</td>
+              <td className="p-4 text-center">NT$600</td>
+              <td className="p-4 text-center">NT$1000</td>
+              <td className="p-4 text-center">NT$1300</td>
+              <td className="p-4 text-center">NT$2500</td>
             </tr>
             <tr className="border-b border-gray-100 bg-gray-50">
               <td className="p-4 font-medium">月費</td>
-              <td className="p-4 text-center">¥300</td>
-              <td className="p-4 text-center">¥300</td>
+              <td className="p-4 text-center">NT$300</td>
+              <td className="p-4 text-center">NT$300</td>
               <td className="p-4 text-center">一次性付費</td>
               <td className="p-4 text-center">一次性付費</td>
             </tr>
@@ -73,8 +73,8 @@ export const MembershipDetailsModalContent: React.FC = () => {
               <td className="p-4 font-medium">代金券</td>
               <td className="p-4 text-center">❌</td>
               <td className="p-4 text-center">❌</td>
-              <td className="p-4 text-center">¥100 x 13張</td>
-              <td className="p-4 text-center">¥200 x 12.5張</td>
+              <td className="p-4 text-center">NT$100 x 13張</td>
+              <td className="p-4 text-center">NT$200 x 12.5張</td>
             </tr>
             <tr className="bg-gray-50">
               <td className="p-4 font-medium">專屬客服</td>
@@ -160,12 +160,12 @@ export const MembershipDetailsModalContent: React.FC = () => {
           </div>
           <div className="text-center p-4 bg-white/70 rounded-lg border-2 border-luxury-gold">
             <div className="font-semibold text-gray-800 mb-2">最受歡迎</div>
-            <div className="text-luxury-gold font-bold">Premium 1300</div>
+            <div className="text-luxury-gold font-bold">VIP會員</div>
             <div className="text-gray-600 mt-1">性價比最高的選擇</div>
           </div>
           <div className="text-center p-4 bg-white/70 rounded-lg">
             <div className="font-semibold text-gray-800 mb-2">頂級體驗</div>
-            <div className="text-luxury-gold font-bold">Premium 2500</div>
+            <div className="text-luxury-gold font-bold">VVIP會員</div>
             <div className="text-gray-600 mt-1">全功能頂級會員</div>
           </div>
         </div>

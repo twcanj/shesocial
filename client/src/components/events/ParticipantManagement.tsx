@@ -1,4 +1,4 @@
-// Participant Management Component (Premium 2500 only)
+// Participant Management Component (VVIP only)
 import React, { useState, useEffect, useCallback } from 'react'
 import type { EventData } from '../../shared-types'
 import { useAuthStore } from '../../store/authStore'
@@ -157,8 +157,8 @@ export const ParticipantManagement: React.FC<ParticipantManagementProps> = ({
     const membershipConfig = {
       regular: { label: '一般', className: 'bg-gray-100 text-gray-700' },
       vip: { label: 'VIP', className: 'bg-blue-100 text-blue-700' },
-      premium_1300: { label: 'Premium', className: 'bg-purple-100 text-purple-700' },
-      premium_2500: { label: 'Premium+', className: 'bg-yellow-100 text-yellow-700' }
+      vip: { label: 'VIP', className: 'bg-purple-100 text-purple-700' },
+      vvip: { label: 'VVIP', className: 'bg-yellow-100 text-yellow-700' }
     }
 
     const config = membershipConfig[membership as keyof typeof membershipConfig]
@@ -179,7 +179,7 @@ export const ParticipantManagement: React.FC<ParticipantManagementProps> = ({
         </svg>
         <h3 className="text-lg font-semibold text-gray-900 mb-2">權限不足</h3>
         <p className="text-gray-600">
-          您需要Premium $2500會員資格才能查看參與者詳細資訊
+          您需要VVIP會員資格才能查看參與者詳細資訊
         </p>
       </div>
     )

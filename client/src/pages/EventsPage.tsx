@@ -268,7 +268,7 @@ export const EventsPage: React.FC = () => {
                 升級VIP會員
               </h3>
               <p className="text-luxury-midnight-black/80 mb-6">
-                升級為VIP或Premium會員，享受優先報名、創建活動等專屬功能
+                升級為VIP或VVIP會員，享受優先報名、創建活動等專屬功能
               </p>
               <button className="luxury-card-button-selected">
                 立即升級

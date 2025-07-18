@@ -82,18 +82,18 @@ export const PersonalizedRecommendation: React.FC = () => {
     // This is a placeholder for future implementation
     const occupation = '' // user.profile?.occupation?.toLowerCase() || ''
     if (occupation.includes('醫師') || occupation.includes('律師') || occupation.includes('主管')) {
-      score.premium_2500 += 35
-      reasons.push('專業人士通常偏好Premium服務')
+      score.vvip += 35
+      reasons.push('專業人士通常偏好VVIP服務')
     } else if (occupation.includes('工程師') || occupation.includes('設計師')) {
-      score.premium_1300 += 30
+      score.vip += 30
       reasons.push('技術專業人士喜歡靈活的券包方案')
     }
 
     // Interest-based recommendations
     const interests = user.profile?.interests || []
     if (interests.some((i: string) => ['旅行', '美食', '品酒'].includes(i))) {
-      score.premium_2500 += 20
-      score.premium_1300 += 15
+      score.vvip += 20
+      score.vip += 15
       reasons.push('您的興趣顯示重視高品質體驗')
     }
 
@@ -102,8 +102,8 @@ export const PersonalizedRecommendation: React.FC = () => {
     // This is a placeholder for future implementation
     const expectations = '' // user.membership?.salesLead?.expectations || ''
     if (expectations.includes('高學歷') || expectations.includes('穩定') || expectations.includes('成熟')) {
-      score.premium_2500 += 25
-      reasons.push('您期望的伴侶特質符合Premium會員群體')
+      score.vvip += 25
+      reasons.push('您期望的伴侶特質符合VVIP會員群體')
     }
 
     // Lead source considerations
@@ -111,7 +111,7 @@ export const PersonalizedRecommendation: React.FC = () => {
     // This is a placeholder for future implementation
     const leadSource = null // user.membership?.leadSource
     if (leadSource === 'referral') {
-      score.premium_1300 += 15
+      score.vip += 15
       reasons.push('朋友推薦的會員通常選擇中高階方案')
     }
 
@@ -139,15 +139,15 @@ export const PersonalizedRecommendation: React.FC = () => {
             reason: '優先權益，月付制更彈性'
           })
           break
-        case 'premium_1300':
+        case 'vip':
           alternatives.push({
-            plan: 'Premium 1300',
+            plan: 'VIP會員',
             reason: '性價比最高的券包方案'
           })
           break
-        case 'premium_2500':
+        case 'vvip':
           alternatives.push({
-            plan: 'Premium 2500',
+            plan: 'VVIP會員',
             reason: '完整功能，最佳交友體驗'
           })
           break
@@ -181,25 +181,25 @@ export const PersonalizedRecommendation: React.FC = () => {
     const plans = {
       regular: {
         name: 'Regular會員',
-        price: '¥600入會+¥300/月',
+        price: 'NT$600入會+NT$300/月',
         color: 'bg-blue-500',
         features: ['參加所有活動', '基本會員權益', '客服支援']
       },
       vip: {
         name: 'VIP會員',
-        price: '¥1000入會+¥300/月',
+        price: 'NT$1000入會+NT$300/月',
         color: 'bg-purple-500',
         features: ['優先報名', 'VIP專屬活動', '專業客服', '活動提醒']
       },
-      premium_1300: {
-        name: 'Premium 1300',
-        price: '¥1300券包',
+      vip: {
+        name: 'VIP會員',
+        price: 'NT$1300券包',
         color: 'bg-gold-500',
         features: ['優先報名', '活動折扣券', '特殊權益', '靈活使用']
       },
-      premium_2500: {
-        name: 'Premium 2500',
-        price: '¥2500券包',
+      vvip: {
+        name: 'VVIP會員',
+        price: 'NT$2500券包',
         color: 'bg-luxury-gold',
         features: ['查看參與者', '最高優先權', '專屬服務', '所有權益']
       }
