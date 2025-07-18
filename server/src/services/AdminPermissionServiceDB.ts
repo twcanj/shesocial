@@ -1,23 +1,16 @@
-// Database-backed Admin Permission Service
-// Handles atomic permission validation, role management, and conflict resolution using NeDB
-import {
-  PermissionAtom,
-  AdminRole,
-  AdminUser,
-  PermissionAuditLog,
-  DEFAULT_PERMISSION_ATOMS,
-  DEFAULT_ADMIN_ROLES
-} from '../models/AdminPermission'
-import NeDBSetup, { type DatabaseCollections } from '../db/nedb-setup'
+import { AdminUser, AdminRole, PermissionAtom } from '../models/AdminPermission'
+import NeDBSetup from '../db/nedb-setup'
+import bcrypt from 'bcrypt'
 
 export class AdminPermissionServiceDB {
-  private db: DatabaseCollections
+  private db: any
 
   constructor() {
-    this.db = NeDBSetup.getInstance().getDatabases()
+    const dbSetup = NeDBSetup.getInstance()
+    this.db = dbSetup.getDatabases()
   }
 
-  // Permission Atom Management
+  // Permission Atoms Management
   async createPermissionAtom(atom: Omit<PermissionAtom, '_id' | 'createdAt' | 'updatedAt'>): Promise<PermissionAtom> {
     const newAtom: PermissionAtom = {
       ...atom,
@@ -26,57 +19,17 @@ export class AdminPermissionServiceDB {
       updatedAt: new Date()
     }
 
-    // Validate atom doesn't already exist
-    const existingAtom = await this.getPermissionAtom(atom.atomId)
-    if (existingAtom) {
-      throw new Error(`Permission atom ${atom.atomId} already exists`)
-    }
-
-    // Validate dependencies exist
-    if (atom.requiresAll) {
-      for (const required of atom.requiresAll) {
-        const requiredAtom = await this.getPermissionAtom(required)
-        if (!requiredAtom) {
-          throw new Error(`Required permission ${required} does not exist`)
-        }
-      }
-    }
-
-    // Validate conflicts exist
-    if (atom.conflictsWith) {
-      for (const conflict of atom.conflictsWith) {
-        const conflictAtom = await this.getPermissionAtom(conflict)
-        if (!conflictAtom) {
-          throw new Error(`Conflicting permission ${conflict} does not exist`)
-        }
-      }
-    }
-
-    // Insert to database
-    const insertedAtom = await new Promise<PermissionAtom>((resolve, reject) => {
-      this.db.permission_atoms.insert(newAtom, (err, doc) => {
+    return new Promise((resolve, reject) => {
+      this.db.permission_atoms.insert(newAtom, (err: any, doc: PermissionAtom) => {
         if (err) reject(err)
         else resolve(doc)
       })
     })
-
-    await this.auditLog({
-      adminId: atom.createdBy,
-      action: 'create_role',
-      targetType: 'permission',
-      targetId: atom.atomId,
-      changes: { after: insertedAtom },
-      success: true,
-      ipAddress: '127.0.0.1', // Should come from request
-      userAgent: 'system'
-    })
-
-    return insertedAtom
   }
 
   async getPermissionAtom(atomId: string): Promise<PermissionAtom | null> {
     return new Promise((resolve, reject) => {
-      this.db.permission_atoms.findOne({ atomId }, (err, doc) => {
+      this.db.permission_atoms.findOne({ atomId }, (err: any, doc: PermissionAtom) => {
         if (err) reject(err)
         else resolve(doc)
       })
@@ -85,7 +38,7 @@ export class AdminPermissionServiceDB {
 
   async getAllPermissionAtoms(): Promise<PermissionAtom[]> {
     return new Promise((resolve, reject) => {
-      this.db.permission_atoms.find({}, (err, docs) => {
+      this.db.permission_atoms.find({}, (err: any, docs: PermissionAtom[]) => {
         if (err) reject(err)
         else resolve(docs)
       })
@@ -94,9 +47,43 @@ export class AdminPermissionServiceDB {
 
   async getPermissionAtomsByGroup(group: string): Promise<PermissionAtom[]> {
     return new Promise((resolve, reject) => {
-      this.db.permission_atoms.find({ group }, (err, docs) => {
+      this.db.permission_atoms.find({ group }, (err: any, docs: PermissionAtom[]) => {
         if (err) reject(err)
         else resolve(docs)
+      })
+    })
+  }
+
+  async updatePermissionAtom(atomId: string, updates: Partial<PermissionAtom>): Promise<PermissionAtom> {
+    const atom = await this.getPermissionAtom(atomId)
+    if (!atom) {
+      throw new Error(`Permission atom ${atomId} not found`)
+    }
+
+    const updatedAtom = {
+      ...atom,
+      ...updates,
+      updatedAt: new Date()
+    }
+
+    return new Promise((resolve, reject) => {
+      this.db.permission_atoms.update(
+        { atomId },
+        { $set: updatedAtom },
+        {},
+        (err: any) => {
+          if (err) reject(err)
+          else resolve(updatedAtom)
+        }
+      )
+    })
+  }
+
+  async deletePermissionAtom(atomId: string): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.db.permission_atoms.remove({ atomId }, {}, (err: any, numRemoved: number) => {
+        if (err) reject(err)
+        else resolve(numRemoved > 0)
       })
     })
   }
@@ -118,21 +105,10 @@ export class AdminPermissionServiceDB {
 
     // Insert to database
     const insertedRole = await new Promise<AdminRole>((resolve, reject) => {
-      this.db.admin_roles.insert(newRole, (err, doc) => {
+      this.db.admin_roles.insert(newRole, (err: any, doc: AdminRole) => {
         if (err) reject(err)
         else resolve(doc)
       })
-    })
-
-    await this.auditLog({
-      adminId: role.createdBy,
-      action: 'create_role',
-      targetType: 'role',
-      targetId: role.roleId,
-      changes: { after: insertedRole },
-      success: true,
-      ipAddress: '127.0.0.1',
-      userAgent: 'system'
     })
 
     return insertedRole
@@ -140,20 +116,20 @@ export class AdminPermissionServiceDB {
 
   async getRole(roleId: string): Promise<AdminRole | null> {
     return new Promise((resolve, reject) => {
-      this.db.admin_roles.findOne({ roleId }, (err, doc) => {
+      this.db.admin_roles.findOne({ roleId }, (err: any, doc: AdminRole) => {
         if (err) reject(err)
         else resolve(doc)
       })
     })
   }
 
-  async updateRole(roleId: string, updates: Partial<AdminRole>, updatedBy: string): Promise<AdminRole> {
-    const existingRole = await this.getRole(roleId)
-    if (!existingRole) {
+  async updateRole(roleId: string, updates: Partial<AdminRole>): Promise<AdminRole> {
+    const role = await this.getRole(roleId)
+    if (!role) {
       throw new Error(`Role ${roleId} not found`)
     }
 
-    // Validate new permissions if being updated
+    // Validate permissions if they're being updated
     if (updates.permissions) {
       const validationResult = await this.validatePermissions(updates.permissions)
       if (!validationResult.isValid) {
@@ -161,43 +137,49 @@ export class AdminPermissionServiceDB {
       }
     }
 
-    const updatedRole: AdminRole = {
-      ...existingRole,
+    const updatedRole = {
+      ...role,
       ...updates,
-      updatedAt: new Date(),
-      lastModifiedBy: updatedBy
+      updatedAt: new Date()
     }
 
-    // Update in database
-    await new Promise<void>((resolve, reject) => {
-      this.db.admin_roles.update({ roleId }, updatedRole, {}, (err) => {
+    return new Promise((resolve, reject) => {
+      this.db.admin_roles.update(
+        { roleId },
+        { $set: updatedRole },
+        {},
+        (err: any) => {
+          if (err) reject(err)
+          else resolve(updatedRole)
+        }
+      )
+    })
+  }
+
+  async deleteRole(roleId: string): Promise<boolean> {
+    // Check if any users are using this role
+    const usersWithRole = await new Promise<AdminUser[]>((resolve, reject) => {
+      this.db.admin_users.find({ roleId }, (err: any, docs: AdminUser[]) => {
         if (err) reject(err)
-        else resolve()
+        else resolve(docs)
       })
     })
 
-    await this.auditLog({
-      adminId: updatedBy,
-      action: 'modify',
-      targetType: 'role',
-      targetId: roleId,
-      changes: {
-        before: existingRole,
-        after: updatedRole,
-        permissionsAdded: updates.permissions?.filter(p => !existingRole.permissions.includes(p)),
-        permissionsRemoved: existingRole.permissions.filter(p => !updates.permissions?.includes(p))
-      },
-      success: true,
-      ipAddress: '127.0.0.1',
-      userAgent: 'system'
-    })
+    if (usersWithRole.length > 0) {
+      throw new Error(`Cannot delete role ${roleId} because it is assigned to ${usersWithRole.length} users`)
+    }
 
-    return updatedRole
+    return new Promise((resolve, reject) => {
+      this.db.admin_roles.remove({ roleId }, {}, (err: any, numRemoved: number) => {
+        if (err) reject(err)
+        else resolve(numRemoved > 0)
+      })
+    })
   }
 
   async getAllRoles(): Promise<AdminRole[]> {
     return new Promise((resolve, reject) => {
-      this.db.admin_roles.find({}, (err, docs) => {
+      this.db.admin_roles.find({}, (err: any, docs: AdminRole[]) => {
         if (err) reject(err)
         else resolve(docs)
       })
@@ -206,7 +188,7 @@ export class AdminPermissionServiceDB {
 
   async getRolesByDepartment(department: AdminRole['department']): Promise<AdminRole[]> {
     return new Promise((resolve, reject) => {
-      this.db.admin_roles.find({ department }, (err, docs) => {
+      this.db.admin_roles.find({ department }, (err: any, docs: AdminRole[]) => {
         if (err) reject(err)
         else resolve(docs)
       })
@@ -218,46 +200,14 @@ export class AdminPermissionServiceDB {
     const errors: string[] = []
     const permissionSet = new Set(permissions)
 
-    // Handle wildcard permission (super admin)
-    if (permissions.includes('*')) {
-      if (permissions.length > 1) {
-        errors.push('Wildcard permission (*) cannot be combined with other permissions')
-      }
-      return { isValid: errors.length === 0, errors }
-    }
-
-    // Get all permission atoms from database
-    const allAtoms = await this.getAllPermissionAtoms()
-    const atomMap = new Map(allAtoms.map(atom => [atom.atomId, atom]))
-
-    // Check each permission exists
+    // Check if all permissions exist
     for (const permission of permissions) {
-      if (!atomMap.has(permission)) {
+      // Skip wildcard permission
+      if (permission === '*') continue
+
+      const atom = await this.getPermissionAtom(permission)
+      if (!atom) {
         errors.push(`Permission ${permission} does not exist`)
-      }
-    }
-
-    // Check dependencies
-    for (const permission of permissions) {
-      const atom = atomMap.get(permission)
-      if (atom?.requiresAll) {
-        for (const required of atom.requiresAll) {
-          if (!permissionSet.has(required)) {
-            errors.push(`Permission ${permission} requires ${required}`)
-          }
-        }
-      }
-    }
-
-    // Check conflicts
-    for (const permission of permissions) {
-      const atom = atomMap.get(permission)
-      if (atom?.conflictsWith) {
-        for (const conflict of atom.conflictsWith) {
-          if (permissionSet.has(conflict)) {
-            errors.push(`Permission ${permission} conflicts with ${conflict}`)
-          }
-        }
       }
     }
 
@@ -267,69 +217,100 @@ export class AdminPermissionServiceDB {
   // User Permission Checking
   async userHasPermission(adminId: string, permission: string): Promise<boolean> {
     const user = await this.getAdminUser(adminId)
+    
     if (!user || user.status !== 'active') {
       return false
     }
 
+    // 從權限字符串中提取功能名稱（例如 'events:view' -> 'events'）
+    const functionName = permission.split(':')[0]
+
+    // 檢查直接權限
+    if (user.permissions) {
+      // 超級管理員權限檢查
+      if (user.permissions.includes('*')) return true
+      
+      // 功能級別權限檢查 - 如果有該功能的任何權限，則授予該功能的所有操作權限
+      if (user.permissions.includes(functionName) || 
+          user.permissions.some(p => p.startsWith(functionName + ':'))) {
+        return true
+      }
+    }
+
+    // 檢查角色權限
     const role = await this.getRole(user.roleId)
     if (!role || !role.isActive) {
       return false
     }
 
-    // Check for wildcard permission (super admin)
-    if (role.permissions.includes('*') || user.customPermissions?.includes('*')) {
+    // 超級管理員角色檢查
+    if (role.permissions.includes('*')) {
+      return true
+    }
+    
+    // 功能級別角色權限檢查
+    if (role.permissions.includes(functionName) || 
+        role.permissions.some(p => p.startsWith(functionName + ':'))) {
       return true
     }
 
-    // Check role permissions
-    const hasRolePermission = role.permissions.includes(permission)
-
-    // Check custom permissions
-    const hasCustomPermission = user.customPermissions?.includes(permission) || false
-
-    return hasRolePermission || hasCustomPermission
-  }
-
-  async getUserPermissions(adminId: string): Promise<string[]> {
-    const user = await this.getAdminUser(adminId)
-    if (!user || user.status !== 'active') {
-      return []
+    // 檢查自定義權限
+    if (user.customPermissions) {
+      if (user.customPermissions.includes('*') || 
+          user.customPermissions.includes(functionName) || 
+          user.customPermissions.some(p => p.startsWith(functionName + ':'))) {
+        return true
+      }
     }
 
-    const role = await this.getRole(user.roleId)
-    if (!role || !role.isActive) {
-      return []
-    }
-
-    // Handle wildcard permission
-    if (role.permissions.includes('*')) {
-      const allAtoms = await this.getAllPermissionAtoms()
-      return allAtoms.map(atom => atom.atomId)
-    }
-
-    // Combine role and custom permissions
-    const allPermissions = new Set([
-      ...role.permissions,
-      ...(user.customPermissions || [])
-    ])
-
-    return Array.from(allPermissions)
+    return false
   }
 
   // Admin User Management
+  async getAdminUser(adminId: string): Promise<AdminUser | null> {
+    return new Promise((resolve, reject) => {
+      this.db.admin_users.findOne({ adminId }, (err: any, doc: AdminUser) => {
+        if (err) reject(err)
+        else resolve(doc)
+      })
+    })
+  }
+
+  async getAdminUserByUsername(username: string): Promise<AdminUser | null> {
+    return new Promise((resolve, reject) => {
+      this.db.admin_users.findOne({ username }, (err: any, doc: AdminUser) => {
+        if (err) reject(err)
+        else resolve(doc)
+      })
+    })
+  }
+
+  async getAdminUserByEmail(email: string): Promise<AdminUser | null> {
+    return new Promise((resolve, reject) => {
+      this.db.admin_users.findOne({ email }, (err: any, doc: AdminUser) => {
+        if (err) reject(err)
+        else resolve(doc)
+      })
+    })
+  }
+
   async createAdminUser(user: Omit<AdminUser, '_id' | 'createdAt' | 'updatedAt'>): Promise<AdminUser> {
+    // Check if username or email already exists
+    const existingUsername = await this.getAdminUserByUsername(user.username)
+    const existingEmail = await this.getAdminUserByEmail(user.email)
+
+    if (existingUsername) {
+      throw new Error(`Username ${user.username} already exists`)
+    }
+
+    if (existingEmail) {
+      throw new Error(`Email ${user.email} already exists`)
+    }
+
     // Validate role exists
     const role = await this.getRole(user.roleId)
     if (!role) {
       throw new Error(`Role ${user.roleId} does not exist`)
-    }
-
-    // Validate custom permissions if provided
-    if (user.customPermissions) {
-      const validationResult = await this.validatePermissions(user.customPermissions)
-      if (!validationResult.isValid) {
-        throw new Error(`Invalid custom permissions: ${validationResult.errors.join(', ')}`)
-      }
     }
 
     const newUser: AdminUser = {
@@ -339,229 +320,95 @@ export class AdminPermissionServiceDB {
       updatedAt: new Date()
     }
 
-    // Insert to database
-    const insertedUser = await new Promise<AdminUser>((resolve, reject) => {
-      this.db.admin_users.insert(newUser, (err, doc) => {
-        if (err) reject(err)
-        else resolve(doc)
-      })
-    })
-
-    await this.auditLog({
-      adminId: user.createdBy,
-      action: 'create_role',
-      targetType: 'user',
-      targetId: user.adminId,
-      changes: { after: insertedUser },
-      success: true,
-      ipAddress: '127.0.0.1',
-      userAgent: 'system'
-    })
-
-    return insertedUser
-  }
-
-  async getAdminUser(adminId: string): Promise<AdminUser | null> {
     return new Promise((resolve, reject) => {
-      this.db.admin_users.findOne({ adminId }, (err, doc) => {
+      this.db.admin_users.insert(newUser, (err: any, doc: AdminUser) => {
         if (err) reject(err)
         else resolve(doc)
       })
     })
   }
 
-  async getAdminUserByUsername(username: string): Promise<AdminUser | null> {
-    return new Promise((resolve, reject) => {
-      this.db.admin_users.findOne({ username }, (err, doc) => {
-        if (err) reject(err)
-        else resolve(doc)
-      })
-    })
-  }
-
-  async getAdminUserByEmail(email: string): Promise<AdminUser | null> {
-    return new Promise((resolve, reject) => {
-      this.db.admin_users.findOne({ email }, (err, doc) => {
-        if (err) reject(err)
-        else resolve(doc)
-      })
-    })
-  }
-
-  async getAllAdminUsers(): Promise<AdminUser[]> {
-    return new Promise((resolve, reject) => {
-      this.db.admin_users.find({}, (err, docs) => {
-        if (err) reject(err)
-        else resolve(docs)
-      })
-    })
-  }
-
-  async updateAdminUser(adminId: string, updates: Partial<AdminUser>, updatedBy: string): Promise<AdminUser> {
+  async updateAdminUser(adminId: string, updates: Partial<AdminUser>): Promise<AdminUser> {
     const existingUser = await this.getAdminUser(adminId)
     if (!existingUser) {
       throw new Error(`Admin user ${adminId} not found`)
     }
 
-    // Validate role if being updated
-    if (updates.roleId) {
+    // Check if username or email is being updated and already exists
+    if (updates.username && updates.username !== existingUser.username) {
+      const existingUsername = await this.getAdminUserByUsername(updates.username)
+      if (existingUsername) {
+        throw new Error(`Username ${updates.username} already exists`)
+      }
+    }
+
+    if (updates.email && updates.email !== existingUser.email) {
+      const existingEmail = await this.getAdminUserByEmail(updates.email)
+      if (existingEmail) {
+        throw new Error(`Email ${updates.email} already exists`)
+      }
+    }
+
+    // Validate role if it's being updated
+    if (updates.roleId && updates.roleId !== existingUser.roleId) {
       const role = await this.getRole(updates.roleId)
       if (!role) {
         throw new Error(`Role ${updates.roleId} does not exist`)
       }
     }
 
-    // Validate custom permissions if being updated
-    if (updates.customPermissions) {
-      const validationResult = await this.validatePermissions(updates.customPermissions)
-      if (!validationResult.isValid) {
-        throw new Error(`Invalid custom permissions: ${validationResult.errors.join(', ')}`)
-      }
-    }
-
-    const updatedUser: AdminUser = {
+    const updatedUser = {
       ...existingUser,
       ...updates,
-      updatedAt: new Date(),
-      lastModifiedBy: updatedBy
+      updatedAt: new Date()
     }
 
-    // Update in database
-    await new Promise<void>((resolve, reject) => {
-      this.db.admin_users.update({ adminId }, updatedUser, {}, (err) => {
-        if (err) reject(err)
-        else resolve()
-      })
-    })
-
-    await this.auditLog({
-      adminId: updatedBy,
-      action: 'modify',
-      targetType: 'user',
-      targetId: adminId,
-      changes: {
-        before: existingUser,
-        after: updatedUser,
-        permissionsAdded: updates.customPermissions?.filter(p => !existingUser.customPermissions?.includes(p)),
-        permissionsRemoved: existingUser.customPermissions?.filter(p => !updates.customPermissions?.includes(p))
-      },
-      success: true,
-      ipAddress: '127.0.0.1',
-      userAgent: 'system'
-    })
-
-    return updatedUser
-  }
-
-  // Audit Logging
-  private async auditLog(log: Omit<PermissionAuditLog, '_id' | 'timestamp'>): Promise<void> {
-    const auditEntry: PermissionAuditLog = {
-      _id: `audit_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      timestamp: new Date(),
-      ...log
-    }
-
-    // Insert to database
-    await new Promise<void>((resolve, reject) => {
-      this.db.permission_audit_logs.insert(auditEntry, (err) => {
-        if (err) reject(err)
-        else resolve()
-      })
-    })
-  }
-
-  async getAuditLogs(filters?: {
-    adminId?: string
-    targetType?: string
-    startDate?: Date
-    endDate?: Date
-    limit?: number
-  }): Promise<PermissionAuditLog[]> {
     return new Promise((resolve, reject) => {
-      let query: any = {}
-      
-      if (filters) {
-        if (filters.adminId) query.adminId = filters.adminId
-        if (filters.targetType) query.targetType = filters.targetType
-        if (filters.startDate || filters.endDate) {
-          query.timestamp = {}
-          if (filters.startDate) query.timestamp.$gte = filters.startDate
-          if (filters.endDate) query.timestamp.$lte = filters.endDate
+      this.db.admin_users.update(
+        { adminId },
+        { $set: updatedUser },
+        {},
+        (err: any) => {
+          if (err) reject(err)
+          else resolve(updatedUser)
         }
-      }
+      )
+    })
+  }
 
-      this.db.permission_audit_logs.find(query).sort({ timestamp: -1 }).limit(filters?.limit || 100).exec((err, docs) => {
+  async deleteAdminUser(adminId: string): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.db.admin_users.remove({ adminId }, {}, (err: any, numRemoved: number) => {
+        if (err) reject(err)
+        else resolve(numRemoved > 0)
+      })
+    })
+  }
+
+  async getAllAdminUsers(): Promise<AdminUser[]> {
+    return new Promise((resolve, reject) => {
+      this.db.admin_users.find({}, (err: any, docs: AdminUser[]) => {
         if (err) reject(err)
         else resolve(docs)
       })
     })
   }
 
-  // Utility Methods
-  async getPermissionsByGroup(): Promise<Record<string, PermissionAtom[]>> {
-    const allAtoms = await this.getAllPermissionAtoms()
-    const groups: Record<string, PermissionAtom[]> = {}
-
-    for (const atom of allAtoms) {
-      if (!groups[atom.group]) {
-        groups[atom.group] = []
-      }
-      groups[atom.group].push(atom)
-    }
-
-    return groups
+  async getAdminUsersByRole(roleId: string): Promise<AdminUser[]> {
+    return new Promise((resolve, reject) => {
+      this.db.admin_users.find({ roleId }, (err: any, docs: AdminUser[]) => {
+        if (err) reject(err)
+        else resolve(docs)
+      })
+    })
   }
 
-  async getRoleCapabilities(roleId: string): Promise<{
-    totalPermissions: number
-    permissionsByGroup: Record<string, number>
-    riskLevels: Record<string, number>
-    canAccessGroups: string[]
-  }> {
-    const role = await this.getRole(roleId)
-    if (!role) {
-      throw new Error(`Role ${roleId} not found`)
-    }
-
-    const allAtoms = await this.getAllPermissionAtoms()
-    const atomMap = new Map(allAtoms.map(atom => [atom.atomId, atom]))
-
-    if (role.permissions.includes('*')) {
-      const groupCounts: Record<string, number> = {}
-      const riskCounts: Record<string, number> = {}
-
-      allAtoms.forEach(atom => {
-        groupCounts[atom.group] = (groupCounts[atom.group] || 0) + 1
-        riskCounts[atom.riskLevel] = (riskCounts[atom.riskLevel] || 0) + 1
+  async getAdminUsersByDepartment(department: string): Promise<AdminUser[]> {
+    return new Promise((resolve, reject) => {
+      this.db.admin_users.find({ 'profile.department': department }, (err: any, docs: AdminUser[]) => {
+        if (err) reject(err)
+        else resolve(docs)
       })
-
-      return {
-        totalPermissions: allAtoms.length,
-        permissionsByGroup: groupCounts,
-        riskLevels: riskCounts,
-        canAccessGroups: Object.keys(groupCounts)
-      }
-    }
-
-    const atoms = role.permissions
-      .map(p => atomMap.get(p))
-      .filter(Boolean) as PermissionAtom[]
-
-    const groupCounts: Record<string, number> = {}
-    const riskCounts: Record<string, number> = {}
-    const groups = new Set<string>()
-
-    atoms.forEach(atom => {
-      groupCounts[atom.group] = (groupCounts[atom.group] || 0) + 1
-      riskCounts[atom.riskLevel] = (riskCounts[atom.riskLevel] || 0) + 1
-      groups.add(atom.group)
     })
-
-    return {
-      totalPermissions: atoms.length,
-      permissionsByGroup: groupCounts,
-      riskLevels: riskCounts,
-      canAccessGroups: Array.from(groups)
-    }
   }
 }

@@ -170,4 +170,125 @@ router.get('/auth/profile', async (req, res) => {
   }
 })
 
+// System stats endpoint
+router.get('/system/stats', async (req, res) => {
+  try {
+    const token = req.header('Authorization')?.replace('Bearer ', '')
+
+    if (!token) {
+      return res.status(401).json({ 
+        success: false,
+        error: 'Access denied. No token provided.' 
+      })
+    }
+
+    const decoded = jwt.verify(token, ADMIN_JWT_SECRET) as any
+
+    // Get database instance
+    const dbSetup = NeDBSetup.getInstance()
+    const db = dbSetup.getDatabases()
+
+    // Get system statistics
+    const stats = {
+      users: await new Promise<number>((resolve, reject) => {
+        db.users.count({}, (err: any, count: number) => {
+          if (err) reject(err)
+          else resolve(count)
+        })
+      }),
+      events: await new Promise<number>((resolve, reject) => {
+        db.events.count({}, (err: any, count: number) => {
+          if (err) reject(err)
+          else resolve(count)
+        })
+      }),
+      bookings: await new Promise<number>((resolve, reject) => {
+        db.bookings.count({}, (err: any, count: number) => {
+          if (err) reject(err)
+          else resolve(count)
+        })
+      }),
+      appointments: await new Promise<number>((resolve, reject) => {
+        db.appointment_bookings.count({}, (err: any, count: number) => {
+          if (err) reject(err)
+          else resolve(count)
+        })
+      }),
+      adminUsers: await new Promise<number>((resolve, reject) => {
+        db.admin_users.count({}, (err: any, count: number) => {
+          if (err) reject(err)
+          else resolve(count)
+        })
+      }),
+      marketingCampaigns: await new Promise<number>((resolve, reject) => {
+        db.marketing_campaigns.count({}, (err: any, count: number) => {
+          if (err) reject(err)
+          else resolve(count)
+        })
+      })
+    }
+
+    // Get recent activity
+    const recentActivity = []
+    
+    // Get recent user registrations
+    const recentUsers = await new Promise<any[]>((resolve, reject) => {
+      db.users.find({}).sort({ createdAt: -1 }).limit(5).exec((err: any, docs: any[]) => {
+        if (err) reject(err)
+        else resolve(docs)
+      })
+    })
+
+    recentUsers.forEach(user => {
+      recentActivity.push({
+        type: 'user_registration',
+        description: `New user registered: ${user.profile?.firstName || 'Unknown'}`,
+        timestamp: user.createdAt || new Date()
+      })
+    })
+
+    // Get recent events
+    const recentEvents = await new Promise<any[]>((resolve, reject) => {
+      db.events.find({}).sort({ createdAt: -1 }).limit(3).exec((err: any, docs: any[]) => {
+        if (err) reject(err)
+        else resolve(docs)
+      })
+    })
+
+    recentEvents.forEach(event => {
+      recentActivity.push({
+        type: 'event_created',
+        description: `New event created: ${event.title}`,
+        timestamp: event.createdAt || new Date()
+      })
+    })
+
+    // Sort recent activity by timestamp
+    recentActivity.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+
+    res.json({
+      success: true,
+      data: {
+        stats,
+        recentActivity: recentActivity.slice(0, 10), // Return top 10 recent activities
+        systemInfo: {
+          uptime: process.uptime(),
+          memory: {
+            used: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
+            total: Math.round(process.memoryUsage().heapTotal / 1024 / 1024)
+          },
+          nodeVersion: process.version,
+          environment: process.env.NODE_ENV || 'development'
+        }
+      }
+    })
+  } catch (error) {
+    console.error('System stats error:', error)
+    res.status(500).json({ 
+      success: false,
+      error: 'Failed to retrieve system statistics' 
+    })
+  }
+})
+
 export default router

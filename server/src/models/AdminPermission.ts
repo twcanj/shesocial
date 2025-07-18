@@ -64,17 +64,21 @@ export interface AdminUser {
   passwordHash: string
 
   // Profile
-  profile: {
-    realName: string
-    employeeId: string
-    department: 'executive' | 'technical' | 'operations' | 'members' | 'system'
-    joinDate: Date
+  profile?: {
+    realName?: string
+    employeeId?: string
+    department?: 'executive' | 'technical' | 'operations' | 'members' | 'system'
+    joinDate?: Date
     lastLogin?: Date
   }
+
+  // Department (direct property)
+  department?: string
 
   // Role and Permissions
   roleId: string        // Reference to AdminRole
   customPermissions?: string[] // Additional permissions beyond role
+  permissions?: string[] // Direct permissions for this user
 
   // Status
   status: 'active' | 'suspended' | 'inactive'

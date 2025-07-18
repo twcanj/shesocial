@@ -12,7 +12,7 @@ import { developmentFormat, productionFormat, errorFormat } from './middleware/l
 
 // Routes
 import apiRoutes from './routes/api'
-import adminRoutes from './routes/admin-simple'
+import adminRoutes from './routes/admin'
 import eventTypesRoutes from './routes/eventTypes'
 import marketingRoutes from './routes/marketing'
 import analyticsRoutes from './routes/analytics'

@@ -43,6 +43,7 @@ export class StartupHealthCheck {
       await this.checkDatabaseIntegrity()
       await this.checkDataDirectoryPermissions()
       await this.checkSuperAdmin() // Check for super admin
+      await this.checkPermissionSystem() // Check permission system
 
       // Report results
       this.reportResults()
@@ -440,6 +441,99 @@ export class StartupHealthCheck {
         'super-admin-check',
         'error',
         `Super admin check failed: ${error.message}`,
+        startTime
+      )
+    }
+  }
+
+  private async checkPermissionSystem(): Promise<void> {
+    const startTime = Date.now()
+    try {
+      const db = this.dbSetup.getDatabases()
+      
+      // Check if permission atoms exist
+      const permissionAtoms = await new Promise<any[]>((resolve, reject) => {
+        db.permission_atoms.find({}, (err: any, docs: any[]) => {
+          if (err) reject(err)
+          else resolve(docs)
+        })
+      })
+
+      if (permissionAtoms.length === 0) {
+        this.addResult(
+          'permission-system-check',
+          'error',
+          'Permission atoms not found. Admin permissions will not work properly.',
+          startTime
+        )
+        return
+      }
+
+      // Check if admin user has proper role with permissions
+      const adminUser = await new Promise<any>((resolve, reject) => {
+        db.admin_users.findOne({ email: 'admin@infinitymatch.com' }, (err: any, doc: any) => {
+          if (err) reject(err)
+          else resolve(doc)
+        })
+      })
+
+      if (!adminUser) {
+        this.addResult(
+          'permission-system-check',
+          'error',
+          'Admin user not found for permission check.',
+          startTime
+        )
+        return
+      }
+
+      // Check if admin role exists
+      const adminRole = await new Promise<any>((resolve, reject) => {
+        db.admin_roles.findOne({ roleId: adminUser.roleId }, (err: any, doc: any) => {
+          if (err) reject(err)
+          else resolve(doc)
+        })
+      })
+
+      if (!adminRole) {
+        this.addResult(
+          'permission-system-check',
+          'error',
+          'Admin role not found. Admin will have no permissions.',
+          startTime
+        )
+        return
+      }
+
+      // Check if admin role has proper permissions
+      const hasAllPermissions = adminRole.permissions && adminRole.permissions.includes('*')
+      
+      if (!hasAllPermissions) {
+        this.addResult(
+          'permission-system-check',
+          'warning',
+          `Admin role has limited permissions: ${adminRole.permissions.join(', ')}`,
+          startTime
+        )
+      } else {
+        this.addResult(
+          'permission-system-check',
+          'healthy',
+          `Permission system verified. Admin has full access with ${permissionAtoms.length} permission atoms.`,
+          startTime,
+          {
+            permissionAtoms: permissionAtoms.length,
+            adminRole: adminRole.name,
+            adminPermissions: adminRole.permissions
+          }
+        )
+      }
+      
+    } catch (error) {
+      this.addResult(
+        'permission-system-check',
+        'error',
+        `Permission system check failed: ${error.message}`,
         startTime
       )
     }
