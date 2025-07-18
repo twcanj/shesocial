@@ -12,7 +12,7 @@ import { developmentFormat, productionFormat, errorFormat } from './middleware/l
 
 // Routes
 import apiRoutes from './routes/api'
-// import adminRoutes from './routes/admin'
+import adminRoutes from './routes/admin-simple'
 import eventTypesRoutes from './routes/eventTypes'
 import marketingRoutes from './routes/marketing'
 import analyticsRoutes from './routes/analytics'
@@ -22,6 +22,9 @@ import NeDBSetup from './db/nedb-setup'
 
 // Health Check Service
 import StartupHealthCheck from './services/StartupHealthCheck'
+
+// Admin Initialization Service
+import AdminInitService from './services/AdminInitService'
 
 // Event Types Model
 const { EventTypeModel } = require('./models/EventType')
@@ -82,8 +85,8 @@ app.use('/api/marketing', marketingRoutes)
 // Analytics routes (CTA tracking and analytics)
 app.use('/api/analytics', analyticsRoutes)
 
-// Admin routes (temporarily disabled due to TypeScript issues)
-// app.use('/api/admin', adminRoutes)
+// Admin routes
+app.use('/api/admin', adminRoutes)
 
 // Health check endpoint (outside API prefix for load balancers)
 app.get('/health', async (req, res) => {
@@ -282,6 +285,15 @@ async function startServer() {
       console.log('📝 Event types initialized successfully')
     } catch (error) {
       console.warn('⚠️ Warning: Failed to initialize event types:', error)
+    }
+
+    // Initialize default admin user if needed
+    try {
+      const adminInitService = new AdminInitService()
+      await adminInitService.initializeDefaultAdmin()
+      console.log('👤 Admin user initialized successfully')
+    } catch (error) {
+      console.warn('⚠️ Warning: Failed to initialize admin user:', error)
     }
 
     // Start the server regardless of health check results (graceful degradation)

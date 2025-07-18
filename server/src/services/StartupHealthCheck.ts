@@ -349,39 +349,92 @@ export class StartupHealthCheck {
   private async checkSuperAdmin(): Promise<void> {
     const startTime = Date.now()
     try {
-      const permissionService = new AdminPermissionService()
-      const superAdminRole = (await permissionService.getAllRoles()).find(
-        (role) => role.permissions.includes('*')
-      )
+      const db = this.dbSetup.getDatabases()
+      
+      // Check if admin user exists
+      const adminUser = await new Promise<any>((resolve, reject) => {
+        db.admin_users.findOne({ email: 'admin@infinitymatch.com' }, (err: any, doc: any) => {
+          if (err) reject(err)
+          else resolve(doc)
+        })
+      })
 
-      if (!superAdminRole) {
+      if (!adminUser) {
+        this.addResult(
+          'super-admin-check',
+          'error',
+          'Super admin user not found. Admin login will fail.',
+          startTime
+        )
+        return
+      }
+
+      // Test admin login functionality
+      const bcrypt = require('bcrypt')
+      const isPasswordValid = await bcrypt.compare('admin123', adminUser.passwordHash)
+      
+      if (!isPasswordValid) {
+        this.addResult(
+          'super-admin-check',
+          'error',
+          'Super admin password verification failed. Admin login will fail.',
+          startTime
+        )
+        return
+      }
+
+      // Check if admin is active
+      if (adminUser.status !== 'active') {
         this.addResult(
           'super-admin-check',
           'warning',
-          'No super admin role found. Creating one.',
+          `Super admin account status is '${adminUser.status}'. Login may be restricted.`,
           startTime
         )
-        // Create a super admin role if it doesn't exist
-        await permissionService.createRole({
-          roleId: 'super_admin',
-          name: 'Super Admin',
-          description: 'Full system access',
-          permissions: ['*'],
-          department: 'system',
-          isActive: true,
-          createdBy: 'system',
-          lastModifiedBy: 'system',
-          isCustom: false,
-          version: '1.0'
-        })
-      } else {
+        return
+      }
+
+      // Test JWT token generation
+      const jwt = require('jsonwebtoken')
+      const ADMIN_JWT_SECRET = process.env.ADMIN_JWT_SECRET || 'admin_jwt_secret_key_should_be_secure'
+      
+      try {
+        const testToken = jwt.sign(
+          {
+            adminId: adminUser.adminId,
+            username: adminUser.username,
+            roleId: adminUser.roleId,
+            department: adminUser.department || 'admin'
+          },
+          ADMIN_JWT_SECRET,
+          { expiresIn: '1m' } // Short expiry for test
+        )
+        
+        // Verify the token can be decoded
+        const decoded = jwt.verify(testToken, ADMIN_JWT_SECRET)
+        
         this.addResult(
           'super-admin-check',
           'healthy',
-          'Super admin role verified.',
+          'Super admin login functionality verified. Admin can login successfully.',
+          startTime,
+          {
+            adminId: adminUser.adminId,
+            username: adminUser.username,
+            email: adminUser.email,
+            status: adminUser.status,
+            lastLogin: adminUser.lastLogin
+          }
+        )
+      } catch (jwtError) {
+        this.addResult(
+          'super-admin-check',
+          'error',
+          `JWT token generation/verification failed: ${jwtError.message}`,
           startTime
         )
       }
+      
     } catch (error) {
       this.addResult(
         'super-admin-check',
