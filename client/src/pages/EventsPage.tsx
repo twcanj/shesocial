@@ -111,7 +111,7 @@ export const EventsPage: React.FC = () => {
     tabs.push({
       id: 'my-events', 
       label: '我的活動', 
-      count: stats.participated,
+      count: stats.pendingBookings + stats.confirmedBookings,
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -233,13 +233,13 @@ export const EventsPage: React.FC = () => {
               <div className="text-3xl font-bold text-green-400 mb-2">{stats.upcoming}</div>
               <div className="text-sm text-luxury-platinum/80 font-medium">即將開始</div>
             </div>
-            <div className="luxury-card-selected p-6 text-center">
-              <div className="text-3xl font-bold text-luxury-midnight-black mb-2">{stats.participated}</div>
-              <div className="text-sm text-luxury-midnight-black/80 font-medium">已參與</div>
-            </div>
             <div className="luxury-card-outline p-6 text-center">
-              <div className="text-3xl font-bold text-purple-400 mb-2">{stats.created}</div>
-              <div className="text-sm text-luxury-platinum/80 font-medium">已創建</div>
+              <div className="text-3xl font-bold text-orange-400 mb-2">{stats.pendingBookings}</div>
+              <div className="text-sm text-luxury-platinum/80 font-medium">報名中</div>
+            </div>
+            <div className="luxury-card-selected p-6 text-center">
+              <div className="text-3xl font-bold text-luxury-midnight-black mb-2">{stats.confirmedBookings}</div>
+              <div className="text-sm text-luxury-midnight-black/80 font-medium">完成報名</div>
             </div>
           </div>
         )}

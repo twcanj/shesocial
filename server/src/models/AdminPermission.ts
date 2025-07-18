@@ -35,7 +35,7 @@ export interface AdminRole {
   // Role Identity
   roleId: string // e.g., "super_admin", "system_admin"
   name: string
-  department: 'executive' | 'technical' | 'operations' | 'members'
+  department: 'executive' | 'technical' | 'operations' | 'members' | 'system'
 
   // Permissions
   permissions: string[] // Array of permission atomIds
@@ -67,7 +67,7 @@ export interface AdminUser {
   profile: {
     realName: string
     employeeId: string
-    department: 'executive' | 'technical' | 'operations' | 'members'
+    department: 'executive' | 'technical' | 'operations' | 'members' | 'system'
     joinDate: Date
     lastLogin?: Date
   }

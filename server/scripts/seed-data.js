@@ -70,7 +70,7 @@ const SYSTEM_USERS = [
       payments: [{
         amount: 2500,
         method: 'LINE Pay',
-        status: 'completed',
+        status: 'ready',
         transactionId: 'LP' + Date.now(),
         paidAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
       }],
@@ -114,7 +114,7 @@ const SYSTEM_USERS = [
       payments: [{
         amount: 1300, // 1000 entry + 300 monthly
         method: 'Apple Pay',
-        status: 'completed',
+        status: 'ready',
         transactionId: 'AP' + Date.now(),
         paidAt: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000)
       }],
@@ -158,7 +158,7 @@ const SYSTEM_USERS = [
       payments: [{
         amount: 1300,
         method: 'LINE Pay',
-        status: 'completed',
+        status: 'ready',
         transactionId: 'LP' + (Date.now() - 1000),
         paidAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000)
       }],
@@ -202,7 +202,7 @@ const SYSTEM_USERS = [
       payments: [{
         amount: 900, // 600 entry + 300 monthly
         method: 'Google Pay',
-        status: 'completed',
+        status: 'ready',
         transactionId: 'GP' + Date.now(),
         paidAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000)
       }],
@@ -297,7 +297,7 @@ const ADMIN_USERS = [
       joinDate: new Date(),
       lastLogin: null
     },
-    roleId: 'system_admin',
+    roleId: 'super_admin',
     customPermissions: [],
     status: 'active',
     twoFactorEnabled: false,

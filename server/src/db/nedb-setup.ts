@@ -6,12 +6,15 @@ import path from 'path'
 import fs from 'fs'
 import { UserProfile, EventData, BookingData, SyncQueueItem, StartupRecord, HealthLog } from '../types/database'
 import { AdminUser, AdminRole, PermissionAtom, PermissionAuditLog } from '../models/AdminPermission'
+import { EventType } from '../models/EventType'
 
 export interface DatabaseCollections {
   users: Datastore<UserProfile>
   events: Datastore<EventData>
   bookings: Datastore<BookingData>
   syncQueue: Datastore<SyncQueueItem>
+  // Event management collections
+  event_types: Datastore<EventType>
   // New appointment system collections
   appointments_slots: Datastore<any>
   appointment_bookings: Datastore<any>
@@ -78,6 +81,12 @@ class NeDBSetup {
       }),
       syncQueue: new Datastore<SyncQueueItem>({
         filename: path.join(this.dbPath, 'sync-queue.db'),
+        autoload: true,
+        timestampData: true
+      }),
+      // Event management collections
+      event_types: new Datastore<EventType>({
+        filename: path.join(this.dbPath, 'event-types.db'),
         autoload: true,
         timestampData: true
       }),
@@ -178,6 +187,13 @@ class NeDBSetup {
       databases.syncQueue.ensureIndex({ fieldName: 'operation' })
       databases.syncQueue.ensureIndex({ fieldName: 'timestamp' })
       databases.syncQueue.ensureIndex({ fieldName: 'priority' })
+
+      // Event types indexes
+      databases.event_types.ensureIndex({ fieldName: 'typeId', unique: true })
+      databases.event_types.ensureIndex({ fieldName: 'isActive' })
+      databases.event_types.ensureIndex({ fieldName: 'sortOrder' })
+      databases.event_types.ensureIndex({ fieldName: 'name' })
+      databases.event_types.ensureIndex({ fieldName: 'createdAt' })
 
       // Appointment slots indexes
       databases.appointments_slots.ensureIndex({ fieldName: 'interviewerId' })

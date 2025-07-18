@@ -43,8 +43,8 @@ interface UseEventsReturn {
   getEventStats: () => {
     total: number
     upcoming: number
-    participated: number
-    created: number
+    pendingBookings: number
+    confirmedBookings: number
   }
 }
 
@@ -490,10 +490,12 @@ export const useEvents = (options: UseEventsOptions = {}): UseEventsReturn => {
     return events.filter(event => new Date(event.metadata.date) > now)
   }, [events])
 
-  // Get user booked events
+  // Get user booked events (upcoming)
   const getUserBookedEvents = useCallback((): EventData[] => {
     if (!user) return []
+    const now = new Date()
     return events.filter(event => 
+      new Date(event.metadata.date) > now &&
       event.participants?.some(p => p.userId === user._id)
     )
   }, [events, user])
@@ -502,13 +504,17 @@ export const useEvents = (options: UseEventsOptions = {}): UseEventsReturn => {
   const getEventStats = useCallback(() => {
     const total = events.length
     const upcoming = getUpcomingEvents().length
-    const participated = getUserBookedEvents().length
-    const created = user ? events.filter(() => 
-      // Assuming events have a createdBy field (not in current schema)
-      false // TODO: Add createdBy field to EventData schema
-    ).length : 0
+    const userBookedEvents = getUserBookedEvents()
+    
+    const pendingBookings = userBookedEvents.filter(event => 
+      event.participants?.some(p => p.userId === user?._id && p.status === 'pending')
+    ).length
 
-    return { total, upcoming, participated, created }
+    const confirmedBookings = userBookedEvents.filter(event => 
+      event.participants?.some(p => p.userId === user?._id && p.status === 'confirmed')
+    ).length
+
+    return { total, upcoming, pendingBookings, confirmedBookings }
   }, [events, getUpcomingEvents, getUserBookedEvents, user])
 
   // Subscribe to event bus messages (with debouncing to prevent blinking)

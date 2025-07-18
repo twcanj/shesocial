@@ -3,6 +3,7 @@
 export interface EventData {
   _id?: string
   name: string
+  description?: string
   metadata: {
     date: Date | string
     location: string
@@ -30,7 +31,7 @@ export interface EventData {
   }
   participants: EventParticipant[]
   maxParticipants?: number
-  status: 'draft' | 'published' | 'full' | 'completed' | 'cancelled'
+  status: 'draft' | 'published' | 'full' | 'ready' | 'cancelled'
   participantVisibility?: {
     vvip: boolean
     vip: boolean

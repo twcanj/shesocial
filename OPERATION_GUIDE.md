@@ -7,8 +7,8 @@
 #### 1. 總管理員 (Super Admin)
 - **Email**: `admin@infinitymatch.com`
 - **Password**: `admin123`
-- **Real Name**: 系統管理員
-- **Employee ID**: SYS-001
+- **Real Name**: 總管理員
+- **Employee ID**: CEO-001
 - **Department**: Executive
 - **Role**: Super Admin
 - **Permissions**: All permissions (*)

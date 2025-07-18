@@ -759,3 +759,47 @@ a:hover {
   background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
 }
+/* DatePicker Luxury Styles */
+.shadow-luxury {
+  box-shadow: var(--shadow-luxury);
+}
+
+/* DatePicker Gold Accent */
+.bg-luxury-gold {
+  background-color: #D4AF37;
+}
+
+.text-luxury-gold {
+  color: #D4AF37;
+}
+
+.hover\:bg-luxury-gold\/10:hover {
+  background-color: rgba(212, 175, 55, 0.1);
+}
+
+.hover\:bg-luxury-gold\/90:hover {
+  background-color: rgba(212, 175, 55, 0.9);
+}
+
+/* DatePicker Animation */
+.datepicker-transition-enter {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.datepicker-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 200ms, transform 200ms;
+}
+
+.datepicker-transition-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.datepicker-transition-exit-active {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 200ms, transform 200ms;
+}

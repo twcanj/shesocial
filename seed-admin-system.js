@@ -85,15 +85,15 @@ async function seedAdminSystem() {
     
     // Seed admin users
     const adminUsers = [
-      // Super Admin
+      // Super Admin (Executive)
       {
         adminId: 'admin-001',
         username: 'admin',
         email: 'admin@infinitymatch.com',
         passwordHash: await bcrypt.hash('admin123', 12),
         profile: {
-          realName: '系統管理員',
-          employeeId: 'SYS-001',
+          realName: '總管理員',
+          employeeId: 'CEO-001',
           department: 'executive',
           joinDate: new Date(),
           lastLogin: null

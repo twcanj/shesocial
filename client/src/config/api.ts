@@ -46,6 +46,21 @@ export const API_ENDPOINTS = {
     SYNC: (timestamp: string) => `/events/sync/${timestamp}`,
   },
   
+  // Event Types
+  EVENT_TYPES: {
+    LIST: '/event-types',
+    GET: (id: string) => `/event-types/${id}`,
+    SUGGESTIONS: (keyword: string) => `/event-types/suggestions/${keyword}`,
+    ADMIN: {
+      LIST: '/event-types/admin/all',
+      CREATE: '/event-types/admin',
+      UPDATE: (id: string) => `/event-types/admin/${id}`,
+      DELETE: (id: string) => `/event-types/admin/${id}`,
+      REORDER: '/event-types/admin/reorder',
+      INITIALIZE: '/event-types/admin/initialize',
+    },
+  },
+  
   // Bookings
   BOOKINGS: {
     LIST: '/bookings',

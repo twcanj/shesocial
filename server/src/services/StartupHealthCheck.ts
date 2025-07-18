@@ -7,6 +7,8 @@ import fs from 'fs'
 import path from 'path'
 import NeDBSetup from '../db/nedb-setup'
 import { HealthCheckResult, StartupRecord, HealthLog } from '../types/database'
+import { AdminPermissionService } from './AdminPermissionService' // Import the service
+import { AdminUser } from '../models/AdminPermission' // Import the model
 
 export class StartupHealthCheck {
   private results: HealthCheckResult[] = []
@@ -40,6 +42,7 @@ export class StartupHealthCheck {
       // Sequential checks that depend on database being ready
       await this.checkDatabaseIntegrity()
       await this.checkDataDirectoryPermissions()
+      await this.checkSuperAdmin() // Check for super admin
 
       // Report results
       this.reportResults()
@@ -340,6 +343,52 @@ export class StartupHealthCheck {
 
     } catch (error) {
       this.addResult('data-permissions', 'error', `Data directory permission check failed: ${error.message}`, startTime)
+    }
+  }
+
+  private async checkSuperAdmin(): Promise<void> {
+    const startTime = Date.now()
+    try {
+      const permissionService = new AdminPermissionService()
+      const superAdminRole = (await permissionService.getAllRoles()).find(
+        (role) => role.permissions.includes('*')
+      )
+
+      if (!superAdminRole) {
+        this.addResult(
+          'super-admin-check',
+          'warning',
+          'No super admin role found. Creating one.',
+          startTime
+        )
+        // Create a super admin role if it doesn't exist
+        await permissionService.createRole({
+          roleId: 'super_admin',
+          name: 'Super Admin',
+          description: 'Full system access',
+          permissions: ['*'],
+          department: 'system',
+          isActive: true,
+          createdBy: 'system',
+          lastModifiedBy: 'system',
+          isCustom: false,
+          version: '1.0'
+        })
+      } else {
+        this.addResult(
+          'super-admin-check',
+          'healthy',
+          'Super admin role verified.',
+          startTime
+        )
+      }
+    } catch (error) {
+      this.addResult(
+        'super-admin-check',
+        'error',
+        `Super admin check failed: ${error.message}`,
+        startTime
+      )
     }
   }
 

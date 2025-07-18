@@ -13,12 +13,16 @@ import { developmentFormat, productionFormat, errorFormat } from './middleware/l
 // Routes
 import apiRoutes from './routes/api'
 import adminRoutes from './routes/admin'
+import eventTypesRoutes from './routes/eventTypes'
 
 // Database
 import NeDBSetup from './db/nedb-setup'
 
 // Health Check Service
 import StartupHealthCheck from './services/StartupHealthCheck'
+
+// Event Types Model
+const { EventTypeModel } = require('./models/EventType')
 
 const app = express()
 const PORT = process.env.PORT || 10000
@@ -66,6 +70,9 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }))
 
 // API routes
 app.use('/api', apiRoutes)
+
+// Event types routes (public API for dropdowns)
+app.use('/api/event-types', eventTypesRoutes)
 
 // Admin routes (completely separate from user API)
 app.use('/api/admin', adminRoutes)
@@ -256,6 +263,17 @@ async function startServer() {
     // Run comprehensive health checks
     const healthCheck = new StartupHealthCheck()
     const allSystemsHealthy = await healthCheck.runAllChecks()
+
+    // Initialize default event types if needed
+    try {
+      const { EventTypeModel } = require('./models/EventType');
+      const databases = NeDBSetup.getInstance().getDatabases()
+      const eventTypeModel = new EventTypeModel(databases.event_types)
+      await eventTypeModel.initializeDefaultTypes()
+      console.log('📝 Event types initialized successfully')
+    } catch (error) {
+      console.warn('⚠️ Warning: Failed to initialize event types:', error)
+    }
 
     // Start the server regardless of health check results (graceful degradation)
     app.listen(PORT, async () => {

@@ -3,7 +3,7 @@
 // Run with: node server/scripts/create-seed-data.js
 
 import bcrypt from 'bcrypt'
-import NeDBSetup from '../dist/db/nedb-setup.js'
+import NeDBSetup from '../src/db/nedb-setup.ts'
 import { SYSTEM_USERS, ADMIN_USERS, INTERVIEWERS } from './seed-data.js'
 import { UserModel } from '../dist/models/User.js'
 import { InterviewerModel } from '../dist/models/Interviewer.js'

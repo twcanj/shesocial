@@ -451,7 +451,7 @@ router.put('/events/:id/status', requirePermission('events:edit'), adminAuth, as
     const eventModel = new EventModel(databases.events)
 
     const { status } = req.body
-    const validStatuses = ['draft', 'published', 'cancelled', 'completed']
+    const validStatuses = ['draft', 'published', 'cancelled', 'ready']
 
     if (!validStatuses.includes(status)) {
       return res.status(400).json({ error: 'Invalid status' })

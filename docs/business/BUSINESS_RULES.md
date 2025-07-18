@@ -2,8 +2,8 @@
 ## Core Business Logic & Content Management
 
 > **Status**: Production Ready
-> **Last Updated**: 2025-07-16
-> **Version**: 3.0
+> **Last Updated**: 2025-07-18
+> **Version**: 3.1
 
 ---
 
@@ -235,6 +235,198 @@ const modulePermissions = {
       manage: "僅管理員可管理製作流程"
     },
     businessPurpose: "高端服務差異化，直接收費模式"
+  }
+}
+```
+
+---
+
+## 📊 活動狀態管理系統
+
+### 活動狀態定義與流轉邏輯
+```javascript
+const eventStatusDefinitions = {
+  draft: {
+    name: "草稿",
+    description: "活動正在籌備中，尚未公開",
+    color: "bg-gray-500/20 text-gray-400",
+    permissions: {
+      view: "僅管理員可見",
+      edit: "管理員可編輯",
+      participate: false
+    },
+    nextStatus: ["published", "cancelled"]
+  },
+  
+  published: {
+    name: "已發佈",
+    description: "活動已公開發佈，開放報名",
+    color: "bg-emerald-500/20 text-emerald-400",
+    permissions: {
+      view: "所有用戶可見",
+      edit: "管理員可編輯",
+      participate: "付費會員可報名"
+    },
+    nextStatus: ["full", "ready", "cancelled"]
+  },
+  
+  full: {
+    name: "已滿",
+    description: "活動報名人數已達上限",
+    color: "bg-orange-500/20 text-orange-400",
+    permissions: {
+      view: "所有用戶可見",
+      edit: "管理員可編輯",
+      participate: false
+    },
+    nextStatus: ["ready", "cancelled"]
+  },
+  
+  ready: {
+    name: "準備就緒",
+    description: "活動籌備完成，等待開始（時間未過）",
+    color: "bg-blue-500/20 text-blue-400",
+    permissions: {
+      view: "所有用戶可見",
+      edit: "管理員可編輯",
+      participate: false
+    },
+    businessRule: "只有活動時間未過的情況下才能標記為準備就緒",
+    nextStatus: ["cancelled"]
+  },
+  
+  cancelled: {
+    name: "已取消",
+    description: "活動已取消，不會舉行",
+    color: "bg-red-500/20 text-red-400",
+    permissions: {
+      view: "所有用戶可見",
+      edit: "管理員可編輯",
+      participate: false
+    },
+    businessRule: "取消後可觸發退費流程",
+    nextStatus: []
+  }
+}
+```
+
+### 活動狀態管理規則
+```javascript
+const eventStatusManagement = {
+  // 管理員操作權限
+  adminActions: {
+    draft_to_published: {
+      action: "發佈活動",
+      validation: ["活動基本資訊完整", "活動時間未過", "活動地點已確認"],
+      button: "發佈活動",
+      icon: "publish"
+    },
+    
+    published_to_ready: {
+      action: "標記為準備就緒", 
+      validation: ["活動時間未過", "籌備工作完成"],
+      button: "準備就緒",
+      icon: "check",
+      businessRule: "表示活動已完成所有準備工作，等待開始"
+    },
+    
+    any_to_cancelled: {
+      action: "取消活動",
+      validation: ["確認取消原因"],
+      button: "取消活動", 
+      icon: "cancel",
+      consequences: ["觸發退費流程", "通知已報名用戶"]
+    }
+  },
+  
+  // 自動狀態轉換
+  automaticTransitions: {
+    published_to_full: {
+      trigger: "報名人數達到上限",
+      automatic: true,
+      notification: "通知管理員活動已滿"
+    }
+  },
+  
+  // 業務邏輯限制
+  businessConstraints: {
+    timeValidation: {
+      rule: "活動時間已過的活動不能標記為 ready",
+      reason: "時間本身就代表活動完成，不需要人工標記完成狀態",
+      implementation: "前端和後端都需要驗證活動時間"
+    },
+    
+    statusFlow: {
+      rule: "狀態轉換必須遵循業務邏輯",
+      allowedTransitions: {
+        "draft": ["published", "cancelled"],
+        "published": ["full", "ready", "cancelled"],
+        "full": ["ready", "cancelled"],
+        "ready": ["cancelled"],
+        "cancelled": []
+      }
+    }
+  }
+}
+```
+
+### 活動管理統計邏輯
+```javascript
+const eventManagementStats = {
+  // 統計卡片定義
+  statsCards: {
+    total: {
+      label: "總活動數",
+      calculation: "所有活動數量",
+      color: "text-luxury-gold"
+    },
+    
+    upcoming: {
+      label: "即將舉行", 
+      calculation: "活動時間 > 當前時間的所有活動",
+      color: "text-emerald-400",
+      businessRule: "不限制活動狀態，只看時間"
+    },
+    
+    recruiting: {
+      label: "募集中",
+      calculation: "狀態為 published 且活動時間 > 當前時間",
+      color: "text-blue-400",
+      businessRule: "真正在招募參加者的活動"
+    },
+    
+    cancelled: {
+      label: "已取消",
+      calculation: "狀態為 cancelled 的活動",
+      color: "text-red-400"
+    }
+  },
+  
+  // 篩選標籤邏輯
+  filterTabs: {
+    all: {
+      label: "全部",
+      filter: "不過濾",
+      count: "stats.total"
+    },
+    
+    upcoming: {
+      label: "即將舉行",
+      filter: "活動時間 > 當前時間",
+      count: "stats.upcoming"
+    },
+    
+    recruiting: {
+      label: "募集中", 
+      filter: "狀態 = published 且活動時間 > 當前時間",
+      count: "stats.recruiting"
+    },
+    
+    cancelled: {
+      label: "已取消",
+      filter: "狀態 = cancelled",
+      count: "stats.cancelled"
+    }
   }
 }
 ```
@@ -904,11 +1096,17 @@ const flexiblePermissionSystem = {
 
 ---
 
-*最後更新: 2025-07-14*  
-*版本: 3.2*  
-*狀態: 四部門管理員系統架構完成 ✅*
+*最後更新: 2025-07-18*  
+*版本: 3.3*  
+*狀態: 活動狀態管理系統優化完成 ✅*
 
-**重要更新**: 完成四部門分工管理員系統架構設計，建立總管理(執行部)、系統管理(技術部)、營運管理(營運部)、付費用戶管理者(會員部)的專業分工體系。實現管理員與用戶系統完全分離，採用彈性權限配置系統支援未來功能擴展，建立完整的操作審計和安全監控機制。
+**重要更新**: 完成活動狀態管理系統的業務邏輯優化，移除不合理的"已完成"狀態，改為"準備就緒"狀態。修正活動管理統計邏輯，將重點從"已完成"轉移到"募集中"，更準確反映業務需求。建立完整的活動狀態流轉規則和時間驗證機制，確保活動狀態轉換的業務邏輯正確性。
+
+**狀態管理優化**: 
+- 活動狀態重新定義: draft → published → full/ready → cancelled
+- 統計邏輯調整: 關注"募集中"而非"已完成"活動
+- 時間驗證機制: 活動時間過期自動完成，無需人工標記
+- 管理員操作優化: 勾選功能從"完成"改為"準備就緒"
 
 **重要里程碑**: 品牌重塑為 InfinityMatch 天造地設人成對 (1+1=∞)，完成4-tier會員制度(visitor/registered/vip/vvip)與四部門管理體系，實施階段式活動瀏覽限制策略，建立三大內容模塊架構(VVIPIntro/EventManagement/EventShowcase)與獨立管理員系統。天造地設，人成對 - 當二個彼此有情人相遇，愛就開始無限。
 ### **三大業務系統 CMS 整合**

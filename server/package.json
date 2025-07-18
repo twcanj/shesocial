@@ -1,7 +1,7 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "InfinityMatch 天造地設人成對 API Server - 1+1=∞ Backend",
+  "description": "",
   "main": "dist/index.js",
   "scripts": {
     "start": "node dist/index.js",

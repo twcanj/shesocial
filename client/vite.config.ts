@@ -12,6 +12,13 @@ export default defineConfig({
     hmr: true,
     watch: {
       usePolling: true
+    },
+    proxy: {
+      '/api': {
+        target: 'http://localhost:10000',
+        changeOrigin: true,
+        secure: false
+      }
     }
   },
   optimizeDeps: {

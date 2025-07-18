@@ -331,11 +331,45 @@ export class EventModel {
                 timestamp: Date.now()
               })
             } else {
-              resolve({
-                success: true,
-                data: updatedDoc as any,
-                timestamp: Date.now()
-              })
+              // Check if event is now full and auto-update status
+              const updatedEvent = updatedDoc as EventData
+              if (updatedEvent.participants.length >= updatedEvent.maxParticipants && updatedEvent.status === 'published') {
+                // Auto-set to full status
+                this.db.update(
+                  { _id: eventId },
+                  { 
+                    $set: { 
+                      status: 'full',
+                      updatedAt: new Date(),
+                      lastSync: new Date()
+                    }
+                  },
+                  { returnUpdatedDocs: true },
+                  (statusUpdateErr, statusNumReplaced, statusUpdatedDoc) => {
+                    if (statusUpdateErr) {
+                      // Even if status update fails, participant was added successfully
+                      console.error('Failed to auto-update status to full:', statusUpdateErr)
+                      resolve({
+                        success: true,
+                        data: updatedEvent,
+                        timestamp: Date.now()
+                      })
+                    } else {
+                      resolve({
+                        success: true,
+                        data: statusUpdatedDoc as any,
+                        timestamp: Date.now()
+                      })
+                    }
+                  }
+                )
+              } else {
+                resolve({
+                  success: true,
+                  data: updatedEvent,
+                  timestamp: Date.now()
+                })
+              }
             }
           }
         )
@@ -367,11 +401,45 @@ export class EventModel {
               timestamp: Date.now()
             })
           } else {
-            resolve({
-              success: true,
-              data: updatedDoc as any,
-              timestamp: Date.now()
-            })
+            // Check if event is no longer full and auto-update status
+            const updatedEvent = updatedDoc as EventData
+            if (updatedEvent.participants.length < updatedEvent.maxParticipants && updatedEvent.status === 'full') {
+              // Auto-set back to published status
+              this.db.update(
+                { _id: eventId },
+                { 
+                  $set: { 
+                    status: 'published',
+                    updatedAt: new Date(),
+                    lastSync: new Date()
+                  }
+                },
+                { returnUpdatedDocs: true },
+                (statusUpdateErr, statusNumReplaced, statusUpdatedDoc) => {
+                  if (statusUpdateErr) {
+                    // Even if status update fails, participant was removed successfully
+                    console.error('Failed to auto-update status from full to published:', statusUpdateErr)
+                    resolve({
+                      success: true,
+                      data: updatedEvent,
+                      timestamp: Date.now()
+                    })
+                  } else {
+                    resolve({
+                      success: true,
+                      data: statusUpdatedDoc as any,
+                      timestamp: Date.now()
+                    })
+                  }
+                }
+              )
+            } else {
+              resolve({
+                success: true,
+                data: updatedEvent,
+                timestamp: Date.now()
+              })
+            }
           }
         }
       )
