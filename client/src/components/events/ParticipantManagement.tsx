@@ -157,7 +157,6 @@ export const ParticipantManagement: React.FC<ParticipantManagementProps> = ({
     const membershipConfig = {
       regular: { label: '一般', className: 'bg-gray-100 text-gray-700' },
       vip: { label: 'VIP', className: 'bg-blue-100 text-blue-700' },
-      vip: { label: 'VIP', className: 'bg-purple-100 text-purple-700' },
       vvip: { label: 'VVIP', className: 'bg-yellow-100 text-yellow-700' }
     }
 

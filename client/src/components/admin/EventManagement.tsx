@@ -5,6 +5,7 @@ import type { EventData } from '../../shared-types'
 import { CreateEventModal } from './CreateEventModal'
 import DatePicker, { DatePickerHandle } from '../common/DatePicker'
 import { buildUrl, API_ENDPOINTS } from '../../config/api'
+import { EventStatusManager, EventStatusBadge } from './events/EventStatusManager'
 
 interface EventType {
   typeId: string
@@ -342,16 +343,23 @@ interface EventStats {
   upcoming: number
   recruiting: number
   cancelled: number
+  suspended: number
 }
 
 export const EventManagement: React.FC = () => {
   const [events, setEvents] = useState<EventData[]>([])
-  const [stats, setStats] = useState<EventStats>({ total: 0, upcoming: 0, recruiting: 0, cancelled: 0 })
+  const [stats, setStats] = useState<EventStats>({ 
+    total: 0, 
+    upcoming: 0, 
+    recruiting: 0, 
+    cancelled: 0,
+    suspended: 0
+  })
   const [loading, setLoading] = useState(true)
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null)
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [editingEvent, setEditingEvent] = useState<EventData | null>(null)
-  const [filter, setFilter] = useState<'all' | 'upcoming' | 'recruiting' | 'cancelled'>('all')
+  const [filter, setFilter] = useState<'all' | 'upcoming' | 'recruiting' | 'suspended' | 'cancelled'>('all')
 
     const { apiCall, hasPermission } = useAdminAuth()
 
@@ -375,8 +383,11 @@ export const EventManagement: React.FC = () => {
         const cancelled = data.data.filter((event: EventData) => 
           event.status === 'cancelled'
         ).length
+        const suspended = data.data.filter((event: EventData) => 
+          event.status === 'suspended'
+        ).length
         
-        setStats({ total, upcoming, recruiting, cancelled })
+        setStats({ total, upcoming, recruiting, cancelled, suspended })
       }
     } catch (error) {
       console.error('Failed to load events:', error)
@@ -405,6 +416,7 @@ export const EventManagement: React.FC = () => {
     if (filter === 'all') return true
     if (filter === 'upcoming') return new Date(event.metadata.date) > new Date()
     if (filter === 'recruiting') return event.status === 'published' && new Date(event.metadata.date) > new Date()
+    if (filter === 'suspended') return event.status === 'suspended'
     if (filter === 'cancelled') return event.status === 'cancelled'
     return true
   })
@@ -450,7 +462,7 @@ export const EventManagement: React.FC = () => {
           <h2 className="text-2xl font-bold text-luxury-gold">活動管理</h2>
           <p className="text-luxury-platinum/80">管理所有平台活動</p>
         </div>
-        {hasPermission('events:create') && (
+        {hasPermission('events') && (
           <button
             onClick={() => setShowCreateModal(true)}
             className="luxury-button flex items-center space-x-2"
@@ -464,7 +476,7 @@ export const EventManagement: React.FC = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
         <div className="luxury-card p-6">
           <div className="flex items-center justify-between">
             <div>
@@ -510,6 +522,20 @@ export const EventManagement: React.FC = () => {
         <div className="luxury-card p-6">
           <div className="flex items-center justify-between">
             <div>
+              <p className="text-sm text-luxury-platinum/60">已暫停</p>
+              <p className="text-2xl font-bold text-yellow-400">{stats.suspended}</p>
+            </div>
+            <div className="w-12 h-12 bg-yellow-500/20 rounded-full flex items-center justify-center">
+              <svg className="w-6 h-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div className="luxury-card p-6">
+          <div className="flex items-center justify-between">
+            <div>
               <p className="text-sm text-luxury-platinum/60">已取消</p>
               <p className="text-2xl font-bold text-red-400">{stats.cancelled}</p>
             </div>
@@ -528,6 +554,7 @@ export const EventManagement: React.FC = () => {
           { key: 'all', label: '全部', count: stats.total },
           { key: 'upcoming', label: '即將舉行', count: stats.upcoming },
           { key: 'recruiting', label: '募集中', count: stats.recruiting },
+          { key: 'suspended', label: '已暫停', count: stats.suspended },
           { key: 'cancelled', label: '已取消', count: stats.cancelled }
         ].map((tab) => (
           <button
@@ -577,18 +604,12 @@ export const EventManagement: React.FC = () => {
                       {event.metadata.location}
                     </td>
                     <td className="py-4 px-4">
-                      <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(event.status)}`}>
-                        {event.status === 'draft' && '草稿'}
-                        {event.status === 'published' && '已發佈'}
-                        {event.status === 'full' && '已滿'}
-                        {event.status === 'ready' && '準備就緒'}
-                        {event.status === 'cancelled' && '已取消'}
-                      </span>
+                      <EventStatusBadge status={event.status || 'draft'} />
                     </td>
                     <td className="py-4 px-4 text-luxury-platinum">
                       {event.participants?.length || 0} / {event.maxParticipants || '無限制'}
                     </td>
-                    {hasPermission('events:edit') && (
+                    {hasPermission('events') && (
                       <td className="py-4 px-4">
                         <div className="flex space-x-2">
                           <button
@@ -671,22 +692,93 @@ export const EventManagement: React.FC = () => {
         />
       )}
 
-      {/* Event Details Modal Placeholder */}
+      {/* Event Details Modal */}
       {selectedEvent && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-luxury-midnight-black border border-luxury-gold/30 rounded-lg p-6 max-w-2xl w-full mx-4">
-            <h3 className="text-xl font-bold text-luxury-gold mb-4">{selectedEvent.name}</h3>
-            <div className="space-y-4 text-luxury-platinum">
-              <p><strong>類別:</strong> {selectedEvent.metadata.category}</p>
-              <p><strong>日期:</strong> {formatDate(selectedEvent.metadata.date)}</p>
-              <p><strong>地點:</strong> {selectedEvent.metadata.location}</p>
-              <p><strong>狀態:</strong> {selectedEvent.status}</p>
-              <p><strong>參與人數:</strong> {selectedEvent.participants?.length || 0}</p>
-            </div>
-            <div className="flex justify-end mt-6">
+          <div className="bg-luxury-midnight-black border border-luxury-gold/30 rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-bold text-luxury-gold">{selectedEvent.name}</h3>
               <button
                 onClick={() => setSelectedEvent(null)}
-                className="luxury-button-sm"
+                className="text-luxury-platinum/60 hover:text-luxury-platinum"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            <div className="space-y-4 text-luxury-platinum">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p><strong>類別:</strong> {selectedEvent.metadata.category}</p>
+                  <p><strong>日期:</strong> {formatDate(selectedEvent.metadata.date)}</p>
+                  <p><strong>地點:</strong> {selectedEvent.metadata.location}</p>
+                  <p><strong>參與人數:</strong> {selectedEvent.participants?.length || 0}</p>
+                </div>
+                <div>
+                  <p><strong>價格 (男):</strong> NT${selectedEvent.metadata.pricing?.male || 0}</p>
+                  <p><strong>價格 (女):</strong> NT${selectedEvent.metadata.pricing?.female || 0}</p>
+                  <p><strong>年齡限制:</strong> {selectedEvent.metadata.requirements?.ageMin || 18}-{selectedEvent.metadata.requirements?.ageMax || 65}歲</p>
+                </div>
+              </div>
+              
+              {/* Status Management - Highlighted Section */}
+              <div className="mt-6 border border-luxury-gold/30 rounded-lg p-4 bg-luxury-midnight-black/50">
+                <h4 className="text-lg font-medium text-luxury-gold mb-3">活動狀態管理</h4>
+                <EventStatusManager 
+                  eventId={selectedEvent._id || ''}
+                  currentStatus={selectedEvent.status || 'draft'}
+                  onStatusChange={async (newStatus) => {
+                    try {
+                      const response = await apiCall(`/api/admin/events/${selectedEvent._id}/status`, {
+                        method: 'PUT',
+                        headers: {
+                          'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ status: newStatus })
+                      });
+                      
+                      if (response.ok) {
+                        // Update the selected event status
+                        setSelectedEvent({
+                          ...selectedEvent,
+                          status: newStatus as EventData['status']
+                        });
+                        
+                        // Reload events to update the list
+                        loadEvents();
+                      } else {
+                        const errorData = await response.json();
+                        console.error('Failed to update event status:', errorData);
+                        throw new Error(errorData.error || 'Failed to update event status');
+                      }
+                    } catch (error) {
+                      console.error('Error updating event status:', error);
+                      throw error;
+                    }
+                  }}
+                />
+              </div>
+              
+              {selectedEvent.description && (
+                <div>
+                  <h4 className="text-lg font-medium text-luxury-gold mt-4 mb-2">活動描述</h4>
+                  <p className="text-luxury-platinum/80 whitespace-pre-wrap">{selectedEvent.description}</p>
+                </div>
+              )}
+            </div>
+            
+            <div className="flex justify-end mt-6 space-x-3">
+              <button
+                onClick={() => setEditingEvent(selectedEvent)}
+                className="px-4 py-2 bg-luxury-gold/20 hover:bg-luxury-gold/30 text-luxury-gold border border-luxury-gold/30 rounded-lg transition-colors"
+              >
+                編輯活動
+              </button>
+              <button
+                onClick={() => setSelectedEvent(null)}
+                className="px-4 py-2 bg-luxury-midnight-black hover:bg-luxury-midnight-black/80 text-luxury-platinum border border-luxury-gold/30 rounded-lg transition-colors"
               >
                 關閉
               </button>

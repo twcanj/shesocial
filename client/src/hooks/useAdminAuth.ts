@@ -167,7 +167,16 @@ export const useAdminAuthStore = create<AdminAuthState>()(
         // Super admin has all permissions
         if (admin.permissions.includes('*')) return true
         
-        return admin.permissions.includes(permission)
+        // 從權限字符串中提取功能名稱（例如 'events:view' -> 'events'）
+        const functionName = permission.split(':')[0]
+        
+        // 功能級別權限檢查 - 如果有該功能的任何權限，則授予該功能的所有操作權限
+        if (admin.permissions.includes(functionName) || 
+            admin.permissions.some(p => p.startsWith(functionName + ':'))) {
+          return true
+        }
+        
+        return false
       }
     }),
     {

@@ -14,13 +14,16 @@ import { useAdminAuth } from '../hooks/useAdminAuth'
 const InterviewManagement: React.FC = () => <div className="text-white">會員面試管理 Content</div>;
 const ConsultingManagement: React.FC = () => <div className="text-white">諮詢預約管理 Content</div>;
 const EventHistoryManagement: React.FC = () => <div className="text-white">過往活動管理 Content</div>;
+const UserManagementPage: React.FC = () => <div className="text-white">會員管理 Content</div>;
+const MarketingManagement: React.FC = () => <div className="text-white">行銷管理 Content</div>;
+const SystemManagement: React.FC = () => <div className="text-white">系統管理 Content</div>;
 
 // Import debug utilities in development
 if (process.env.NODE_ENV === 'development') {
   import('../utils/debugAdmin')
 }
 
-type AdminSection = 'overview' | 'permissions' | 'roles' | 'users' | 'audit' | 'event-management' | 'interview-management' | 'consulting-management' | 'event-history-management'
+type AdminSection = 'overview' | 'permissions' | 'roles' | 'users' | 'audit' | 'event-management' | 'interview-management' | 'consulting-management' | 'event-history-management' | 'user-management' | 'marketing-management' | 'system-management'
 
 export const AdminDashboard: React.FC = () => {
   const [activeSection, setActiveSection] = useState<AdminSection>('overview')
@@ -64,6 +67,12 @@ export const AdminDashboard: React.FC = () => {
         return <ConsultingManagement />
       case 'event-history-management':
         return <EventHistoryManagement />
+      case 'user-management':
+        return <UserManagementPage />
+      case 'marketing-management':
+        return <MarketingManagement />
+      case 'system-management':
+        return <SystemManagement />
       default:
         return (
           <ErrorBoundary>
@@ -134,7 +143,10 @@ const getSectionTitle = (section: AdminSection): string => {
     'event-management': '活動管理',
     'interview-management': '會員面試管理',
     'consulting-management': '諮詢預約管理',
-    'event-history-management': '過往活動管理'
+    'event-history-management': '過往活動管理',
+    'user-management': '會員管理',
+    'marketing-management': '行銷管理',
+    'system-management': '系統管理'
   }
   return titles[section]
 }

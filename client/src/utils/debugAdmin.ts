@@ -1,54 +1,80 @@
-// Debug utilities for admin authentication issues
+// Debug utility for admin permissions
+import { useAdminAuthStore } from '../hooks/useAdminAuth';
 
-export const clearAdminStorage = () => {
-  localStorage.removeItem('admin-auth-storage')
-  sessionStorage.removeItem('admin-auth-storage')
-  console.log('Admin storage cleared')
-}
+// This will run when the module is imported
+console.log('🔍 Debug Admin Permissions');
 
-export const inspectAdminStorage = () => {
-  const localStorage_data = localStorage.getItem('admin-auth-storage')
-  const sessionStorage_data = sessionStorage.getItem('admin-auth-storage')
+// Check if we're in development mode
+if (process.env.NODE_ENV === 'development') {
+  // Get the admin auth store
+  const adminStore = useAdminAuthStore.getState();
   
-  console.log('LocalStorage admin data:', localStorage_data ? JSON.parse(localStorage_data) : null)
-  console.log('SessionStorage admin data:', sessionStorage_data ? JSON.parse(sessionStorage_data) : null)
-}
-
-export const createMockAdmin = () => {
-  const mockAdmin = {
-    state: {
-      admin: {
-        adminId: 'mock-admin-123',
-        username: 'admin',
-        email: 'admin@infinitymatch.tw',
-        roleId: 'super-admin',
-        department: 'executive' as const,
-        permissions: ['*'], // Super admin permissions
-        profile: {
-          realName: '系統管理員',
-          employeeId: 'EMP001',
-          lastLogin: new Date()
-        },
-        status: 'active' as const
-      },
-      accessToken: 'mock-token',
-      refreshToken: 'mock-refresh-token',
-      isAuthenticated: true,
-      loading: false
-    },
-    version: 0
+  console.log('📋 Admin Auth Store:', {
+    isAuthenticated: adminStore.isAuthenticated,
+    admin: adminStore.admin,
+    hasToken: !!adminStore.accessToken
+  });
+  
+  // Check permissions
+  if (adminStore.admin?.permissions) {
+    console.log('🔑 Admin Permissions:', adminStore.admin.permissions);
+    
+    // Check specific permissions
+    const permissionsToCheck = [
+      'events:view',
+      'events:create',
+      'events:edit',
+      'events:showcase',
+      'interviews:view',
+      'appointments:view',
+      'admin:permissions',
+      'admin:create',
+      'admin:audit'
+    ];
+    
+    console.log('🧪 Permission Checks:');
+    permissionsToCheck.forEach(permission => {
+      const hasPermission = adminStore.hasPermission(permission);
+      console.log(`- ${permission}: ${hasPermission ? '✅' : '❌'}`);
+    });
+  } else {
+    console.log('❌ No admin permissions found');
   }
   
-  localStorage.setItem('admin-auth-storage', JSON.stringify(mockAdmin))
-  console.log('Mock admin created in localStorage')
-  return mockAdmin
-}
-
-// Make these available globally for debugging in browser console
-if (typeof window !== 'undefined') {
-  (window as any).debugAdmin = {
-    clearAdminStorage,
-    inspectAdminStorage,
-    createMockAdmin
-  }
+  // Add a global debug function
+  (window as any).debugAdminPermissions = () => {
+    const currentStore = useAdminAuthStore.getState();
+    console.log('📋 Current Admin Auth Store:', {
+      isAuthenticated: currentStore.isAuthenticated,
+      admin: currentStore.admin,
+      hasToken: !!currentStore.accessToken
+    });
+    
+    if (currentStore.admin?.permissions) {
+      console.log('🔑 Current Admin Permissions:', currentStore.admin.permissions);
+      
+      // Check specific permissions
+      const permissionsToCheck = [
+        'events:view',
+        'events:create',
+        'events:edit',
+        'events:showcase',
+        'interviews:view',
+        'appointments:view',
+        'admin:permissions',
+        'admin:create',
+        'admin:audit'
+      ];
+      
+      console.log('🧪 Current Permission Checks:');
+      permissionsToCheck.forEach(permission => {
+        const hasPermission = currentStore.hasPermission(permission);
+        console.log(`- ${permission}: ${hasPermission ? '✅' : '❌'}`);
+      });
+    } else {
+      console.log('❌ No admin permissions found');
+    }
+  };
+  
+  console.log('🔧 Debug function added to window: debugAdminPermissions()');
 }

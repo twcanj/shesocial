@@ -28,7 +28,7 @@ const navigation = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
       </svg>
     ),
-    requiredPermission: 'events:view'
+    requiredPermission: 'events'
   },
   {
     id: 'interview-management',
@@ -38,7 +38,7 @@ const navigation = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
       </svg>
     ),
-    requiredPermission: 'interviews:view'
+    requiredPermission: 'interviews'
   },
   {
     id: 'consulting-management',
@@ -48,7 +48,7 @@ const navigation = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
     ),
-    requiredPermission: 'appointments:view'
+    requiredPermission: 'appointments'
   },
   {
     id: 'event-history-management',
@@ -58,7 +58,38 @@ const navigation = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
       </svg>
     ),
-    requiredPermission: 'events:showcase'
+    requiredPermission: 'reports'
+  },
+  {
+    id: 'user-management',
+    name: '會員管理',
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+      </svg>
+    ),
+    requiredPermission: 'users'
+  },
+  {
+    id: 'marketing-management',
+    name: '行銷管理',
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+      </svg>
+    ),
+    requiredPermission: 'marketing'
+  },
+  {
+    id: 'system-management',
+    name: '系統管理',
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+    ),
+    requiredPermission: 'system'
   },
   {
     id: 'permissions',
@@ -68,7 +99,7 @@ const navigation = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
       </svg>
     ),
-    requiredPermission: 'admin:permissions'
+    requiredPermission: 'admin'
   },
   {
     id: 'roles',
@@ -78,7 +109,7 @@ const navigation = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
       </svg>
     ),
-    requiredPermission: 'admin:permissions'
+    requiredPermission: 'admin'
   },
   {
     id: 'users',
@@ -88,7 +119,7 @@ const navigation = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
       </svg>
     ),
-    requiredPermission: 'admin:create'
+    requiredPermission: 'admin'
   },
   {
     id: 'audit',
@@ -98,7 +129,7 @@ const navigation = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
       </svg>
     ),
-    requiredPermission: 'admin:audit'
+    requiredPermission: 'admin'
   }
 ]
 
@@ -108,15 +139,33 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
   admin,
   onLogout
 }) => {
-  // Check if user has permission for a navigation item
+  // Check if user has permission for a navigation item - function level approach
   const hasPermission = (permission: string | null) => {
-    if (!permission) return true // No permission required
-    if (!admin?.permissions) return false
-    if (admin.permissions.includes('*')) return true // Super admin
-    return admin.permissions.includes(permission)
+    // Debug logging for development
+    if (process.env.NODE_ENV === 'development') {
+      console.log('hasPermission check:', { 
+        permission, 
+        adminPermissions: admin?.permissions,
+        hasSuperAdmin: admin?.permissions?.includes('*')
+      })
+    }
+    
+    // No permission required or top-level admin (has wildcard permission)
+    if (!permission || admin?.permissions?.includes('*')) return true
+    
+    // 從權限字符串中提取功能名稱（例如 'events:view' -> 'events'）
+    if (permission) {
+      const functionName = permission.split(':')[0]
+      
+      // 功能級別權限檢查 - 如果有該功能的任何權限，則授予該功能的所有操作權限
+      if (admin?.permissions?.includes(functionName) || 
+          admin?.permissions?.some(p => p.startsWith(functionName + ':'))) {
+        return true
+      }
+    }
+    
+    return false
   }
-
-  
 
   const getDepartmentName = (department: string) => {
     const names = {
@@ -165,24 +214,34 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
           const isActive = activeSection === item.id
           const canAccess = hasPermission(item.requiredPermission)
           
-          if (!canAccess) return null
-
+          // Always render the item, but disable it if no permission
           return (
             <button
               key={item.id}
-              onClick={() => onSectionChange(item.id)}
+              onClick={() => canAccess && onSectionChange(item.id)}
+              disabled={!canAccess}
               className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors ${
                 isActive
                   ? 'bg-luxury-gold text-luxury-midnight-black shadow-md'
-                  : 'text-luxury-platinum hover:bg-luxury-gold/10 hover:text-luxury-gold'
+                  : canAccess 
+                    ? 'text-luxury-platinum hover:bg-luxury-gold/10 hover:text-luxury-gold' 
+                    : 'text-luxury-platinum/40 cursor-not-allowed opacity-60'
               }`}
+              title={!canAccess ? '需要權限' : ''}
             >
-              <span className={isActive ? 'text-luxury-midnight-black' : 'text-luxury-platinum/60'}>
+              <span className={isActive ? 'text-luxury-midnight-black' : canAccess ? 'text-luxury-platinum/60' : 'text-luxury-platinum/30'}>
                 {item.icon}
               </span>
               <span className="font-medium">{item.name}</span>
+              {!canAccess && (
+                <span className="ml-auto">
+                  <svg className="w-4 h-4 text-luxury-platinum/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m0 0v2m0-2h2m-2 0H9m3-3a3 3 0 100-6 3 3 0 000 6z" />
+                  </svg>
+                </span>
+              )}
             </button>
-          )
+          );
         })}
       </nav>
 

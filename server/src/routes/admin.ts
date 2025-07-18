@@ -213,7 +213,7 @@ router.get('/auth/profile', adminAuth, async (req: AdminRequest, res: Response) 
 })
 
 // Permission Management Routes
-router.get('/permissions/atoms', requirePermission('admin:audit'), adminAuth, async (req, res) => {
+router.get('/permissions/atoms', requirePermission('admin'), adminAuth, async (req, res) => {
   try {
     const atoms = await adminPermissionService.getAllPermissionAtoms()
     res.json({ success: true, data: atoms })
@@ -222,7 +222,7 @@ router.get('/permissions/atoms', requirePermission('admin:audit'), adminAuth, as
   }
 })
 
-router.get('/permissions/atoms/grouped', requirePermission('admin:audit'), adminAuth, async (req, res) => {
+router.get('/permissions/atoms/grouped', requirePermission('admin'), adminAuth, async (req, res) => {
   try {
     // 獲取所有權限原子
     const atoms = await adminPermissionService.getAllPermissionAtoms()
@@ -242,7 +242,7 @@ router.get('/permissions/atoms/grouped', requirePermission('admin:audit'), admin
   }
 })
 
-router.post('/permissions/atoms', requirePermission('admin:permissions'), adminAuth, async (req: AdminRequest, res: Response) => {
+router.post('/permissions/atoms', requirePermission('admin'), adminAuth, async (req: AdminRequest, res: Response) => {
   try {
     const atomData = { ...req.body, createdBy: req.admin!.adminId }
     const atom = await adminPermissionService.createPermissionAtom(atomData)
@@ -253,7 +253,7 @@ router.post('/permissions/atoms', requirePermission('admin:permissions'), adminA
 })
 
 // Role Management Routes
-router.get('/roles', requirePermission('admin:audit'), adminAuth, async (req, res) => {
+router.get('/roles', requirePermission('admin'), adminAuth, async (req, res) => {
   try {
     const { department } = req.query
 
@@ -267,7 +267,7 @@ router.get('/roles', requirePermission('admin:audit'), adminAuth, async (req, re
   }
 })
 
-router.post('/roles', requirePermission('admin:permissions'), adminAuth, async (req: AdminRequest, res: Response) => {
+router.post('/roles', requirePermission('admin'), adminAuth, async (req: AdminRequest, res: Response) => {
   try {
     const roleData = { ...req.body, createdBy: req.admin!.adminId, lastModifiedBy: req.admin!.adminId }
     const role = await adminPermissionService.createRole(roleData)
@@ -277,7 +277,7 @@ router.post('/roles', requirePermission('admin:permissions'), adminAuth, async (
   }
 })
 
-router.put('/roles/:roleId', requirePermission('admin:permissions'), adminAuth, async (req: AdminRequest, res: Response) => {
+router.put('/roles/:roleId', requirePermission('admin'), adminAuth, async (req: AdminRequest, res: Response) => {
   try {
     const { roleId } = req.params
     const updates = { 
@@ -291,7 +291,7 @@ router.put('/roles/:roleId', requirePermission('admin:permissions'), adminAuth, 
   }
 })
 
-router.get('/roles/:roleId/capabilities', requirePermission('admin:audit'), adminAuth, async (req, res) => {
+router.get('/roles/:roleId/capabilities', requirePermission('admin'), adminAuth, async (req, res) => {
   try {
     const { roleId } = req.params
     // 獲取角色
@@ -315,7 +315,7 @@ router.get('/roles/:roleId/capabilities', requirePermission('admin:audit'), admi
 })
 
 // Permission Validation Routes
-router.post('/permissions/validate', requirePermission('admin:audit'), adminAuth, async (req, res) => {
+router.post('/permissions/validate', requirePermission('admin'), adminAuth, async (req, res) => {
   try {
     const { permissions } = req.body
 
@@ -341,7 +341,7 @@ router.get('/permissions/check/:permission', adminAuth, async (req: AdminRequest
 })
 
 // User Management Routes (Admin Users)
-router.post('/users', requirePermission('admin:create'), adminAuth, async (req: AdminRequest, res: Response) => {
+router.post('/users', requirePermission('admin'), adminAuth, async (req: AdminRequest, res: Response) => {
   try {
     const userData = {
       ...req.body,
@@ -358,7 +358,7 @@ router.post('/users', requirePermission('admin:create'), adminAuth, async (req: 
   }
 })
 
-router.put('/users/:adminId', requirePermission('admin:edit'), adminAuth, async (req: AdminRequest, res: Response) => {
+router.put('/users/:adminId', requirePermission('admin'), adminAuth, async (req: AdminRequest, res: Response) => {
   try {
     const { adminId } = req.params
     const updates = { ...req.body }
@@ -380,7 +380,7 @@ router.put('/users/:adminId', requirePermission('admin:edit'), adminAuth, async 
 })
 
 // Audit Routes
-router.get('/audit/logs', requirePermission('admin:audit'), adminAuth, async (req, res) => {
+router.get('/audit/logs', requirePermission('admin'), adminAuth, async (req, res) => {
   try {
     const { adminId, targetType, startDate, endDate, limit } = req.query
 
@@ -395,7 +395,7 @@ router.get('/audit/logs', requirePermission('admin:audit'), adminAuth, async (re
 })
 
 // Events Management Routes (Admin-specific)
-router.get('/events', requirePermission('admin:audit'), adminAuth, async (req, res) => {
+router.get('/events', requirePermission('events'), adminAuth, async (req, res) => {
   try {
     console.log('🔍 Admin events endpoint called')
     // Import event model here to avoid circular dependencies
@@ -424,7 +424,7 @@ router.get('/events', requirePermission('admin:audit'), adminAuth, async (req, r
   }
 })
 
-router.get('/events/:id', requirePermission('admin:audit'), adminAuth, async (req, res) => {
+router.get('/events/:id', requirePermission('events'), adminAuth, async (req, res) => {
   try {
     const { EventModel } = require('../models/Event')
     const databases = NeDBSetup.getInstance().getDatabases()
@@ -442,7 +442,7 @@ router.get('/events/:id', requirePermission('admin:audit'), adminAuth, async (re
   }
 })
 
-router.post('/events', requirePermission('events:create'), adminAuth, async (req: AdminRequest, res: Response) => {
+router.post('/events', requirePermission('events'), adminAuth, async (req: AdminRequest, res: Response) => {
   try {
     console.log('🔍 Admin create event endpoint called')
     const { EventModel } = require('../models/Event')
@@ -471,7 +471,7 @@ router.post('/events', requirePermission('events:create'), adminAuth, async (req
   }
 })
 
-router.put('/events/:id', requirePermission('events:edit'), adminAuth, async (req: AdminRequest, res: Response) => {
+router.put('/events/:id', requirePermission('events'), adminAuth, async (req: AdminRequest, res: Response) => {
   try {
     const { EventModel } = require('../models/Event')
     const databases = NeDBSetup.getInstance().getDatabases()
@@ -490,7 +490,7 @@ router.put('/events/:id', requirePermission('events:edit'), adminAuth, async (re
   }
 })
 
-router.put('/events/:id/status', requirePermission('events:edit'), adminAuth, async (req: AdminRequest, res: Response) => {
+router.put('/events/:id/status', requirePermission('events'), adminAuth, async (req: AdminRequest, res: Response) => {
   try {
     const { EventModel } = require('../models/Event')
     const databases = NeDBSetup.getInstance().getDatabases()
@@ -516,7 +516,7 @@ router.put('/events/:id/status', requirePermission('events:edit'), adminAuth, as
   }
 })
 
-router.delete('/events/:id', requirePermission('admin:delete'), adminAuth, async (req: AdminRequest, res: Response) => {
+router.delete('/events/:id', requirePermission('events'), adminAuth, async (req: AdminRequest, res: Response) => {
   try {
     const { EventModel } = require('../models/Event')
     const databases = NeDBSetup.getInstance().getDatabases()
@@ -535,7 +535,7 @@ router.delete('/events/:id', requirePermission('admin:delete'), adminAuth, async
 })
 
 // System Statistics
-router.get('/system/stats', adminAuth, async (req: AdminRequest, res: Response) => {
+router.get('/system/stats', requirePermission('system'), adminAuth, async (req: AdminRequest, res: Response) => {
   try {
     const databases = NeDBSetup.getInstance().getDatabases()
 
@@ -748,8 +748,8 @@ router.get('/debug/permissions', adminAuth, async (req: AdminRequest, res: Respo
   }
 })
 
-// Events endpoints
-router.get('/events', adminAuth, requirePermission('events'), async (req: AdminRequest, res: Response) => {
+// Events endpoints (duplicate - should be removed or consolidated)
+router.get('/events-duplicate', requirePermission('events'), adminAuth, async (req: AdminRequest, res: Response) => {
   try {
     // Get events from database
     const dbSetup = NeDBSetup.getInstance()
@@ -772,8 +772,8 @@ router.get('/events', adminAuth, requirePermission('events'), async (req: AdminR
   }
 })
 
-// Get single event
-router.get('/events/:id', adminAuth, requirePermission('events'), async (req: AdminRequest, res: Response) => {
+// Get single event (duplicate - should be removed or consolidated)
+router.get('/events-duplicate/:id', requirePermission('events'), adminAuth, async (req: AdminRequest, res: Response) => {
   try {
     const eventId = req.params.id
     
@@ -802,8 +802,8 @@ router.get('/events/:id', adminAuth, requirePermission('events'), async (req: Ad
   }
 })
 
-// Update event status
-router.put('/events/:id/status', adminAuth, requirePermission('events'), async (req: AdminRequest, res: Response) => {
+// Update event status (duplicate - should be removed or consolidated)
+router.put('/events-duplicate/:id/status', requirePermission('events'), adminAuth, async (req: AdminRequest, res: Response) => {
   try {
     const eventId = req.params.id
     const { status } = req.body
@@ -895,7 +895,7 @@ router.put('/events/:id/status', adminAuth, requirePermission('events'), async (
 })
 
 // Interviews endpoints
-router.get('/interviews', adminAuth, requirePermission('interviews'), async (req: AdminRequest, res: Response) => {
+router.get('/interviews', requirePermission('interviews'), adminAuth, async (req: AdminRequest, res: Response) => {
   try {
     // Get interviews from database
     const dbSetup = NeDBSetup.getInstance()
@@ -919,7 +919,7 @@ router.get('/interviews', adminAuth, requirePermission('interviews'), async (req
 })
 
 // Appointments endpoints
-router.get('/appointments', adminAuth, requirePermission('appointments'), async (req: AdminRequest, res: Response) => {
+router.get('/appointments', requirePermission('appointments'), adminAuth, async (req: AdminRequest, res: Response) => {
   try {
     // Get appointments from database
     const dbSetup = NeDBSetup.getInstance()

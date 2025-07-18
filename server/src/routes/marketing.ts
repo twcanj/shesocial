@@ -90,7 +90,7 @@ router.get('/campaigns/active', async (req: AuthenticatedRequest, res) => {
 // ==================== ADMIN ROUTES ====================
 
 // All marketing management routes require admin permissions
-router.use(adminAuth, requirePermission('marketing'))
+router.use(requirePermission('marketing'), adminAuth)
 
 // ==================== CAMPAIGNS ====================
 

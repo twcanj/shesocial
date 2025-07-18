@@ -1,91 +1,86 @@
-# InfinityMatch 天造地設人成對 Documentation
+# InfinityMatch 文檔中心
 
-> **天造地設，人成對 | 1+1=∞ 當二個彼此有情人相遇，愛就開始無限**
+## 技術文檔
 
-Complete documentation for the InfinityMatch 天造地設人成對 Taiwan premium social platform.
+- [技術架構概述](./technical/CONCISE_IMPLEMENTATION_PLAN.md)
+- [管理系統文檔](./technical/ADMIN_SYSTEM.md)
+- [權限系統設計](./technical/PERMISSION_SYSTEM.md)
+- [管理員權限快速參考](./technical/ADMIN_PERMISSIONS_QUICK_REFERENCE.md)
+- [管理員權限詳細說明](./technical/ADMIN_PERMISSIONS.md)
+- [數據庫配置指南](./technical/DATABASE_CONFIGURATION.md)
+- [故障排除指南](./technical/TROUBLESHOOTING.md)
 
-## 📖 Complete Documentation Structure
+## 業務文檔
 
-### 🔧 Core Development
-- **[CLAUDE.md](../CLAUDE.md)** - Essential development guide (streamlined)
-- **[Development Guide](DEVELOPMENT_GUIDE.md)** - Commands, setup, and environment
-- **[Architecture Overview](ARCHITECTURE_OVERVIEW.md)** - System design and technology stack
-- **[API Reference](API_REFERENCE.md)** - Complete API endpoints and authentication
-- **[File Locations](FILE_LOCATIONS.md)** - Complete file reference with descriptions
+- [商業規則](./business/BUSINESS_RULES.md)
+- [會員等級與權益](./business/MEMBERSHIP_TIERS.md)
+- [活動類型與規則](./business/EVENT_TYPES.md)
+- [面試流程](./business/INTERVIEW_PROCESS.md)
+- [支付流程](./business/PAYMENT_PROCESS.md)
 
-### 📊 Business Documentation
-- **[Business Rules](business/BUSINESS_RULES.md)** - Core business logic and member workflow
-- **[Admin System Architecture](business/ADMIN_SYSTEM_ARCHITECTURE.md)** - Permission and role system
-- **[Membership System](business/MEMBERSHIP_SYSTEM_CORRECT.md)** - 4-tier membership structure
-- **[Content Management](business/CONTENT_MANAGEMENT_ARCHITECTURE.md)** - Media and moderation workflow
-- **[Member Lifecycle](business/MEMBER_LIFECYCLE_MANAGEMENT.md)** - Onboarding and verification
-- **[VVIP System](business/VVIP_INTRO_SYSTEM_DESIGN.md)** - Premium member features
-- **[Original Specification](business/社交活動網站規格書.markdown)** - Original requirements document
+## 開發文檔
 
-### 🛠️ Technical Documentation
-- **[Mobile Optimization](technical/MOBILE_OPTIMIZATION.md)** - Responsive design guidelines
-- **[Troubleshooting](technical/TROUBLESHOOTING.md)** - Common issues and solutions
-- **[CMS Architecture](technical/CMS_ARCHITECTURE.md)** - Content management system
-- **[Concise Implementation](technical/CONCISE_IMPLEMENTATION_PLAN.md)** - Development strategy
+- [開發環境設置](./development/SETUP.md)
+- [代碼風格指南](./development/CODE_STYLE.md)
+- [API 文檔](./development/API_DOCS.md)
+- [測試策略](./development/TESTING.md)
+- [部署流程](./development/DEPLOYMENT.md)
 
-### 🚀 Deployment & Operations
-- **[Domain Strategy](deployment/DOMAIN_STRATEGY.md)** - Domain planning and management
-- **[Domain Management](deployment/DOMAIN_MANAGEMENT.md)** - DNS and hosting configuration
-- **[Health Monitoring](operations/HEALTH_MONITORING.md)** - System monitoring and alerts
+## 用戶指南
 
-### 📋 Development Status
-- **[Task History](TASK_HISTORY.md)** - Completed achievements archive
-- **[Implementation Status](development/IMPLEMENTATION_STATUS.md)** - Current development state
-- **[Development Summary](development/DEVELOPMENT_STATUS_SUMMARY.md)** - Progress overview
-- **[Deployment Status](development/DEPLOYMENT_STATUS.md)** - Production readiness
-- **[Admin Permission Analysis](development/ADMIN_PERMISSION_ANALYSIS.md)** - Permission system details
-- **[Appointment System Guide](development/APPOINTMENT_SYSTEM_GUIDE.md)** - Booking system implementation
-- **[Milestone Completed](development/MILESTONE_COMPLETED.md)** - Achievement tracking
-- **[TODO Action Plan](development/TODO_ACTION_PLAN.md)** - Next steps planning
+- [管理員使用手冊](./user/ADMIN_MANUAL.md)
+- [面試官使用手冊](./user/INTERVIEWER_MANUAL.md)
+- [客服人員使用手冊](./user/CUSTOMER_SERVICE_MANUAL.md)
 
-### 📡 API Documentation
-- **[Appointment API](api/APPOINTMENT_API.md)** - Complete appointment system endpoints
+## 系統架構圖
 
-## 🎯 Quick Navigation
+```
+InfinityMatch/
+├── 前端 (React 19 + TypeScript + Vite)
+│   ├── 用戶界面
+│   │   ├── 公開頁面
+│   │   ├── 會員頁面
+│   │   └── 管理頁面
+│   ├── 狀態管理 (Zustand)
+│   └── 離線支持 (IndexedDB)
+│
+├── 後端 (Node.js + Express + TypeScript)
+│   ├── API 服務
+│   │   ├── 用戶 API
+│   │   ├── 活動 API
+│   │   ├── 面試 API
+│   │   ├── 預約 API
+│   │   └── 管理 API
+│   ├── 業務邏輯
+│   └── 數據存儲 (NeDB)
+│
+└── 外部服務
+    ├── 支付服務 (LINE Pay + ECPay)
+    ├── 媒體存儲 (Cloudinary)
+    ├── 持久化存儲 (Cloudflare R2)
+    └── 監控與日誌
+```
 
-### For Developers
-1. Start with **[CLAUDE.md](../CLAUDE.md)** for essential info
-2. Review **[Development Guide](DEVELOPMENT_GUIDE.md)** for setup
-3. Check **[Architecture Overview](ARCHITECTURE_OVERVIEW.md)** for system understanding
-4. Use **[File Locations](FILE_LOCATIONS.md)** to find specific files
-5. Reference **[API Reference](API_REFERENCE.md)** for endpoints
+## 權限系統概述
 
-### For Business Stakeholders
-1. **[Business Rules](business/BUSINESS_RULES.md)** - Core business logic
-2. **[Membership System](business/MEMBERSHIP_SYSTEM_CORRECT.md)** - Revenue model
-3. **[Member Lifecycle](business/MEMBER_LIFECYCLE_MANAGEMENT.md)** - User journey
-4. **[Admin System](business/ADMIN_SYSTEM_ARCHITECTURE.md)** - Management capabilities
+InfinityMatch 採用**功能級別權限模型**，當管理員被授予某個功能的權限時，他們可以執行該功能下的所有操作。
 
-### For Operations
-1. **[Health Monitoring](operations/HEALTH_MONITORING.md)** - System monitoring
-2. **[Domain Management](deployment/DOMAIN_MANAGEMENT.md)** - Infrastructure
-3. **[Deployment Status](development/DEPLOYMENT_STATUS.md)** - Production readiness
+### 管理員類型
 
-## 📊 Project Status
+1. **超級管理員 (super_admin)**
+   - 擁有所有權限
+   - 業務最高決策權
 
-### ✅ Complete & Production Ready
-- **Platform**: Enterprise-grade social platform
-- **Features**: All core functionality implemented
-- **Documentation**: Comprehensive and organized
-- **Architecture**: Scalable and maintainable
-- **Design**: Luxury zodiac-inspired theme
-- **Localization**: Taiwan Traditional Chinese
+2. **系統管理員 (system_admin)**
+   - 擁有所有權限
+   - 技術最高權限
 
-### 🔄 Next Development Phase
-- LINE Pay integration for Taiwan market
-- Advanced media features (video upload)
-- Payment processing (Apple Pay, Google Pay)
-- LINE Official Account integration
+3. **營運管理員 (operation_admin)**
+   - 擁有活動管理、內容營運等權限
+   - 無用戶管理權限
 
----
+4. **客戶管理員 (customer_admin)**
+   - 擁有面試管理、預約管理等權限
+   - 無系統配置和用戶管理權限
 
-**Documentation Status**: ✅ **Complete and Organized**
-
-This documentation structure provides comprehensive coverage of the InfinityMatch 天造地設人成對 platform, from development setup to business operations. All files are cross-referenced and maintained for easy navigation and understanding.
-
-*最後更新: 2025年7月15日 - Complete documentation reorganization with streamlined CLAUDE.md*
+詳細權限設計請參閱 [權限系統設計](./technical/PERMISSION_SYSTEM.md) 和 [管理員權限快速參考](./technical/ADMIN_PERMISSIONS_QUICK_REFERENCE.md)。

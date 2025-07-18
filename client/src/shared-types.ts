@@ -31,7 +31,7 @@ export interface EventData {
   }
   participants: EventParticipant[]
   maxParticipants?: number
-  status: 'draft' | 'published' | 'full' | 'ready' | 'cancelled'
+  status: 'draft' | 'published' | 'full' | 'ready' | 'suspended' | 'cancelled'
   participantVisibility?: {
     vvip: boolean
     vip: boolean

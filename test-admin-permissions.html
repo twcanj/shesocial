@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Admin Permissions</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1 {
+      color: #333;
+    }
+    pre {
+      background-color: #f5f5f5;
+      padding: 10px;
+      border-radius: 5px;
+      overflow-x: auto;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 10px 0;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .permission-check {
+      margin: 5px 0;
+    }
+    .permission-check.has-permission {
+      color: green;
+    }
+    .permission-check.no-permission {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <h1>Test Admin Permissions</h1>
+  
+  <h2>Current Admin Auth Data</h2>
+  <pre id="admin-data">Loading...</pre>
+  
+  <h2>Permission Checks</h2>
+  <div id="permission-checks">Loading...</div>
+  
+  <h2>Actions</h2>
+  <button id="check-permissions">Check Permissions</button>
+  <button id="set-permissions">Set Test Permissions</button>
+  <button id="clear-permissions">Clear Admin Data</button>
+  <button id="login-admin">Login Admin</button>
+  
+  <script>
+    // Function to check admin permissions
+    function checkAdminPermissions() {
+      const adminAuthData = localStorage.getItem('admin-auth-storage');
+      const adminDataElement = document.getElementById('admin-data');
+      const permissionChecksElement = document.getElementById('permission-checks');
+      
+      if (adminAuthData) {
+        try {
+          const parsedData = JSON.parse(adminAuthData);
+          adminDataElement.textContent = JSON.stringify(parsedData, null, 2);
+          
+          const admin = parsedData.state?.admin;
+          const permissions = admin?.permissions || [];
+          
+          // Check specific permissions
+          const permissionsToCheck = [
+            '*',
+            'events:view',
+            'events:create',
+            'events:edit',
+            'events:showcase',
+            'interviews:view',
+            'appointments:view',
+            'admin:permissions',
+            'admin:create',
+            'admin:audit'
+          ];
+          
+          let permissionChecksHtml = '';
+          
+          permissionsToCheck.forEach(permission => {
+            const hasPermission = permissions.includes(permission);
+            permissionChecksHtml += `
+              <div class="permission-check ${hasPermission ? 'has-permission' : 'no-permission'}">
+                ${permission}: ${hasPermission ? '✅' : '❌'}
+              </div>
+            `;
+          });
+          
+          permissionChecksElement.innerHTML = permissionChecksHtml;
+          
+        } catch (error) {
+          adminDataElement.textContent = 'Error parsing admin auth data: ' + error.message;
+          permissionChecksElement.textContent = 'Error checking permissions';
+        }
+      } else {
+        adminDataElement.textContent = 'No admin auth data found in localStorage';
+        permissionChecksElement.textContent = 'No permissions to check';
+      }
+    }
+    
+    // Function to set test permissions
+    function setTestPermissions() {
+      const adminAuthData = {
+        state: {
+          admin: {
+            adminId: '26aeae8f-c34d-4b37-938e-53fffa6da639',
+            username: 'admin',
+            email: 'admin@infinitymatch.com',
+            roleId: '709cffe1-9a5e-47c6-a0f7-3eaefc625142',
+            department: 'admin',
+            status: 'active',
+            permissions: [
+              '*',
+              'events:view',
+              'events:create',
+              'events:edit',
+              'events:showcase',
+              'interviews:view',
+              'appointments:view',
+              'admin:permissions',
+              'admin:create',
+              'admin:audit'
+            ]
+          },
+          accessToken: 'test-token',
+          refreshToken: null,
+          isAuthenticated: true
+        },
+        version: 0
+      };
+      
+      localStorage.setItem('admin-auth-storage', JSON.stringify(adminAuthData));
+      alert('Test permissions set in localStorage');
+      checkAdminPermissions();
+    }
+    
+    // Function to clear admin data
+    function clearAdminData() {
+      localStorage.removeItem('admin-auth-storage');
+      alert('Admin data cleared from localStorage');
+      checkAdminPermissions();
+    }
+    
+    // Function to login admin
+    async function loginAdmin() {
+      try {
+        const response = await fetch('http://localhost:10000/api/admin/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: 'admin@infinitymatch.com',
+            password: 'admin123'
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          const adminAuthData = {
+            state: {
+              admin: data.data.admin,
+              accessToken: data.data.accessToken,
+              refreshToken: data.data.refreshToken,
+              isAuthenticated: true
+            },
+            version: 0
+          };
+          
+          localStorage.setItem('admin-auth-storage', JSON.stringify(adminAuthData));
+          alert('Admin logged in successfully');
+          checkAdminPermissions();
+        } else {
+          alert('Login failed: ' + (data.error || 'Unknown error'));
+        }
+      } catch (error) {
+        alert('Login failed: ' + error.message);
+      }
+    }
+    
+    // Add event listeners
+    document.getElementById('check-permissions').addEventListener('click', checkAdminPermissions);
+    document.getElementById('set-permissions').addEventListener('click', setTestPermissions);
+    document.getElementById('clear-permissions').addEventListener('click', clearAdminData);
+    document.getElementById('login-admin').addEventListener('click', loginAdmin);
+    
+    // Check permissions on page load
+    checkAdminPermissions();
+  </script>
+</body>
+</html>

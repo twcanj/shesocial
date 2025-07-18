@@ -94,6 +94,10 @@ infinitymatch/
 │   └── dist/
 ├── shared/                 # 共享類型和工具
 └── docs/                   # 文檔
+    ├── technical/         # 技術文檔
+    │   ├── ADMIN_SYSTEM.md # 管理系統文檔
+    │   └── ...
+    └── ...
 ```
 
 ## 🛠️ 技術架構
@@ -113,6 +117,12 @@ infinitymatch/
 - **媒體**: Cloudinary 圖片/影片處理
 - **存儲**: Cloudflare R2 持久化
 
+### 數據庫配置
+- **重要規則**: 系統必須始終使用持久化存儲（文件系統），而非內存數據庫
+- **存儲位置**: 所有數據存儲在 `/server/data/` 目錄
+- **備份策略**: 使用 Cloudflare R2 進行自動備份
+- **詳細文檔**: 參閱 [數據庫配置指南](./docs/technical/DATABASE_CONFIGURATION.md)
+
 ### 部署策略
 - **平台**: Render.com 免費層 ✅ 當前使用
 - **域名**: 自定義域名 + SSL (待設置)
@@ -128,11 +138,23 @@ infinitymatch/
 - 📱 **行動優先**: 90% 手機用戶優化
 - 🔒 **隱私保護**: 時間戳衝突解決 + 數據加密
 - 💎 **奢華體驗**: 高端用戶專屬功能
+## 🛡️ 管理系統
+
+InfinityMatch 提供完整的後台管理系統，具有以下特點：
+
+- **功能級別權限控制**：採用功能級別而非操作級別的權限模型，簡化權限管理
+- **四種管理員類型**：超級管理員、系統管理員、營運管理員、客戶管理員
+- **完整審計日誌**：記錄所有管理操作，確保可追溯性
+- **直觀的管理界面**：奢華設計風格，符合品牌形象
+
+> **重要規則**：當管理員被授予某個功能的權限時，他們可以執行該功能下的所有操作，無需額外授權。例如，如果管理員被授予「活動管理」權限，則他們可以查看、創建、編輯、刪除活動，以及管理活動狀態等所有活動相關操作。
+
+詳細文檔請參閱 [管理系統文檔](./docs/technical/ADMIN_SYSTEM.md) 和 [權限系統設計](./docs/technical/PERMISSION_SYSTEM.md)。
 
 ## 📊 開發進度
 
 📚 **完整文檔**: 查看 [docs/](./docs/) 目錄了解詳細文檔
-- [技術架構](./docs/technical/CONCISE_IMPLEMENTATION_PLAN.md) | [商業規則](./docs/business/BUSINESS_RULES.md) | [開發狀態](./docs/development/) | [故障排除](./docs/technical/TROUBLESHOOTING.md)
+- [技術架構](./docs/technical/CONCISE_IMPLEMENTATION_PLAN.md) | [商業規則](./docs/business/BUSINESS_RULES.md) | [開發狀態](./docs/development/) | [故障排除](./docs/technical/TROUBLESHOOTING.md) | [管理系統](./docs/technical/ADMIN_SYSTEM.md)
 
 ### 🎉 **已完成功能 (100% MVP)** 
 - [x] **全棧架構**: React 19 + Node.js + TypeScript + NeDB 4.x 🎉
@@ -144,6 +166,7 @@ infinitymatch/
 - [x] **會員權限系統**: 四級分層完整實現 🎉
 - [x] **台灣本地化**: 繁體中文界面 + 錯誤訊息 🎉
 - [x] **數據庫現代化**: NeDB 4.x，零兼容性問題 🎉
+- [x] **管理後台系統**: 基於角色的權限控制 + 完整管理界面 🎉
 - [x] **安全中間件**: CORS + Helmet + 認證保護 🎉
 
 ### ✅ **最新驗證測試 (2025年7月11日)**

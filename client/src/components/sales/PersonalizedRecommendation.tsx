@@ -4,7 +4,7 @@ import { useAuth } from '../../contexts/AuthContext'
 import { UserProfile } from '../../shared-types'
 
 interface RecommendationData {
-  recommendedPlan: 'regular' | 'vip' | 'premium_1300' | 'premium_2500'
+  recommendedPlan: 'regular' | 'vip' | 'vvip'
   confidence: number
   reasons: string[]
   alternatives: {
@@ -46,8 +46,7 @@ export const PersonalizedRecommendation: React.FC = () => {
     const score = {
       regular: 0,
       vip: 0,
-      premium_1300: 0,
-      premium_2500: 0
+      vvip: 0
     }
     
     const reasons: string[] = []
@@ -56,11 +55,11 @@ export const PersonalizedRecommendation: React.FC = () => {
     // Age-based recommendations
     const age = user.profile?.age || 25
     if (age >= 25 && age <= 35) {
-      score.premium_1300 += 30
-      score.premium_2500 += 20
+      score.vip += 30
+      score.vvip += 20
       reasons.push('您的年齡層通常偏好靈活的券包方案')
     } else if (age > 35) {
-      score.premium_2500 += 40
+      score.vvip += 40
       score.vip += 30
       reasons.push('成熟族群重視查看參與者和優質服務')
     } else {
@@ -72,8 +71,8 @@ export const PersonalizedRecommendation: React.FC = () => {
     // Location-based recommendations
     const location = user.profile?.location || ''
     if (['台北市', '新北市'].includes(location)) {
-      score.premium_2500 += 25
-      score.premium_1300 += 20
+      score.vvip += 25
+      score.vip += 20
       reasons.push('都會區會員重視查看參與者功能')
     }
 
@@ -139,12 +138,6 @@ export const PersonalizedRecommendation: React.FC = () => {
             reason: '優先權益，月付制更彈性'
           })
           break
-        case 'vip':
-          alternatives.push({
-            plan: 'VIP會員',
-            reason: '性價比最高的券包方案'
-          })
-          break
         case 'vvip':
           alternatives.push({
             plan: 'VVIP會員',
@@ -190,12 +183,6 @@ export const PersonalizedRecommendation: React.FC = () => {
         price: 'NT$1000入會+NT$300/月',
         color: 'bg-purple-500',
         features: ['優先報名', 'VIP專屬活動', '專業客服', '活動提醒']
-      },
-      vip: {
-        name: 'VIP會員',
-        price: 'NT$1300券包',
-        color: 'bg-gold-500',
-        features: ['優先報名', '活動折扣券', '特殊權益', '靈活使用']
       },
       vvip: {
         name: 'VVIP會員',
