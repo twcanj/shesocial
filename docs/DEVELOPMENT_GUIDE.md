@@ -1,9 +1,9 @@
 # InfinityMatch 天造地設人成對 - Development Guide
 ## Extended Development Procedures
 
-> **Status**: Production Ready - Admin System Fully Operational
-> **Last Updated**: 2025-07-19
-> **Version**: 3.2
+> **Status**: Production Ready - Admin System + Two-Database Architecture (Step 1)
+> **Last Updated**: 2025-07-19  
+> **Version**: 3.3
 
 > **Note**: Core development commands are in CLAUDE.md. This guide covers extended procedures.
 
@@ -164,6 +164,8 @@ Premium Admin:
 - ✅ Complete admin navigation access for Level 1 admins
 - ✅ **CRITICAL FIX**: Resolved 403 errors by implementing level-based bypass in admin routes middleware
 - ✅ Removed duplicate admin-simple.ts routes file for single source of truth
+- ✅ **SECURITY ENHANCEMENT**: Replaced JWT claims with real-time database lookups for admin permissions
+- ✅ **DATABASE ARCHITECTURE**: Implemented incremental two-database migration (Step 1 complete)
 
 ### Troubleshooting Admin Issues
 
@@ -187,6 +189,58 @@ JSON.parse(localStorage.getItem('admin-auth-storage'))
 - Level 2 admins use permission-based access control
 - Single admin routes file: `/server/src/routes/admin.ts` (admin-simple.ts removed)
 - Frontend permission checks removed from module pages (handled at navigation level)
+- **Security**: JWT tokens only used for identity - all permissions checked via real-time database lookups
+- **Database**: Two-database architecture implemented incrementally alongside legacy collections
+
+## Database Architecture Evolution
+
+### Current State: Two-Database Implementation (Step 1 Complete)
+
+**Legacy Structure (Still Active):**
+```
+data/
+├── users.db (431 bytes)
+├── events.db (829 bytes) 
+├── admin-users.db (2,864 bytes)
+├── admin-roles.db (654 bytes)
+├── permission-atoms.db (3,876 bytes)
+├── appointment-bookings.db (446 bytes)
+├── marketing-campaigns.db (624 bytes)
+└── [21 total individual database files]
+```
+
+**New Two-Database Structure (Ready for Migration):**
+```
+data/
+├── admin.db (624 bytes) - All admin-related data
+└── application.db (625 bytes) - All user/business data
+```
+
+**Migration Status:**
+- ✅ **Step 1**: Foundation established - both structures coexist
+- 🔄 **Step 2**: Data migration utilities (pending)
+- 🔄 **Step 3**: Migrate admin data to admin.db (pending)
+- 🔄 **Step 4**: Migrate application data to application.db (pending)
+- 🔄 **Step 5**: Update queries to use new structure (pending)
+- 🔄 **Step 6**: Remove legacy collections (pending)
+
+**Access Methods:**
+```typescript
+// Legacy access (current)
+const db = NeDBSetup.getInstance().getDatabases()
+const adminUsers = db.admin_users
+
+// New access (ready for use)
+const twoDB = NeDBSetup.getInstance().getTwoDatabases()
+const adminDB = twoDB.admin  // All admin data with collection field
+const appDB = twoDB.application  // All user/business data with collection field
+```
+
+**Benefits of Completed Migration:**
+- 🔒 **Security Isolation**: Admin data completely separated from application data
+- 📈 **Performance**: Reduced file handle overhead (21 files → 2 files)
+- 🔧 **Operational**: Simplified backup/restore strategies
+- 🚀 **Scalability**: Easier to migrate to different database systems per use case
 
 ## Production Deployment Notes
 - Platform is production-ready with **FULLY FUNCTIONAL** admin system
@@ -194,4 +248,5 @@ JSON.parse(localStorage.getItem('admin-auth-storage'))
 - Mobile-optimized responsive design
 - Enterprise health monitoring active
 - **Level-based admin permissions working correctly** - all 403 errors resolved
-- Single source of truth for admin routes and middleware
+- **Real-time database permission checking** - more secure than JWT claims
+- **Two-database architecture foundation** - ready for incremental migration
