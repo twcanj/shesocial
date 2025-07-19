@@ -32,8 +32,11 @@ const adminAuth = async (req: AdminRequest, res: Response, next: NextFunction) =
 
     const decoded = jwt.verify(token, ADMIN_JWT_SECRET) as any
 
-    // Check if user has permission for this endpoint if a permission is required
-    if (req.requiredPermission) {
+    // Check if this is a level 1 admin (bypass all permission checks)
+    const isTopLevelAdmin = decoded.level === 1
+
+    // 如果是 level 1 管理員，跳過所有權限檢查
+    if (!isTopLevelAdmin && req.requiredPermission) {
       const hasPermission = await adminPermissionService.userHasPermission(decoded.adminId, req.requiredPermission)
 
       if (!hasPermission) {
