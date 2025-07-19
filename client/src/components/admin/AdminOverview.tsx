@@ -13,7 +13,7 @@ interface SystemStats {
 }
 
 export const AdminOverview: React.FC = () => {
-  const { admin, hasPermission } = useAdminAuth()
+  const { admin } = useAdminAuth()
   const accessToken = useAdminAuthStore((state) => state.accessToken)
   const [stats, setStats] = useState<SystemStats | null>(null)
   const [loading, setLoading] = useState(true)
@@ -23,7 +23,6 @@ export const AdminOverview: React.FC = () => {
     const fetchSystemStats = async () => {
       try {
         if (!accessToken) {
-          console.warn('No access token available, skipping stats fetch')
           setLoading(false)
           return
         }
@@ -54,7 +53,6 @@ export const AdminOverview: React.FC = () => {
           }
         }
       } catch (error) {
-        console.error('Failed to fetch system stats:', error)
         // Fallback to mock data in case of error
         setStats({
           totalUsers: 0,
@@ -251,21 +249,15 @@ export const AdminOverview: React.FC = () => {
         <div className="luxury-card-selected p-6">
           <h3 className="text-lg font-semibold text-luxury-midnight-black mb-4">快速操作</h3>
           <div className="space-y-3">
-            {hasPermission('admin:audit') && (
-              <button className="w-full text-left px-3 py-2 text-sm text-luxury-midnight-black hover:bg-luxury-midnight-black/10 rounded-md transition-colors">
-                檢視審計日誌
-              </button>
-            )}
-            {hasPermission('admin:permissions') && (
-              <button className="w-full text-left px-3 py-2 text-sm text-luxury-midnight-black hover:bg-luxury-midnight-black/10 rounded-md transition-colors">
-                管理權限設定
-              </button>
-            )}
-            {hasPermission('admin:create') && (
-              <button className="w-full text-left px-3 py-2 text-sm text-luxury-midnight-black hover:bg-luxury-midnight-black/10 rounded-md transition-colors">
-                新增管理員
-              </button>
-            )}
+            <button className="w-full text-left px-3 py-2 text-sm text-luxury-midnight-black hover:bg-luxury-midnight-black/10 rounded-md transition-colors">
+              檢視審計日誌
+            </button>
+            <button className="w-full text-left px-3 py-2 text-sm text-luxury-midnight-black hover:bg-luxury-midnight-black/10 rounded-md transition-colors">
+              管理權限設定
+            </button>
+            <button className="w-full text-left px-3 py-2 text-sm text-luxury-midnight-black hover:bg-luxury-midnight-black/10 rounded-md transition-colors">
+              新增管理員
+            </button>
             <button className="w-full text-left px-3 py-2 text-sm text-luxury-midnight-black hover:bg-luxury-midnight-black/10 rounded-md transition-colors">
               系統設定
             </button>
@@ -273,11 +265,10 @@ export const AdminOverview: React.FC = () => {
         </div>
       </div>
 
-      {/* Recent Activity (if has audit permission) */}
-      {hasPermission('admin:audit') && (
-        <div className="luxury-card-outline p-6">
-          <h3 className="text-lg font-semibold text-luxury-gold mb-4">最近活動</h3>
-          <div className="space-y-4">
+      {/* Recent Activity */}
+      <div className="luxury-card-outline p-6">
+        <h3 className="text-lg font-semibold text-luxury-gold mb-4">最近活動</h3>
+        <div className="space-y-4">
             {/* Mock recent activities */}
             {[
               { time: '2 分鐘前', action: '用戶 user123 註冊成功', type: 'user' },
@@ -297,7 +288,6 @@ export const AdminOverview: React.FC = () => {
             ))}
           </div>
         </div>
-      )}
     </div>
   )
 }

@@ -374,7 +374,7 @@ const adminAuthSystem = {
     username: "管理員用戶名",
     email: "管理員信箱",
     password: "bcrypt加密密碼",
-    level: "C-Level | Technical | Operational | Premium Service", // 管理員級別
+    level: "1 | 2", // 管理員級別 (1=頂級管理員, 2=一般管理員)
     type: "super_admin | system_admin | operation_admin | premium_admin", // 管理員類型
     department: "執行部 | 技術部 | 營運部 | 會員部",
     permissions: ["動態權限陣列"],
@@ -395,7 +395,7 @@ const adminAuthSystem = {
     super_admin: {
       email: "admin@infinitymatch.com",
       username: "admin",
-      level: "C-Level",
+      level: 1, // 頂級管理員
       type: "super_admin",
       department: "執行部",
       realName: "總管理",
@@ -405,7 +405,7 @@ const adminAuthSystem = {
     system_admin: {
       email: "system@infinitymatch.com", 
       username: "system_admin",
-      level: "Technical",
+      level: 1, // 頂級管理員
       type: "system_admin",
       department: "技術部",
       realName: "系統管理",
@@ -415,7 +415,7 @@ const adminAuthSystem = {
     operation_admin: {
       email: "operation@infinitymatch.com",
       username: "operation_admin", 
-      level: "Operational",
+      level: 2, // 一般管理員
       type: "operation_admin",
       department: "營運部",
       realName: "營運管理",
@@ -425,7 +425,7 @@ const adminAuthSystem = {
     premium_admin: {
       email: "premium@infinitymatch.com",
       username: "premium_admin",
-      level: "Premium Service", 
+      level: 2, // 一般管理員
       type: "premium_admin",
       department: "會員部",
       realName: "付費用戶管理者",
@@ -676,7 +676,11 @@ const managementMetrics = {
 **實施狀態**: 
 - ✅ 資料庫架構: 持久化NeDB存儲，包含level和type雙字段設計
 - ✅ 管理員帳號: 4個管理員用戶已創建並部署到生產環境
-- ✅ 權限系統: 頂級管理員(super_admin, system_admin)自動繞過所有權限檢查
-- ✅ 前端界面: AdminSidebar支援類型識別，頂級管理員顯示完整功能選單
-- ✅ 後端驗證: JWT令牌包含管理員類型，中間件支援類型識別
+- ✅ 權限系統: Level 1管理員自動繞過所有權限檢查，Level 2管理員需要權限驗證
+- ✅ 前端界面: AdminSidebar支援level識別，Level 1管理員顯示完整功能選單
+- ✅ 後端驗證: JWT令牌包含管理員level，中間件支援level識別
 - ✅ 文檔同步: 架構文檔與實際實施完全匹配
+
+**管理員級別系統**:
+- **Level 1 (頂級管理員)**: super_admin, system_admin - 無需權限檢查，可存取所有功能
+- **Level 2 (一般管理員)**: operation_admin, premium_admin - 需要權限檢查，依據具體權限設定存取功能

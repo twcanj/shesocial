@@ -11,6 +11,7 @@ export interface AdminProfile {
   email: string
   roleId: string
   type: 'super_admin' | 'system_admin' | 'operation_admin' | 'premium_admin'
+  level: 1 | 2
   permissions: string[]
   profile: {
     realName: string
@@ -69,11 +70,19 @@ export const useAdminAuthStore = create<AdminAuthState>()(
           }
 
           if (data.success) {
-            // Ensure permissions is always an array
+            // Ensure permissions is always an array and level is properly set
             const adminData = {
               ...data.data.admin,
-              permissions: data.data.admin.permissions || []
+              permissions: data.data.admin.permissions || [],
+              level: data.data.admin.level || 2 // Default to level 2 if not provided
             }
+            
+            console.log('🔧 Setting admin data in auth store:', {
+              adminId: adminData.adminId,
+              type: adminData.type,
+              level: adminData.level,
+              permissions: adminData.permissions
+            })
             
             set({
               admin: adminData,

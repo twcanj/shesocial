@@ -76,7 +76,7 @@ const EditEventModal: React.FC<EditEventModalProps> = ({ event, onClose, onEvent
           setEventTypes(data.data || [])
         }
       } catch (error) {
-        console.error('Failed to fetch event types:', error)
+        // Failed to fetch event types
       } finally {
         setLoadingEventTypes(false)
       }
@@ -153,7 +153,6 @@ const EditEventModal: React.FC<EditEventModalProps> = ({ event, onClose, onEvent
         throw new Error(result.error || '更新活動失敗')
       }
     } catch (error) {
-      console.error('Failed to update event:', error)
       alert('更新活動失敗，請重試')
     } finally {
       setLoading(false)
@@ -361,7 +360,7 @@ export const EventManagement: React.FC = () => {
   const [editingEvent, setEditingEvent] = useState<EventData | null>(null)
   const [filter, setFilter] = useState<'all' | 'upcoming' | 'recruiting' | 'suspended' | 'cancelled'>('all')
 
-    const { apiCall, hasPermission } = useAdminAuth()
+    const { apiCall } = useAdminAuth()
 
   const loadEvents = useCallback(async () => {
     try {
@@ -390,7 +389,7 @@ export const EventManagement: React.FC = () => {
         setStats({ total, upcoming, recruiting, cancelled, suspended })
       }
     } catch (error) {
-      console.error('Failed to load events:', error)
+      // Failed to load events
     } finally {
       setLoading(false)
     }
@@ -408,7 +407,7 @@ export const EventManagement: React.FC = () => {
       })
       loadEvents() // Refresh the list
     } catch (error) {
-      console.error(`Failed to ${action} event:`, error)
+      // Failed to perform action on event
     }
   }
 
@@ -462,9 +461,8 @@ export const EventManagement: React.FC = () => {
           <h2 className="text-2xl font-bold text-luxury-gold">活動管理</h2>
           <p className="text-luxury-platinum/80">管理所有平台活動</p>
         </div>
-        {hasPermission('events') && (
-          <button
-            onClick={() => setShowCreateModal(true)}
+        <button
+          onClick={() => setShowCreateModal(true)}
             className="luxury-button flex items-center space-x-2"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -472,7 +470,6 @@ export const EventManagement: React.FC = () => {
             </svg>
             <span>新增活動</span>
           </button>
-        )}
       </div>
 
       {/* Stats Cards */}
@@ -583,9 +580,7 @@ export const EventManagement: React.FC = () => {
                   <th className="text-left py-3 px-4 text-luxury-platinum font-medium">地點</th>
                   <th className="text-left py-3 px-4 text-luxury-platinum font-medium">狀態</th>
                   <th className="text-left py-3 px-4 text-luxury-platinum font-medium">參與人數</th>
-                  {hasPermission('events:edit') && (
-                    <th className="text-left py-3 px-4 text-luxury-platinum font-medium">操作</th>
-                  )}
+                  <th className="text-left py-3 px-4 text-luxury-platinum font-medium">操作</th>
                 </tr>
               </thead>
               <tbody>
@@ -609,9 +604,8 @@ export const EventManagement: React.FC = () => {
                     <td className="py-4 px-4 text-luxury-platinum">
                       {event.participants?.length || 0} / {event.maxParticipants || '無限制'}
                     </td>
-                    {hasPermission('events') && (
-                      <td className="py-4 px-4">
-                        <div className="flex space-x-2">
+                    <td className="py-4 px-4">
+                      <div className="flex space-x-2">
                           <button
                             onClick={() => setSelectedEvent(event)}
                             className="text-luxury-gold hover:text-luxury-gold/80 transition-colors"
@@ -657,7 +651,6 @@ export const EventManagement: React.FC = () => {
                           )}
                         </div>
                       </td>
-                    )}
                   </tr>
                 ))}
               </tbody>
@@ -750,11 +743,9 @@ export const EventManagement: React.FC = () => {
                         loadEvents();
                       } else {
                         const errorData = await response.json();
-                        console.error('Failed to update event status:', errorData);
                         throw new Error(errorData.error || 'Failed to update event status');
                       }
                     } catch (error) {
-                      console.error('Error updating event status:', error);
                       throw error;
                     }
                   }}

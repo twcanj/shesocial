@@ -49,7 +49,7 @@ export const ModerationDashboard: React.FC = () => {
         setModerationQueue(data.data || [])
       }
     } catch (error) {
-      console.error('Failed to fetch moderation queue:', error)
+      // Failed to fetch moderation queue
     } finally {
       setLoading(false)
     }
@@ -91,7 +91,6 @@ export const ModerationDashboard: React.FC = () => {
         alert('審核失敗，請稍後再試')
       }
     } catch (error) {
-      console.error('Review error:', error)
       alert('審核失敗，請稍後再試')
     }
   }

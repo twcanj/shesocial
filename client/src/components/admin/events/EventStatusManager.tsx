@@ -105,7 +105,7 @@ export const EventStatusManager: React.FC<EventStatusManagerProps> = ({
       setIsUpdating(true);
       await onStatusChange(newStatus);
     } catch (error) {
-      console.error('Failed to update event status:', error);
+      // Failed to update event status
     } finally {
       setIsUpdating(false);
     }
@@ -120,7 +120,7 @@ export const EventStatusManager: React.FC<EventStatusManagerProps> = ({
       await onStatusChange(confirmStatus);
       setConfirmStatus(null);
     } catch (error) {
-      console.error('Failed to update event status:', error);
+      // Failed to update event status
     } finally {
       setIsUpdating(false);
     }

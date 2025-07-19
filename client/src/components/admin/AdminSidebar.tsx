@@ -139,25 +139,16 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
   admin,
   onLogout
 }) => {
-  // Check if user has permission for a navigation item - function level approach
+  // Check if user has permission for a navigation item - level based approach
   const hasPermission = (permission: string | null) => {
-    // Check if this is a top-level admin based on admin type (bypass all permission checks)
-    const isTopLevelAdmin = admin?.type === 'super_admin' || admin?.type === 'system_admin'
+    // No permission required - always allow
+    if (!permission) return true
     
-    // Debug logging for development
-    if (process.env.NODE_ENV === 'development') {
-      console.log('hasPermission check:', { 
-        permission, 
-        adminType: admin?.type,
-        isTopLevelAdmin,
-        adminPermissions: admin?.permissions,
-        hasSuperAdmin: admin?.permissions?.includes('*')
-      })
-    }
+    // Level 1 admins bypass ALL permission checks
+    const isTopLevelAdmin = admin?.level === 1
+    if (isTopLevelAdmin) return true
     
-    // No permission required or top-level admin (bypass all checks)
-    if (!permission || isTopLevelAdmin || admin?.permissions?.includes('*')) return true
-    
+    // For non-top-level admins, check specific permissions
     // 從權限字符串中提取功能名稱（例如 'events:view' -> 'events'）
     if (permission) {
       const functionName = permission.split(':')[0]

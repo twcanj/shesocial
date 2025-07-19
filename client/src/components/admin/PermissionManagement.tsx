@@ -20,7 +20,7 @@ interface ValidationResult {
 }
 
 export const PermissionManagement: React.FC = () => {
-  const { hasPermission } = useAdminAuth()
+  const { } = useAdminAuth()
   const [groupedPermissions, setGroupedPermissions] = useState<Record<string, PermissionAtom[]>>({});
   const [loading, setLoading] = useState(true);
   const [validationResult, setValidationResult] = useState<ValidationResult | null>(null)
@@ -45,7 +45,7 @@ export const PermissionManagement: React.FC = () => {
         }
       }
     } catch (error) {
-      console.error('Failed to load permissions:', error)
+      // Failed to load permissions
     } finally {
       setLoading(false)
     }
@@ -67,7 +67,7 @@ export const PermissionManagement: React.FC = () => {
         setValidationResult(data.data)
       }
     } catch (error) {
-      console.error('Validation failed:', error)
+      // Validation failed
     }
   }
 
@@ -107,17 +107,6 @@ export const PermissionManagement: React.FC = () => {
     return icons[level as keyof typeof icons] || icons.low
   }
 
-  if (!hasPermission('admin:permissions')) {
-    return (
-      <div className="text-center py-12">
-        <svg className="mx-auto h-12 w-12 text-luxury-platinum/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-        </svg>
-        <h3 className="mt-2 text-sm font-medium text-luxury-gold">存取被拒</h3>
-        <p className="mt-1 text-sm text-luxury-platinum/60">您沒有權限管理的存取權限</p>
-      </div>
-    )
-  }
 
   if (loading) {
     return (

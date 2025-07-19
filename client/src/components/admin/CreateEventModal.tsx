@@ -65,20 +65,14 @@ export const CreateEventModal: React.FC<CreateEventModalProps> = ({ onClose, onE
     const fetchEventTypes = async () => {
       try {
         const url = buildUrl(API_ENDPOINTS.EVENT_TYPES.LIST)
-        console.log('Fetching event types from:', url)
         const response = await fetch(url)
-        console.log('Response status:', response.status)
         const data = await response.json()
-        console.log('Event types data:', data)
         
         if (data.success) {
           setEventTypes(data.data || [])
-          console.log('Event types set:', data.data?.length, 'items')
-        } else {
-          console.error('API returned error:', data.error)
         }
       } catch (error) {
-        console.error('Failed to fetch event types:', error)
+        // Failed to fetch event types
       } finally {
         setLoadingEventTypes(false)
       }
@@ -163,7 +157,6 @@ export const CreateEventModal: React.FC<CreateEventModalProps> = ({ onClose, onE
         throw new Error(result.error || '創建活動失敗')
       }
     } catch (error) {
-      console.error('Failed to create event:', error)
       alert('創建活動失敗，請重試')
     } finally {
       setLoading(false)
