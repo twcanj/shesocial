@@ -2,8 +2,8 @@
 ## Extended Development Procedures
 
 > **Status**: Production Ready
-> **Last Updated**: 2025-07-16
-> **Version**: 3.0
+> **Last Updated**: 2025-07-19
+> **Version**: 3.1
 
 > **Note**: Core development commands are in CLAUDE.md. This guide covers extended procedures.
 
@@ -111,6 +111,7 @@ Ctrl+Shift+R (Windows/Linux) or Cmd+Shift+R (Mac)
 - Separate admin authentication system
 - Email/username login support for admins
 - Secure password hashing with bcrypt
+- **Level-based admin permission system**: Level 1 (top-level) bypass all checks, Level 2 (general) use permission-based access
 
 ### Appointment System Development
 - Enterprise-grade booking system
@@ -124,8 +125,47 @@ Ctrl+Shift+R (Windows/Linux) or Cmd+Shift+R (Mac)
 - Bidirectional sync with conflict resolution
 - Automated health monitoring
 
+## Admin System Architecture (Latest Updates)
+
+### Level-Based Permission System
+- **Level 1 Admins**: `super_admin`, `system_admin` - Bypass ALL permission checks
+- **Level 2 Admins**: `operation_admin`, `premium_admin` - Permission-based access control
+- **JWT Integration**: Admin level included in JWT tokens for middleware validation
+- **Frontend Control**: Navigation permissions handled at sidebar level, module pages have no permission checks
+
+### Admin Access Credentials
+```
+Super Admin:
+  Email: admin@infinitymatch.com
+  Password: admin123
+  Level: 1 (Full Access)
+  
+System Admin:
+  Email: system@infinitymatch.com  
+  Password: admin123
+  Level: 1 (Full Access)
+  
+Operation Admin:
+  Email: operation@infinitymatch.com
+  Password: admin123
+  Level: 2 (Permission-based)
+  
+Premium Admin:
+  Email: premium@infinitymatch.com
+  Password: admin123
+  Level: 2 (Permission-based)
+```
+
+### Recent Architecture Changes (2025-07-19)
+- ✅ Migrated from type-based to level-based permission checking
+- ✅ Removed all frontend permission checks from admin module pages
+- ✅ Fixed admin.level field propagation from backend to frontend
+- ✅ Updated JWT middleware to use level-based authorization
+- ✅ Complete admin navigation access for Level 1 admins
+
 ## Production Deployment Notes
 - Platform is production-ready
 - Complete luxury design system implemented
 - Mobile-optimized responsive design
 - Enterprise health monitoring active
+- **Admin system fully functional** with level-based permissions
