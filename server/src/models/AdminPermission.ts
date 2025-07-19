@@ -79,6 +79,8 @@ export interface AdminUser {
   roleId: string        // Reference to AdminRole
   customPermissions?: string[] // Additional permissions beyond role
   permissions?: string[] // Direct permissions for this user
+  type?: 'super_admin' | 'system_admin' | 'operation_admin' | 'premium_admin' // Admin type for backward compatibility
+  level?: 1 | 2        // Admin level for permission checking (1=unlimited, 2=permission-based)
 
   // Status
   status: 'active' | 'suspended' | 'inactive'

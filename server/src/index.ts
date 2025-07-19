@@ -16,6 +16,7 @@ import adminRoutes from './routes/admin'
 import eventTypesRoutes from './routes/eventTypes'
 import marketingRoutes from './routes/marketing'
 import analyticsRoutes from './routes/analytics'
+import migrationRoutes from './routes/migration'
 
 // Database
 import NeDBSetup from './db/nedb-setup'
@@ -87,6 +88,9 @@ app.use('/api/analytics', analyticsRoutes)
 
 // Admin routes
 app.use('/api/admin', adminRoutes)
+
+// Migration routes (for rolling deployment)
+app.use('/api/migration', migrationRoutes)
 
 // Health check endpoint (outside API prefix for load balancers)
 app.get('/health', async (req, res) => {
