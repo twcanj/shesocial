@@ -59,8 +59,6 @@ const requirePermission = (permission: string) => {
 // Admin Authentication Routes
 router.post('/auth/login', async (req, res) => {
   try {
-      console.log('🔍 Admin login endpoint called')
-      console.log('📦 Request body:', req.body)
       const { email, password } = req.body
 
     if (!email || !password) {
@@ -85,22 +83,17 @@ router.post('/auth/login', async (req, res) => {
     }
 
     if (!adminUser) {
-      console.log('❌ Admin user not found:', email)
       return res.status(401).json({ error: 'Invalid credentials' })
     }
 
     // Validate password
-    console.log('🔑 Checking password for:', adminUser.username)
-      const isValidPassword = await bcrypt.compare(password, adminUser.passwordHash)
-      console.log('🔐 Password valid:', isValidPassword)
+    const isValidPassword = await bcrypt.compare(password, adminUser.passwordHash)
     if (!isValidPassword) {
-      console.log('❌ Invalid password for:', adminUser.username)
       return res.status(401).json({ error: 'Invalid credentials' })
     }
 
     // Check if admin is active
     if (adminUser.status !== 'active') {
-      console.log('❌ Admin account is not active:', adminUser.status)
       return res.status(403).json({ error: 'Admin account is suspended or inactive' })
     }
 
@@ -110,7 +103,8 @@ router.post('/auth/login', async (req, res) => {
         adminId: adminUser.adminId,
         username: adminUser.username,
         roleId: adminUser.roleId,
-        type: adminUser.type || 'super_admin' // Admin type for permission checking
+        type: adminUser.type || 'super_admin',
+        level: adminUser.level || 1 // Admin level for permission checking
       },
       ADMIN_JWT_SECRET,
       { expiresIn: ADMIN_JWT_EXPIRES_IN }
@@ -130,16 +124,10 @@ router.post('/auth/login', async (req, res) => {
       adminUser.profile = { lastLogin: new Date() }
     }
 
-    console.log('🔍 Getting permissions for admin:', adminUser.adminId)
-    
-    // Check if this is a top-level admin based on admin type (no permission checking needed)
-    const isTopLevelAdmin = adminUser.type === 'super_admin' || 
-                           adminUser.type === 'technical_admin'
+    // Check if this is a level 1 admin (no permission checking needed)
+    const isTopLevelAdmin = adminUser.level === 1
     
     const permissions = isTopLevelAdmin ? ['*'] : (adminUser.permissions || [])
-    console.log('📋 Admin permissions:', permissions)
-    console.log('🔝 Is top-level admin (type based):', isTopLevelAdmin)
-    console.log('🏷️  Admin type:', adminUser.type)
 
     res.json({
       success: true,
@@ -151,6 +139,7 @@ router.post('/auth/login', async (req, res) => {
           profile: adminUser.profile,
           roleId: adminUser.roleId,
           type: adminUser.type || 'super_admin',
+          level: adminUser.level,
           status: adminUser.status,
           permissions: permissions
         },
@@ -403,10 +392,8 @@ router.get('/audit/logs', requirePermission('admin'), adminAuth, async (req, res
 // Events Management Routes (Admin-specific)
 router.get('/events', requirePermission('events'), adminAuth, async (req, res) => {
   try {
-    console.log('🔍 Admin events endpoint called')
     // Import event model here to avoid circular dependencies
     const { EventModel } = require('../models/Event')
-    console.log('✅ EventModel imported successfully')
     const databases = NeDBSetup.getInstance().getDatabases()
     const eventModel = new EventModel(databases.events)
 
@@ -450,7 +437,6 @@ router.get('/events/:id', requirePermission('events'), adminAuth, async (req, re
 
 router.post('/events', requirePermission('events'), adminAuth, async (req: AdminRequest, res: Response) => {
   try {
-    console.log('🔍 Admin create event endpoint called')
     const { EventModel } = require('../models/Event')
     const databases = NeDBSetup.getInstance().getDatabases()
     const eventModel = new EventModel(databases.events)
@@ -463,7 +449,6 @@ router.post('/events', requirePermission('events'), adminAuth, async (req: Admin
       updatedAt: new Date()
     }
 
-    console.log('📝 Creating event with data:', eventData)
     const eventResult = await eventModel.create(eventData)
 
     if (!eventResult.success) {
