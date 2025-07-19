@@ -1,9 +1,9 @@
 # InfinityMatch 天造地設人成對 - Development Guide
 ## Extended Development Procedures
 
-> **Status**: Production Ready
+> **Status**: Production Ready - Admin System Fully Operational
 > **Last Updated**: 2025-07-19
-> **Version**: 3.1
+> **Version**: 3.2
 
 > **Note**: Core development commands are in CLAUDE.md. This guide covers extended procedures.
 
@@ -162,10 +162,36 @@ Premium Admin:
 - ✅ Fixed admin.level field propagation from backend to frontend
 - ✅ Updated JWT middleware to use level-based authorization
 - ✅ Complete admin navigation access for Level 1 admins
+- ✅ **CRITICAL FIX**: Resolved 403 errors by implementing level-based bypass in admin routes middleware
+- ✅ Removed duplicate admin-simple.ts routes file for single source of truth
+
+### Troubleshooting Admin Issues
+
+**Common Issue: 403 Forbidden Errors for Admin APIs**
+- **Symptom**: Console shows `GET /api/admin/system/stats 403 (Forbidden)`
+- **Root Cause**: JWT token missing level field or middleware not checking level properly
+- **Solution**: Logout and login again to get fresh JWT token with level field
+- **Prevention**: Ensure both frontend auth store and backend middleware use level-based checking
+
+**Admin Permission Debugging**
+```javascript
+// In browser console, check admin auth state:
+window.debugAdminPermissions() // If debug function is available
+
+// Or manually check:
+JSON.parse(localStorage.getItem('admin-auth-storage'))
+```
+
+**Architecture Notes**
+- Level 1 admins bypass ALL permission checks (both frontend navigation and backend API)
+- Level 2 admins use permission-based access control
+- Single admin routes file: `/server/src/routes/admin.ts` (admin-simple.ts removed)
+- Frontend permission checks removed from module pages (handled at navigation level)
 
 ## Production Deployment Notes
-- Platform is production-ready
+- Platform is production-ready with **FULLY FUNCTIONAL** admin system
 - Complete luxury design system implemented
 - Mobile-optimized responsive design
 - Enterprise health monitoring active
-- **Admin system fully functional** with level-based permissions
+- **Level-based admin permissions working correctly** - all 403 errors resolved
+- Single source of truth for admin routes and middleware
