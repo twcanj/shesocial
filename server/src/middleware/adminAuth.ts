@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 import { AdminPermissionServiceDB } from '../services/AdminPermissionServiceDB'
+import NeDBSetup from '../db/nedb-setup'
 
 const ADMIN_JWT_SECRET = process.env.ADMIN_JWT_SECRET || 'admin_jwt_secret_key_should_be_secure'
 
@@ -13,7 +14,7 @@ export interface AdminRequest extends Request {
 // 初始化權限服務
 const adminPermissionService = new AdminPermissionServiceDB()
 
-// 管理員身份驗證中間件
+// 管理員身份驗證中間件 - Real-time database lookups for security
 export const adminAuth = async (req: AdminRequest, res: Response, next: NextFunction) => {
   try {
     const token = req.header('Authorization')?.replace('Bearer ', '')
@@ -24,10 +25,29 @@ export const adminAuth = async (req: AdminRequest, res: Response, next: NextFunc
 
     const decoded = jwt.verify(token, ADMIN_JWT_SECRET) as any
 
-    // Check if this is a level 1 admin (bypass all permission checks)
-    const isTopLevelAdmin = decoded.level === 1
+    // Get fresh admin data from database (don't trust JWT claims)
+    const dbSetup = NeDBSetup.getInstance()
+    const db = dbSetup.getDatabases()
+    
+    const adminUser = await new Promise<any>((resolve, reject) => {
+      db.admin_users.findOne({ adminId: decoded.adminId }, (err: any, doc: any) => {
+        if (err) reject(err)
+        else resolve(doc)
+      })
+    })
 
-    // 如果是 level 1 管理員，跳過所有權限檢查
+    if (!adminUser) {
+      return res.status(401).json({ error: '管理員用戶未找到。' })
+    }
+
+    if (adminUser.status !== 'active') {
+      return res.status(403).json({ error: '管理員帳戶已暫停或非活躍狀態。' })
+    }
+
+    // Check if this is a level 1 admin using REAL database data
+    const isTopLevelAdmin = adminUser.level === 1
+
+    // Level 1 admins bypass ALL permission checks
     if (!isTopLevelAdmin && req.requiredPermission) {
       const hasPermission = await adminPermissionService.userHasPermission(decoded.adminId, req.requiredPermission)
 
@@ -36,7 +56,14 @@ export const adminAuth = async (req: AdminRequest, res: Response, next: NextFunc
       }
     }
 
-    req.admin = decoded
+    // Add both JWT and database data to request
+    req.admin = {
+      ...decoded,
+      level: adminUser.level,  // Real database level
+      type: adminUser.type,    // Real database type
+      status: adminUser.status // Real database status
+    }
+
     next()
   } catch (error) {
     res.status(401).json({ error: '無效的令牌。' })

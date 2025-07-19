@@ -21,7 +21,7 @@ const ADMIN_JWT_SECRET = process.env.ADMIN_JWT_SECRET || 'admin_jwt_secret_key_s
 const ADMIN_JWT_EXPIRES_IN = '8h'
 const ADMIN_REFRESH_EXPIRES_IN = '24h'
 
-// Admin Authentication Middleware
+// Admin Authentication Middleware - Real-time database lookups for security
 const adminAuth = async (req: AdminRequest, res: Response, next: NextFunction) => {
   try {
     const token = req.header('Authorization')?.replace('Bearer ', '')
@@ -32,10 +32,29 @@ const adminAuth = async (req: AdminRequest, res: Response, next: NextFunction) =
 
     const decoded = jwt.verify(token, ADMIN_JWT_SECRET) as any
 
-    // Check if this is a level 1 admin (bypass all permission checks)
-    const isTopLevelAdmin = decoded.level === 1
+    // Get fresh admin data from database (don't trust JWT claims)
+    const dbSetup = NeDBSetup.getInstance()
+    const db = dbSetup.getDatabases()
+    
+    const adminUser = await new Promise<any>((resolve, reject) => {
+      db.admin_users.findOne({ adminId: decoded.adminId }, (err: any, doc: any) => {
+        if (err) reject(err)
+        else resolve(doc)
+      })
+    })
 
-    // 如果是 level 1 管理員，跳過所有權限檢查
+    if (!adminUser) {
+      return res.status(401).json({ error: 'Admin user not found.' })
+    }
+
+    if (adminUser.status !== 'active') {
+      return res.status(403).json({ error: 'Admin account is suspended or inactive.' })
+    }
+
+    // Check if this is a level 1 admin using REAL database data
+    const isTopLevelAdmin = adminUser.level === 1
+
+    // Level 1 admins bypass ALL permission checks
     if (!isTopLevelAdmin && req.requiredPermission) {
       const hasPermission = await adminPermissionService.userHasPermission(decoded.adminId, req.requiredPermission)
 
@@ -44,7 +63,14 @@ const adminAuth = async (req: AdminRequest, res: Response, next: NextFunction) =
       }
     }
 
-    req.admin = decoded
+    // Add both JWT and database data to request
+    req.admin = {
+      ...decoded,
+      level: adminUser.level,  // Real database level
+      type: adminUser.type,    // Real database type
+      status: adminUser.status // Real database status
+    }
+    
     next()
   } catch (error) {
     res.status(401).json({ error: 'Invalid token.' })
