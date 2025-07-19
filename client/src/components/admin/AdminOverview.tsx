@@ -13,7 +13,7 @@ interface SystemStats {
 }
 
 export const AdminOverview: React.FC = () => {
-  const { admin } = useAdminAuth()
+  const { admin, isTopLevelAdmin, getAdminLevelName } = useAdminAuth()
   const accessToken = useAdminAuthStore((state) => state.accessToken)
   const [stats, setStats] = useState<SystemStats | null>(null)
   const [loading, setLoading] = useState(true)
@@ -121,14 +121,41 @@ export const AdminOverview: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Welcome Header */}
+      {/* Welcome Header with Admin Level (incremental improvement) */}
       <div className="luxury-card-selected p-6 rounded-lg">
-        <h2 className="text-2xl font-bold text-luxury-midnight-black mb-2">
-          {getWelcomeMessage()}，{admin?.profile?.realName}
-        </h2>
-        <p className="text-luxury-midnight-black/80">
-          歡迎回到 InfinityMatch 管理系統。以下是今日的系統概況。
-        </p>
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-2xl font-bold text-luxury-midnight-black mb-2">
+              {getWelcomeMessage()}，{admin?.profile?.realName}
+            </h2>
+            <p className="text-luxury-midnight-black/80">
+              歡迎回到 InfinityMatch 管理系統。以下是今日的系統概況。
+            </p>
+          </div>
+          <div className="text-right">
+            <div className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium ${
+              isTopLevelAdmin() 
+                ? 'bg-luxury-gold/20 text-luxury-gold border border-luxury-gold/30' 
+                : 'bg-luxury-purple/20 text-luxury-purple border border-luxury-purple/30'
+            }`}>
+              <span className="mr-2">🔑</span>
+              {getAdminLevelName()}
+            </div>
+            <div className="text-xs text-luxury-midnight-black/60 mt-1">
+              管理員等級: Level {admin?.level}
+            </div>
+          </div>
+        </div>
+        
+        {/* Level-specific privileges indicator */}
+        {isTopLevelAdmin() && (
+          <div className="mt-4 p-3 bg-luxury-gold/10 border border-luxury-gold/20 rounded-lg">
+            <div className="flex items-center text-sm text-luxury-gold">
+              <span className="mr-2">⚡</span>
+              <span className="font-medium">頂級管理員權限：可存取所有系統功能，無權限限制</span>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* System Statistics */}

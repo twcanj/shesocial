@@ -214,12 +214,18 @@ export class AdminPermissionServiceDB {
     return { isValid: errors.length === 0, errors }
   }
 
-  // User Permission Checking
+  // User Permission Checking with Level-based logic (incremental improvement)
   async userHasPermission(adminId: string, permission: string): Promise<boolean> {
     const user = await this.getAdminUser(adminId)
     
     if (!user || user.status !== 'active') {
       return false
+    }
+
+    // Level 1 admins bypass ALL permission checks (incremental improvement)
+    if (user.level === 1) {
+      console.log(`🔓 Level 1 admin ${adminId} bypassing permission check for: ${permission}`)
+      return true
     }
 
     // 從權限字符串中提取功能名稱（例如 'events:view' -> 'events'）
@@ -264,6 +270,41 @@ export class AdminPermissionServiceDB {
     }
 
     return false
+  }
+
+  // Level-based utility methods (incremental improvement)
+  async isTopLevelAdmin(adminId: string): Promise<boolean> {
+    const user = await this.getAdminUser(adminId)
+    return user?.level === 1 && user?.status === 'active'
+  }
+
+  async isLevel2Admin(adminId: string): Promise<boolean> {
+    const user = await this.getAdminUser(adminId)
+    return user?.level === 2 && user?.status === 'active'
+  }
+
+  async getAdminLevelName(adminId: string): Promise<string> {
+    const user = await this.getAdminUser(adminId)
+    if (!user) return '未知'
+    return user.level === 1 ? '頂級管理員' : '權限管理員'
+  }
+
+  async getAllTopLevelAdmins(): Promise<AdminUser[]> {
+    return new Promise((resolve, reject) => {
+      this.db.admin_users.find({ level: 1, status: 'active' }, (err: any, docs: AdminUser[]) => {
+        if (err) reject(err)
+        else resolve(docs)
+      })
+    })
+  }
+
+  async getAllLevel2Admins(): Promise<AdminUser[]> {
+    return new Promise((resolve, reject) => {
+      this.db.admin_users.find({ level: 2, status: 'active' }, (err: any, docs: AdminUser[]) => {
+        if (err) reject(err)
+        else resolve(docs)
+      })
+    })
   }
 
   // Admin User Management

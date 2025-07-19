@@ -962,4 +962,78 @@ router.get('/appointments', requirePermission('appointments'), adminAuth, async 
   }
 })
 
+// Level-based Admin Management Routes (incremental improvement)
+router.get('/level/info', adminAuth, async (req: AdminRequest, res: Response) => {
+  try {
+    const adminId = req.admin?.adminId
+    if (!adminId) {
+      return res.status(400).json({ error: 'Admin ID not found' })
+    }
+
+    const isTop = await adminPermissionService.isTopLevelAdmin(adminId)
+    const isLevel2 = await adminPermissionService.isLevel2Admin(adminId)
+    const levelName = await adminPermissionService.getAdminLevelName(adminId)
+
+    res.json({
+      success: true,
+      data: {
+        adminId,
+        level: req.admin?.level,
+        isTopLevelAdmin: isTop,
+        isLevel2Admin: isLevel2,
+        levelName,
+        hasUnlimitedAccess: isTop
+      }
+    })
+  } catch (error) {
+    console.error('Error getting admin level info:', error)
+    res.status(500).json({ error: 'Failed to get admin level info' })
+  }
+})
+
+router.get('/level/top-admins', requirePermission('admin'), adminAuth, async (req: AdminRequest, res: Response) => {
+  try {
+    const topAdmins = await adminPermissionService.getAllTopLevelAdmins()
+    
+    res.json({
+      success: true,
+      data: topAdmins.map(admin => ({
+        adminId: admin.adminId,
+        username: admin.username,
+        email: admin.email,
+        type: admin.type,
+        level: admin.level,
+        status: admin.status,
+        profile: admin.profile
+      }))
+    })
+  } catch (error) {
+    console.error('Error getting top-level admins:', error)
+    res.status(500).json({ error: 'Failed to get top-level admins' })
+  }
+})
+
+router.get('/level/level2-admins', requirePermission('admin'), adminAuth, async (req: AdminRequest, res: Response) => {
+  try {
+    const level2Admins = await adminPermissionService.getAllLevel2Admins()
+    
+    res.json({
+      success: true,
+      data: level2Admins.map(admin => ({
+        adminId: admin.adminId,
+        username: admin.username,
+        email: admin.email,
+        type: admin.type,
+        level: admin.level,
+        status: admin.status,
+        permissions: admin.permissions || [],
+        profile: admin.profile
+      }))
+    })
+  } catch (error) {
+    console.error('Error getting level 2 admins:', error)
+    res.status(500).json({ error: 'Failed to get level 2 admins' })
+  }
+})
+
 export default router

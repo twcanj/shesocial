@@ -19,6 +19,7 @@ export interface AdminProfile {
     lastLogin: Date
   }
   status: 'active' | 'suspended' | 'inactive'
+  department?: string // Added for backward compatibility
 }
 
 interface AdminAuthState {
@@ -33,6 +34,11 @@ interface AdminAuthState {
   logout: () => void
   refreshAccessToken: () => Promise<boolean>
   hasPermission: (permission: string) => boolean
+  
+  // Level-based utility functions (incremental improvement)
+  isTopLevelAdmin: () => boolean
+  isLevel2Admin: () => boolean
+  getAdminLevelName: () => string
 }
 
 const API_BASE_URL = API_CONFIG.ADMIN_BASE_URL
@@ -167,6 +173,12 @@ export const useAdminAuthStore = create<AdminAuthState>()(
         
         if (!admin || admin.status !== 'active') return false
         
+        // Level 1 admins bypass ALL permission checks (incremental improvement)
+        if (admin.level === 1) {
+          console.log('🔓 Level 1 admin bypassing permission check for:', permission)
+          return true
+        }
+        
         // Check if permissions array exists
         if (!admin.permissions || !Array.isArray(admin.permissions)) {
           console.warn('Admin permissions is not an array:', admin.permissions)
@@ -186,6 +198,23 @@ export const useAdminAuthStore = create<AdminAuthState>()(
         }
         
         return false
+      },
+
+      // New level-based utility functions (incremental improvement)
+      isTopLevelAdmin: () => {
+        const { admin } = get()
+        return admin?.level === 1
+      },
+
+      isLevel2Admin: () => {
+        const { admin } = get()
+        return admin?.level === 2
+      },
+
+      getAdminLevelName: () => {
+        const { admin } = get()
+        if (!admin) return '未知'
+        return admin.level === 1 ? '頂級管理員' : '權限管理員'
       }
     }),
     {
@@ -222,7 +251,10 @@ export const useAdminAuth = () => {
     login,
     logout,
     refreshAccessToken,
-    hasPermission
+    hasPermission,
+    isTopLevelAdmin,
+    isLevel2Admin,
+    getAdminLevelName
   } = useAdminAuthStore()
 
   // API helper for authenticated requests - moved before useEffect to maintain hook order
@@ -292,6 +324,9 @@ export const useAdminAuth = () => {
     login,
     logout,
     hasPermission,
+    isTopLevelAdmin,
+    isLevel2Admin,
+    getAdminLevelName,
     apiCall
   }
 }
