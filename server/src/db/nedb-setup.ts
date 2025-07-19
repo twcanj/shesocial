@@ -9,6 +9,7 @@ import { AdminUser, AdminRole, PermissionAtom, PermissionAuditLog } from '../mod
 import { EventType } from '../models/EventType'
 import { MarketingCampaign, MarketingTemplate, MarketingAudience, MarketingAnalytics, MarketingEvent } from '../models/Marketing'
 
+// Legacy interface - will be phased out incrementally
 export interface DatabaseCollections {
   users: Datastore<UserProfile>
   events: Datastore<EventData>
@@ -38,9 +39,16 @@ export interface DatabaseCollections {
   marketing_events: Datastore<MarketingEvent>
 }
 
+// New two-database interface
+export interface TwoDatabaseCollections {
+  admin: Datastore<any>      // All admin-related data
+  application: Datastore<any> // All user/business data
+}
+
 class NeDBSetup {
   private static instance: NeDBSetup
   private db: DatabaseCollections
+  private twoDB: TwoDatabaseCollections | null = null
   private dbPath: string
 
   private constructor(dbPath?: string) {
@@ -51,6 +59,8 @@ class NeDBSetup {
     this.ensureDataDirectory()
 
     this.db = this.initializeDatabases()
+    // Initialize two-database structure alongside legacy
+    this.initializeTwoDatabases()
   }
 
   private ensureDataDirectory(): void {
@@ -188,6 +198,51 @@ class NeDBSetup {
 
     console.log(`💾 NeDB databases initialized with persistent storage at: ${this.dbPath}`)
     return databases
+  }
+
+  private initializeTwoDatabases(): void {
+    // Initialize the new two-database structure
+    this.twoDB = {
+      admin: new Datastore<any>({
+        filename: path.join(this.dbPath, 'admin.db'),
+        autoload: true,
+        timestampData: true
+      }),
+      application: new Datastore<any>({
+        filename: path.join(this.dbPath, 'application.db'), 
+        autoload: true,
+        timestampData: true
+      })
+    }
+
+    // Set up indexes for the two-database structure
+    this.setupTwoDBIndexes()
+    
+    console.log(`🔄 Two-database structure initialized alongside legacy collections`)
+  }
+
+  private setupTwoDBIndexes(): void {
+    if (!this.twoDB) return
+
+    try {
+      // Admin database indexes
+      this.twoDB.admin.ensureIndex({ fieldName: 'collection' }) // To distinguish data types
+      this.twoDB.admin.ensureIndex({ fieldName: 'adminId', unique: true, sparse: true })
+      this.twoDB.admin.ensureIndex({ fieldName: 'email', unique: true, sparse: true })
+      this.twoDB.admin.ensureIndex({ fieldName: 'type' })
+      this.twoDB.admin.ensureIndex({ fieldName: 'level' })
+
+      // Application database indexes  
+      this.twoDB.application.ensureIndex({ fieldName: 'collection' }) // To distinguish data types
+      this.twoDB.application.ensureIndex({ fieldName: 'userId', sparse: true })
+      this.twoDB.application.ensureIndex({ fieldName: 'eventId', sparse: true })
+      this.twoDB.application.ensureIndex({ fieldName: 'status', sparse: true })
+      this.twoDB.application.ensureIndex({ fieldName: 'createdAt' })
+
+      console.log(`📊 Two-database indexes created successfully`)
+    } catch (error) {
+      console.error('Error setting up two-database indexes:', error)
+    }
   }
 
   private setupIndexes(databases: DatabaseCollections): void {
@@ -352,6 +407,13 @@ class NeDBSetup {
 
   public getDatabases(): DatabaseCollections {
     return this.db
+  }
+
+  public getTwoDatabases(): TwoDatabaseCollections {
+    if (!this.twoDB) {
+      throw new Error('Two-database structure not initialized')
+    }
+    return this.twoDB
   }
 
   public async compactDatabases(): Promise<void> {
