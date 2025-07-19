@@ -1,6 +1,7 @@
 // Admin Sidebar - Navigation for admin dashboard
 import React from 'react';
 import type { AdminProfile } from '../../hooks/useAdminAuth';
+import { useAdminAuth } from '../../hooks/useAdminAuth';
 
 interface AdminSidebarProps {
   activeSection: string
@@ -139,28 +140,19 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
   admin,
   onLogout
 }) => {
+  // Use the new admin auth hooks for proper level checking
+  const { hasPermission, isTopLevelAdmin, getAdminLevelName } = useAdminAuth()
+  
   // Check if user has permission for a navigation item - level based approach
-  const hasPermission = (permission: string | null) => {
+  const hasMenuPermission = (permission: string | null) => {
     // No permission required - always allow
     if (!permission) return true
     
     // Level 1 admins bypass ALL permission checks
-    const isTopLevelAdmin = admin?.level === 1
-    if (isTopLevelAdmin) return true
+    if (isTopLevelAdmin()) return true
     
-    // For non-top-level admins, check specific permissions
-    // 從權限字符串中提取功能名稱（例如 'events:view' -> 'events'）
-    if (permission) {
-      const functionName = permission.split(':')[0]
-      
-      // 功能級別權限檢查 - 如果有該功能的任何權限，則授予該功能的所有操作權限
-      if (admin?.permissions?.includes(functionName) || 
-          admin?.permissions?.some(p => p.startsWith(functionName + ':'))) {
-        return true
-      }
-    }
-    
-    return false
+    // For Level 2 admins, use the proper permission checking
+    return hasPermission(permission)
   }
 
   const getAdminTypeName = (type: string) => {
@@ -197,7 +189,16 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium truncate text-luxury-midnight-black">{admin?.profile?.realName}</p>
-              <p className="text-xs text-luxury-midnight-black/80">{getAdminTypeName(admin?.type)}</p>
+              <div className="flex items-center justify-between">
+                <p className="text-xs text-luxury-midnight-black/80">{getAdminTypeName(admin?.type)}</p>
+                <div className={`px-2 py-0.5 rounded text-xs font-medium ${
+                  isTopLevelAdmin() 
+                    ? 'bg-luxury-gold/20 text-luxury-gold' 
+                    : 'bg-luxury-purple/20 text-luxury-purple'
+                }`}>
+                  {getAdminLevelName()}
+                </div>
+              </div>
               <p className="text-xs text-luxury-midnight-black/60">{admin?.profile?.employeeId}</p>
             </div>
           </div>
@@ -208,7 +209,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
       <nav className="flex-1 p-4 space-y-2">
         {navigation.map((item) => {
           const isActive = activeSection === item.id
-          const canAccess = hasPermission(item.requiredPermission)
+          const canAccess = hasMenuPermission(item.requiredPermission)
           
           // Always render the item, but disable it if no permission
           return (
